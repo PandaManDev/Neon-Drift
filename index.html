@@ -275,9 +275,10 @@ canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('p
 function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 const fullscreenBtn=$('fullscreenBtn');
-function syncFullscreenButton(){const active=!!document.fullscreenElement;fullscreenBtn.innerHTML=active?'⛶ <span>EXIT FULLSCREEN</span>':'⛶ <span>FULLSCREEN</span>';fullscreenBtn.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen');fullscreenBtn.title=active?'Exit fullscreen':'Enter fullscreen'}
-fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else{const target=document.querySelector('.app');if(target.requestFullscreen)await target.requestFullscreen();else if(target.webkitRequestFullscreen)target.webkitRequestFullscreen();else showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')} }catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
-document.addEventListener('fullscreenchange',syncFullscreenButton);document.addEventListener('webkitfullscreenchange',syncFullscreenButton);
+const gameStage=document.querySelector('.stage');
+function syncFullscreenButton(){const active=document.fullscreenElement===gameStage;fullscreenBtn.innerHTML=active?'⛶ <span>EXIT GAME FULLSCREEN</span>':'⛶ <span>GAME FULLSCREEN</span>';fullscreenBtn.setAttribute('aria-label',active?'Exit game fullscreen':'Enter game fullscreen');fullscreenBtn.title=active?'Exit game fullscreen':'Enter game fullscreen'}
+fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(gameStage.requestFullscreen){await gameStage.requestFullscreen()}else if(gameStage.webkitRequestFullscreen){gameStage.webkitRequestFullscreen()}else{showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')}}catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
+document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize()});document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
 resize();bestEl.textContent=fmt(best);renderAchievements();renderCareerStats();renderDaily();initNotifications();
 })();
@@ -408,23 +409,18 @@ button{background:linear-gradient(110deg,#8540d5,#237dbd);border-color:#6a68a8;b
 .fullscreen-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 12px;border:1px solid #3d6684;border-radius:12px;background:linear-gradient(145deg,#14253a,#101629);color:#bfefff;box-shadow:0 0 18px #36e8ff16;font-size:15px}
 .fullscreen-btn span{font-size:9px;font-weight:900;letter-spacing:.12em}
 .fullscreen-btn:hover{border-color:#55dfff;box-shadow:0 0 22px #36e8ff30}
-.app:fullscreen{width:100%;height:100%;max-width:none;margin:0;padding:16px 22px;overflow:auto;background:radial-gradient(ellipse at 50% -20%,#40206b 0,transparent 48%),linear-gradient(145deg,#050711,#090b18 58%,#070e19)}
-.app:fullscreen .layout{min-height:0}
-.app:fullscreen .stage,.app:fullscreen .side{min-height:0}
-.app:fullscreen canvas{height:calc(100vh - 390px);min-height:300px;max-height:none}
+.stage:fullscreen{width:100vw;height:100vh;height:100dvh;min-height:0;max-height:none;margin:0;padding:0;border:0;border-radius:0;display:block;overflow:hidden;background:#050711}
+.stage:fullscreen canvas{width:100%;height:100%;min-height:0;max-height:none;touch-action:none}
+.stage:fullscreen .toast{z-index:5}
+.stage:fullscreen .overlay{z-index:4}
+.stage:fullscreen:before{top:18px;left:22px}
+.stage:fullscreen:after{top:17px;right:22px}
 @media(max-width:760px){
  .notify-wrap{gap:5px}
  .fullscreen-btn{min-height:38px;padding:8px 9px}
  .fullscreen-btn span{font-size:8px}
- .app:fullscreen{padding:10px}
- .app:fullscreen .command-intro{padding:12px 15px}
- .app:fullscreen .intro-copy h1{font-size:25px;margin:5px 0}
- .app:fullscreen .dashboard{gap:5px}
- .app:fullscreen .stat{min-height:54px;padding:7px 9px}
- .app:fullscreen .stat strong{font-size:17px}
- .app:fullscreen canvas{height:calc(100vh - 250px);min-height:180px;max-height:none}
- .app:fullscreen .mobile-controls{padding-top:5px}
- .app:fullscreen .mobile-controls button{height:42px}
+ .stage:fullscreen:before{top:12px;left:13px}
+ .stage:fullscreen:after{top:11px;right:13px}
 }
 @media(max-width:430px){.fullscreen-btn span{display:none}.fullscreen-btn{width:38px;padding:7px}}
 </style>
