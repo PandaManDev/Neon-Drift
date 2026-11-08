@@ -161,7 +161,7 @@ canvas{height:min(72vh,740px);min-height:500px}
   </div>
   <div class="mobile-controls"><button id="left" aria-label="Move left">←</button><button id="dashTouch" aria-label="Phase dash">⚡</button><button id="right" aria-label="Move right">→</button></div>
  </div>
- <aside class="panel side"><h2>Mission briefing</h2><p>Survive the endless hazard stream. The city accelerates as your score climbs. Chain energy cores for bigger multipliers, and dash through danger when the timing is right.</p><div class="rule"></div><h2>Run objectives</h2><p id="objectives">Collect 10 energy cores · Survive 60 seconds</p><p id="dashStatus">Dash: READY · <span class="key">SHIFT</span></p><div class="rule"></div><h2>Controls</h2><p><span class="key">A</span> <span class="key">D</span> or <span class="key">←</span> <span class="key">→</span> to steer</p><p><span class="key">SPACE</span> to pause</p><p>Move your pointer or finger across the arena to steer smoothly.</p><div class="rule"></div><h2>Achievements</h2><div class="achievement-list" id="achievementList" aria-live="polite"></div><div class="rule"></div><h2>Signal types</h2><div class="legend"><div><i class="dot" style="background:#ff4fd8;color:#ff4fd8"></i> Hazard — avoid</div><div><i class="dot" style="background:#ffe66d;color:#ffe66d"></i> Energy core — +150</div><div><i class="dot" style="background:#39e6ff;color:#39e6ff"></i> Your ship</div><div><i class="dot" style="background:#a855f7;color:#a855f7"></i> Shield pickup — one hit</div></div><div class="rule"></div><div class="actions"><button id="pause">PAUSE</button><button id="sound">SOUND: ON</button></div></aside>
+ <aside class="panel side"><h2>Mission briefing</h2><p>Survive the endless hazard stream. The city accelerates as your score climbs. Chain energy cores for bigger multipliers, and dash through danger when the timing is right.</p><div class="rule"></div><h2>Run objectives</h2><p id="objectives">Collect 10 energy cores · Survive 60 seconds</p><p id="dashStatus">Dash: READY · <span class="key">SHIFT</span></p><div class="rule"></div><h2>Controls</h2><p><span class="key">A</span> <span class="key">D</span> or <span class="key">←</span> <span class="key">→</span> to steer</p><p><span class="key">SPACE</span> to pause</p><p>Move your pointer or finger across the arena to steer smoothly.</p><div class="rule"></div><h2>Achievements</h2><div class="achievement-list" id="achievementList" aria-live="polite"></div><div class="rule"></div><h2>Pilot career</h2><div class="career-stats" id="careerStats"></div><div class="rule"></div><h2>Signal types</h2><div class="legend"><div><i class="dot" style="background:#ff4fd8;color:#ff4fd8"></i> Hazard — avoid</div><div><i class="dot" style="background:#ffe66d;color:#ffe66d"></i> Energy core — +150</div><div><i class="dot" style="background:#39e6ff;color:#39e6ff"></i> Your ship</div><div><i class="dot" style="background:#a855f7;color:#a855f7"></i> Shield pickup — one hit</div></div><div class="rule"></div><div class="actions"><button id="pause">PAUSE</button><button id="sound">SOUND: ON</button></div></aside>
 </section>
 <div class="footer"><span>NEON DRIFT · Endless arcade</span><span>Personal best saves on this device</span></div>
 </main>
@@ -181,12 +181,19 @@ try{best=Number(localStorage.getItem(STORE)||localStorage.getItem('neonDriftBest
 /* Daily notification center — stored locally in this browser */
 const NOTIFY_KEY='neonDriftNotificationsV1';
 const ACHIEVEMENT_KEY='neonDriftAchievementsV1';
+const CAREER_KEY='neonDriftCareerStatsV1';
+let careerStats=loadCareerStats();
+function loadCareerStats(){try{return Object.assign({runs:0,totalScore:0,totalCores:0,totalSeconds:0},JSON.parse(localStorage.getItem(CAREER_KEY)||'{}'))}catch(e){return {runs:0,totalScore:0,totalCores:0,totalSeconds:0}}}
+function saveCareerStats(){try{localStorage.setItem(CAREER_KEY,JSON.stringify(careerStats))}catch(e){}}
+function renderCareerStats(){const el=$('careerStats');if(!el)return;el.innerHTML='<div><b>'+careerStats.runs+'</b><small>RUNS</small></div><div><b>'+careerStats.totalCores+'</b><small>CORES</small></div><div><b>'+Math.floor(careerStats.totalSeconds/60)+'m</b><small>FLIGHT TIME</small></div><div><b>'+Math.floor(careerStats.totalScore).toLocaleString()+'</b><small>TOTAL SCORE</small></div>'}
 const ACHIEVEMENTS=[
  {id:'first-run',name:'First Flight',desc:'Complete your first run'},
  {id:'score-1000',name:'Four Digits',desc:'Reach 1,000 points in one run'},
  {id:'core-collector',name:'Core Collector',desc:'Collect 10 energy cores in one run'},
  {id:'one-minute',name:'One-Minute Pilot',desc:'Survive for 60 seconds'},
- {id:'dash-master',name:'Phase Runner',desc:'Use your phase dash for the first time'}
+ {id:'dash-master',name:'Phase Runner',desc:'Use your phase dash for the first time'},
+ {id:'five-runs',name:'Regular Pilot',desc:'Complete 5 runs'},
+ {id:'century-cores',name:'Core Addict',desc:'Collect 100 lifetime energy cores'}
 ];
 let unlockedAchievements=loadAchievements();
 const dailySignals=[
@@ -224,8 +231,8 @@ function resetPlayer(){player={x:W/2,y:H-58,w:25,h:31,v:0,tilt:0}}
 function beep(freq=440,duration=.07,type='sine'){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}}
 function showToast(t){toast.textContent=t;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1100)}
 function reset(){score=0;level=1;spawn=0;coreSpawn=35;shieldSpawn=260;obstacles=[];cores=[];shields=[];particles=[];shieldHits=0;combo=1;comboTimer=0;coresCollected=0;runTime=0;dashTime=0;dashCooldown=0;coreObjectiveNotified=false;survivalObjectiveNotified=false;resetPlayer();updateHud()}
-function start(){cancelAnimationFrame(raf);difficulty=$('difficulty').value;reset();unlockAchievement('first-run');running=true;paused=false;overlay.classList.add('hidden');$('pause').textContent='PAUSE';last=performance.now();beep(620,.12);raf=requestAnimationFrame(loop)}
-function finish(){running=false;paused=false;best=Math.max(best,Math.floor(score));try{localStorage.setItem(STORE,String(best))}catch(e){}bestEl.textContent=fmt(best);message.textContent='RUN OVER — '+Math.floor(score).toLocaleString()+' points. Best score: '+best.toLocaleString()+'. Ready for another run?';startBtn.textContent='PLAY AGAIN';overlay.classList.remove('hidden');$('pause').textContent='PAUSE';beep(115,.32,'sawtooth')}
+function start(){cancelAnimationFrame(raf);difficulty=$('difficulty').value;reset();running=true;paused=false;overlay.classList.add('hidden');$('pause').textContent='PAUSE';last=performance.now();beep(620,.12);raf=requestAnimationFrame(loop)}
+function finish(){running=false;paused=false;if(careerStats.runs===0)unlockAchievement('first-run');careerStats.runs++;careerStats.totalScore+=Math.floor(score);careerStats.totalCores+=coresCollected;careerStats.totalSeconds+=Math.floor(runTime);saveCareerStats();renderCareerStats();if(careerStats.runs>=5)unlockAchievement('five-runs');if(careerStats.totalCores>=100)unlockAchievement('century-cores');best=Math.max(best,Math.floor(score));try{localStorage.setItem(STORE,String(best))}catch(e){}bestEl.textContent=fmt(best);message.textContent='RUN OVER — '+Math.floor(score).toLocaleString()+' points. Best score: '+best.toLocaleString()+'. Ready for another run?';startBtn.textContent='PLAY AGAIN';overlay.classList.remove('hidden');$('pause').textContent='PAUSE';beep(115,.32,'sawtooth')}
 function pause(){if(!running)return;paused=!paused;$('pause').textContent=paused?'RESUME':'PAUSE';if(paused){showToast('PAUSED')}else{last=performance.now();raf=requestAnimationFrame(loop)}}
 function burst(x,y,color,count=12){for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=1+Math.random()*4;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:22+Math.random()*22,max:44,color,size:1+Math.random()*2})}}
 function hit(a,b){return Math.abs(a.x-b.x)<(a.w+b.w)/2&&Math.abs(a.y-b.y)<(a.h+b.h)/2}
@@ -253,7 +260,7 @@ canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('p
 function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
-resize();bestEl.textContent=fmt(best);renderAchievements();initNotifications();
+resize();bestEl.textContent=fmt(best);renderAchievements();renderCareerStats();initNotifications();
 })();
 </script>
 </body>
@@ -355,4 +362,14 @@ button{background:linear-gradient(110deg,#8540d5,#237dbd);border-color:#6a68a8;b
 .achievement.unlocked .achievement-state{color:#65e8cb}
 @media(max-width:760px){.achievement-list{grid-template-columns:1fr 1fr}.achievement{grid-template-columns:22px minmax(0,1fr);padding:8px}.achievement-state{grid-column:2}.achievement-icon{width:22px;height:22px}}
 @media(max-width:390px){.achievement-list{grid-template-columns:1fr}}
+</style>
+
+<style id="neon-drift-career">
+.career-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.career-stats>div{padding:10px 11px;border:1px solid #2a405c;border-radius:10px;background:linear-gradient(145deg,#101d30,#0b1423)}
+.career-stats b,.career-stats small{display:block}
+.career-stats b{font-size:17px;color:#e9f7ff;text-shadow:0 0 14px #36e8ff24}
+.career-stats small{margin-top:3px;font-size:8px;letter-spacing:.13em;color:#829ab6}
+.achievement-list{max-height:250px;overflow:auto;padding-right:2px}
+@media(max-width:760px){.career-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.career-stats>div{padding:8px 6px}.career-stats b{font-size:14px}.career-stats small{font-size:7px}.achievement-list{max-height:none}}
 </style>
