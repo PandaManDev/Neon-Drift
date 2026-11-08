@@ -20,6 +20,52 @@ button,select{font:inherit}button{cursor:pointer;color:#fff;border:1px solid #65
 @media(max-width:760px){body{padding:10px}.layout{grid-template-columns:1fr}.side{display:none}.dashboard{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.stat{padding:8px 9px}.stat small{font-size:9px}.stat strong{font-size:18px}.stage{border-radius:15px}canvas{height:58vh;min-height:350px;max-height:620px}.mobile-controls{display:flex}.footer{font-size:10px}.tag{font-size:9px;padding:7px 9px}}
 @media(max-width:390px){.dashboard{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start}.mobile-controls button{height:50px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Layout refresh */
+.app{width:min(1240px,100%);gap:18px}
+.top{padding:4px 2px 10px;border-bottom:1px solid #382451}
+.logo{letter-spacing:.16em}
+.tag{background:linear-gradient(110deg,#1b102d,#101b2c);border-color:#5a3a79;box-shadow:0 0 22px #a855f71a}
+.dashboard{gap:12px}
+.stat{position:relative;overflow:hidden;padding:14px 17px;background:linear-gradient(135deg,#1b1230f2,#0c1220f2);border-color:#49305f;box-shadow:0 10px 30px #0004,inset 0 1px #ffffff0a}
+.stat:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--cyan),var(--purple))}
+.stat strong{font-size:clamp(21px,2.8vw,29px);letter-spacing:.03em}
+.layout{grid-template-columns:minmax(0,1fr) 265px;gap:16px}
+.stage{border-radius:22px;border-color:#68428d;box-shadow:0 18px 55px #0008,0 0 38px #8b35e533, inset 0 0 35px #a855f70b}
+.stage:before{content:"SECTOR 01  /  SURVIVAL RUN";position:absolute;z-index:1;top:15px;left:18px;color:#c9b6e4;font-size:9px;font-weight:900;letter-spacing:.19em;pointer-events:none;text-shadow:0 1px 8px #000}
+.stage:after{content:"● LIVE FEED";position:absolute;z-index:1;top:14px;right:17px;color:#74f7c6;font-size:9px;font-weight:900;letter-spacing:.14em;pointer-events:none;text-shadow:0 1px 8px #000}
+canvas{height:min(72vh,740px);min-height:500px}
+.side{padding:21px;gap:16px;border-radius:18px;background:linear-gradient(155deg,#1a1129f5,#0d101d);border-color:#49305f;box-shadow:0 18px 45px #0005}
+.side h2{font-size:10px;letter-spacing:.2em;color:#d9baff}
+.side p{font-size:12px;line-height:1.65}
+.side .rule{background:linear-gradient(90deg,#6d4690aa,#34234522)}
+.legend{gap:13px}
+.legend div{font-size:12px}
+.actions{margin-top:auto}
+.actions button{padding:12px 9px;border-radius:10px}
+.footer{padding:2px 3px;letter-spacing:.04em}
+@media(max-width:760px){
+ .app{gap:12px}
+ .top{padding-bottom:9px}
+ .layout{grid-template-columns:1fr;gap:9px}
+ .dashboard{gap:7px}
+ .stat{padding:10px 10px 10px 13px;border-radius:11px}
+ .stat strong{font-size:19px}
+ canvas{height:58vh;min-height:360px;max-height:650px}
+ .stage{border-radius:16px}
+ .stage:before{top:11px;left:12px;font-size:8px}
+ .stage:after{top:10px;right:12px;font-size:8px}
+ .mobile-controls{padding:7px 0 1px;gap:14px}
+ .mobile-controls button{width:min(27vw,110px);height:52px;border-radius:13px}
+ .footer{font-size:9px}
+}
+@media(max-width:390px){
+ .dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .stat strong{font-size:20px}
+ canvas{min-height:330px;height:55vh}
+ .tag{max-width:140px;text-align:center;line-height:1.4}
+}
+
 </style>
 </head>
 <body>
