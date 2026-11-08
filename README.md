@@ -93,57 +93,6 @@ Neon Drift uses your browser's local storage to save your:
 
 **Important:** this progress is stored locally in the browser and on the device where you play. It is not currently synced between devices or shared through a global leaderboard. Clearing the browser's site data can erase saved progress. Daily challenges and notifications are shown when you visit the site; they are not push notifications sent while the site is closed.
 
-## Run Locally
-
-Neon Drift is a lightweight static website. There is no build step, package installation, or backend server required.
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/PandaManDev/Neon-Drift.git
-   ```
-
-2. Open the project folder:
-
-   ```bash
-   cd Neon-Drift
-   ```
-
-3. Open `index.html` in a modern browser.
-
-You can also serve the folder with any simple static HTTP server. The game is built with HTML, CSS, and vanilla JavaScript using the Canvas API.
-
-## Project Structure
-
-```text
-Neon-Drift/
-├── index.html    # Game, interface, styles, and gameplay code
-├── favicon.svg   # Browser tab and site icon
-└── README.md     # Project documentation
-```
-
-## Built With
-
-- HTML5
-- CSS
-- Vanilla JavaScript
-- HTML Canvas API
-- Browser Local Storage
-- Web Audio API
-
-## Contributing
-
-Suggestions, bug reports, and improvements are welcome.
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Make and test your changes in a modern desktop and mobile browser.
-4. Open a pull request describing what changed.
-
-Please keep the game lightweight, responsive, and playable without a framework or build system.
-
-## License
-
 No license file is currently included in this repository. Unless a license is added, the code remains under the repository owner's default copyright; ask before redistributing or reusing it.
 
 ---
