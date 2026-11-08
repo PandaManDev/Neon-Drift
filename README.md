@@ -4,7 +4,7 @@ A fast-paced, neon-themed arcade survival game that runs right in your browser. 
 
 **Play now:** https://pandamandev.github.io/Neon-Drift/
 
-![Neon Drift](https://raw.githubusercontent.com/PandaManDev/Neon-Drift/main/favicon.svg)
+
 
 ## Features
 
