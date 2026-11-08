@@ -169,7 +169,7 @@ canvas{height:min(72vh,740px);min-height:500px}
 </section>
 <section class="layout">
  <div>
-  <div class="stage"><canvas id="game" aria-label="Neon Drift play area"></canvas><div class="toast" id="toast"></div>
+  <div class="stage"><button class="game-menu-btn" id="gameMenuBtn" type="button">☰ MENU</button><canvas id="game" aria-label="Neon Drift play area"></canvas><div class="toast" id="toast"></div>
    <div class="overlay" id="overlay"><div class="dialog"><div class="eyebrow">THE CITY NEVER SLEEPS</div><h1>NEON<br><em>DRIFT</em></h1><p id="message">Dodge the hazards, grab energy cores, and stay alive as the city speeds up. How long can you last?</p>
     <div class="menu-row"><label for="difficulty">DIFFICULTY</label><select id="difficulty"><option value="chill">Chill</option><option value="normal" selected>Normal</option><option value="chaos">Chaos</option></select></div>
     <button class="primary" id="start">START RUN</button><div class="hint">Steer: A / D or ← / → · Dash: SHIFT · Pause: SPACE</div>
@@ -298,6 +298,7 @@ lobbyDifficulty.addEventListener('change',()=>{$('difficulty').value=lobbyDiffic
 $('lobbyHow').addEventListener('click',()=>$('lobbyHowModal').hidden=false);
 $('lobbyHowClose').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
 $('lobbyHowReady').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
+$('gameMenuBtn').addEventListener('click',returnToLobby);
 $('lobbyFullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){}});
 
 startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
@@ -307,7 +308,7 @@ function syncFullscreenButton(){const active=document.fullscreenElement===siteAp
 fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(siteApp.requestFullscreen){await siteApp.requestFullscreen()}else if(siteApp.webkitRequestFullscreen){siteApp.webkitRequestFullscreen()}else{showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')}}catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
 document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize()});document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
-resize();bestEl.textContent=fmt(best);renderAchievements();renderCareerStats();renderDaily();initNotifications();
+resize();bestEl.textContent=fmt(best);$('lobbyBest').textContent=fmt(best);renderAchievements();renderCareerStats();renderDaily();initNotifications();
 })();
 </script>
 
@@ -327,6 +328,11 @@ body.game-active .overlay .dialog{padding:28px;border:1px solid #405b7d;border-r
 @media(max-width:760px){.game-lobby{padding:14px 17px 16px}.lobby-brand{font-size:12px}.brand-mark{width:33px;height:33px}.lobby-online{font-size:7px;letter-spacing:.08em}.lobby-content{grid-template-columns:1fr;gap:0;padding:16px 0}.lobby-copy h1{font-size:clamp(64px,19vw,100px);margin:15px 0}.lobby-description{font-size:12px;max-width:340px}.lobby-actions{margin-top:20px}.lobby-play{min-width:0;flex:1;padding:15px}.lobby-secondary{padding:14px 12px}.lobby-preview{min-height:160px;max-height:180px}.preview-core{width:88px;height:88px;border-radius:24px;font-size:48px}.preview-orbit{width:190px}.orbit-two{width:140px}.preview-label{bottom:5px;font-size:7px}.lobby-footer{display:grid;grid-template-columns:1fr 1fr;gap:7px}.lobby-card{min-width:0;padding:9px 11px}.lobby-card strong{font-size:18px}.lobby-tip{display:none}.lobby-version{grid-column:1/-1;margin:2px 0 0;justify-self:end;font-size:8px}body.game-active .dashboard{top:7px;width:calc(100% - 16px);gap:4px}body.game-active .stat{padding:6px 4px}body.game-active .stat small{font-size:6px}body.game-active .stat strong{font-size:13px}body.game-active .stage:before{top:55px;left:10px;font-size:7px}body.game-active .stage:after{top:55px;right:10px;font-size:7px}body.game-active .mobile-controls{bottom:calc(10px + env(safe-area-inset-bottom))}body.game-active .mobile-controls button{height:48px;width:min(25vw,100px)}}
 @media(max-height:650px) and (min-width:761px){.game-lobby{padding-top:12px;padding-bottom:12px}.lobby-content{padding:8px 0}.lobby-preview{min-height:230px}.lobby-copy h1{font-size:75px;margin:12px 0}.lobby-footer{padding-top:9px}.lobby-card{padding:8px 12px}}
 @media(prefers-reduced-motion:reduce){.preview-core{transform:none}}
+</style>
+<style id="neon-game-menu-button">
+.game-menu-btn{display:none;position:absolute;z-index:7;top:14px;right:14px;padding:9px 13px;border:1px solid #496786;border-radius:10px;background:#0b1728dd;color:#d9f7ff;box-shadow:0 5px 18px #0006;font-size:9px;letter-spacing:.12em}
+body.game-active .game-menu-btn{display:block}
+@media(max-width:760px){body.game-active .game-menu-btn{top:48px;right:9px;padding:7px 10px}}
 </style>
 </body>
 </html>
