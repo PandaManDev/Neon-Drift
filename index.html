@@ -275,9 +275,9 @@ canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('p
 function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 const fullscreenBtn=$('fullscreenBtn');
-const gameStage=document.querySelector('.stage');
-function syncFullscreenButton(){const active=document.fullscreenElement===gameStage;fullscreenBtn.innerHTML=active?'⛶ <span>EXIT GAME FULLSCREEN</span>':'⛶ <span>GAME FULLSCREEN</span>';fullscreenBtn.setAttribute('aria-label',active?'Exit game fullscreen':'Enter game fullscreen');fullscreenBtn.title=active?'Exit game fullscreen':'Enter game fullscreen'}
-fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(gameStage.requestFullscreen){await gameStage.requestFullscreen()}else if(gameStage.webkitRequestFullscreen){gameStage.webkitRequestFullscreen()}else{showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')}}catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
+const siteApp=document.querySelector('.app');
+function syncFullscreenButton(){const active=document.fullscreenElement===siteApp;fullscreenBtn.innerHTML=active?'⛶ <span>EXIT FULLSCREEN</span>':'⛶ <span>FULLSCREEN</span>';fullscreenBtn.setAttribute('aria-label',active?'Exit website fullscreen':'Enter website fullscreen');fullscreenBtn.title=active?'Exit website fullscreen':'Enter website fullscreen'}
+fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(siteApp.requestFullscreen){await siteApp.requestFullscreen()}else if(siteApp.webkitRequestFullscreen){siteApp.webkitRequestFullscreen()}else{showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')}}catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
 document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize()});document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
 resize();bestEl.textContent=fmt(best);renderAchievements();renderCareerStats();renderDaily();initNotifications();
@@ -409,21 +409,45 @@ button{background:linear-gradient(110deg,#8540d5,#237dbd);border-color:#6a68a8;b
 .fullscreen-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 12px;border:1px solid #3d6684;border-radius:12px;background:linear-gradient(145deg,#14253a,#101629);color:#bfefff;box-shadow:0 0 18px #36e8ff16;font-size:15px}
 .fullscreen-btn span{font-size:9px;font-weight:900;letter-spacing:.12em}
 .fullscreen-btn:hover{border-color:#55dfff;box-shadow:0 0 22px #36e8ff30}
-.stage:fullscreen{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;min-width:100vw;min-height:100vh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;display:block;overflow:hidden;background:#050711;box-shadow:none;z-index:2147483647}
-.stage:fullscreen canvas{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;touch-action:none}
-.stage:fullscreen .toast{z-index:5;top:calc(18px + env(safe-area-inset-top))}
-.stage:fullscreen .overlay{position:absolute;inset:0;z-index:4;padding:clamp(16px,4vw,48px);background:#080513c9}
-.stage:fullscreen .dialog{width:min(520px,100%);max-height:100%;overflow:auto}
-.stage:fullscreen .mobile-controls{position:absolute;z-index:6;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));display:flex;justify-content:center;padding:0;pointer-events:none}
-.stage:fullscreen .mobile-controls button{pointer-events:auto;backdrop-filter:blur(12px);background:#211432dd}
-.stage:fullscreen:before{top:calc(18px + env(safe-area-inset-top));left:22px}
-.stage:fullscreen:after{top:calc(17px + env(safe-area-inset-top));right:22px}
+/* Full website fullscreen: retain the complete site UI and fit the game into the remaining space. */
+.app:fullscreen{box-sizing:border-box;display:flex;flex-direction:column;width:100vw;height:100vh;height:100dvh;max-width:none;min-height:0;margin:0;padding:clamp(10px,1.5vw,22px);gap:clamp(7px,1vh,14px);overflow:hidden;background:radial-gradient(ellipse at 50% -20%,#40206b 0,transparent 48%),linear-gradient(145deg,#050711,#090b18 58%,#070e19)}
+.app:fullscreen .top,.app:fullscreen .command-intro,.app:fullscreen .dashboard,.app:fullscreen .footer{flex-shrink:0}
+.app:fullscreen .layout{flex:1;min-height:0;grid-template-columns:minmax(0,1fr) minmax(220px,25%);gap:clamp(8px,1vw,16px)}
+.app:fullscreen .layout>div{display:flex;flex-direction:column;min-width:0;min-height:0}
+.app:fullscreen .stage{position:relative;flex:1;width:100%;height:100%;min-height:0;max-height:none;border-radius:14px;overflow:hidden}
+.app:fullscreen .stage canvas{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;touch-action:none}
+.app:fullscreen .side{min-height:0;max-height:100%;overflow:auto}
+.app:fullscreen .mobile-controls{position:absolute;z-index:6;left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom));display:flex;justify-content:center;padding:0;pointer-events:none}
+.app:fullscreen .mobile-controls button{pointer-events:auto;backdrop-filter:blur(12px);background:#211432dd}
+.app:fullscreen .overlay{z-index:4}
 @media(max-width:760px){
  .notify-wrap{gap:5px}
  .fullscreen-btn{min-height:38px;padding:8px 9px}
  .fullscreen-btn span{font-size:8px}
- .stage:fullscreen:before{top:12px;left:13px}
- .stage:fullscreen:after{top:11px;right:13px}
+ .app:fullscreen{padding:9px;gap:7px}
+ .app:fullscreen .top{min-height:38px;padding-bottom:3px}
+ .app:fullscreen .command-intro{min-height:0;padding:9px 12px}
+ .app:fullscreen .intro-copy h1{font-size:23px;margin:3px 0}
+ .app:fullscreen .intro-copy p{font-size:9px;margin:4px 0}
+ .app:fullscreen .intro-status{padding:6px 8px;margin:0}
+ .app:fullscreen .dashboard{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+ .app:fullscreen .stat{min-height:0;padding:6px 5px}
+ .app:fullscreen .stat small{font-size:7px}
+ .app:fullscreen .stat strong{font-size:14px}
+ .app:fullscreen .layout{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+ .app:fullscreen .side{display:none}
+ .app:fullscreen .stage{border-radius:10px}
+ .app:fullscreen .mobile-controls{bottom:calc(9px + env(safe-area-inset-bottom))}
+ .app:fullscreen .mobile-controls button{width:min(24vw,100px);height:44px}
+ .app:fullscreen .footer{font-size:8px;padding-top:0}
 }
-@media(max-width:430px){.fullscreen-btn span{display:none}.fullscreen-btn{width:38px;padding:7px}}
+@media(max-width:430px){
+ .fullscreen-btn span{display:none}
+ .fullscreen-btn{width:38px;padding:7px}
+ .app:fullscreen .command-intro{display:flex}
+ .app:fullscreen .intro-copy h1{font-size:20px}
+ .app:fullscreen .intro-status{display:inline-flex}
+ .app:fullscreen .dashboard{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .app:fullscreen .stat strong{font-size:12px}
+}
 </style>
