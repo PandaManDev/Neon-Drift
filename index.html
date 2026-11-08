@@ -144,6 +144,10 @@ canvas{height:min(72vh,740px);min-height:500px}
 <body>
 <main class="app">
 <header class="top"><div class="logo">NEON <span>DRIFT</span></div><div class="notify-wrap"><div class="tag">ARCADE SURVIVAL // 01</div><button class="notify-bell" id="notifyBell" aria-label="Open notifications" aria-expanded="false">♢ <span class="notify-count" id="notifyCount" hidden>0</span></button><section class="notify-panel" id="notifyPanel" aria-label="Daily notifications"><div class="notify-head"><strong>DAILY SIGNALS</strong><button id="markNotificationsRead">MARK READ</button></div><div id="notificationList"></div></section></div></header>
+<section class="command-intro" aria-label="Game overview">
+ <div class="intro-copy"><span class="intro-kicker">ARCADE // SURVIVAL PROTOCOL</span><h1>Own the <em>neon.</em></h1><p>Stay sharp, dodge the grid, and chase your next high score.</p></div>
+ <div class="intro-status"><span class="status-pulse"></span><div><b>SECTOR ONLINE</b><small>READY FOR DEPLOYMENT</small></div></div>
+</section>
 <section class="dashboard" aria-label="Game statistics">
  <div class="stat"><small>Score</small><strong id="score">00000</strong></div><div class="stat"><small>Best</small><strong id="best">00000</strong></div><div class="stat"><small>Level</small><strong id="level">01</strong></div><div class="stat"><small>Shield</small><strong id="shield">READY</strong></div><div class="stat"><small>Combo</small><strong id="combo">x1</strong></div>
 </section>
@@ -234,3 +238,25 @@ resize();bestEl.textContent=fmt(best);initNotifications();
 </script>
 </body>
 </html>
+
+<style>
+/* Neon Drift command-center layout refinement */
+.command-intro{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:clamp(17px,2.3vw,28px) clamp(18px,2.7vw,34px);border:1px solid #50336c;border-radius:20px;background:radial-gradient(ellipse at 82% 15%,#253d6833,transparent 43%),linear-gradient(115deg,#1b1030 0%,#101323 58%,#0c1724 100%);box-shadow:0 16px 45px #0005,inset 0 1px #ffffff0a;position:relative;overflow:hidden}
+.command-intro:after{content:"";position:absolute;width:210px;height:210px;right:20%;top:-155px;border:1px solid #a855f733;border-radius:50%;box-shadow:0 0 0 22px #a855f70a,0 0 0 44px #39e6ff08;pointer-events:none}
+.intro-copy{position:relative;z-index:1}.intro-kicker{font-size:9px;letter-spacing:.23em;font-weight:900;color:#bda0e7}.intro-copy h1{font-size:clamp(25px,3.5vw,42px);line-height:1.05;letter-spacing:-.045em;margin:8px 0 5px}.intro-copy h1 em{font-style:normal;color:var(--cyan);text-shadow:0 0 22px #39e6ff55}.intro-copy p{margin:0;color:#aaa2c5;font-size:12px;letter-spacing:.015em}
+.intro-status{position:relative;z-index:1;display:flex;align-items:center;gap:11px;padding:12px 15px;border:1px solid #3d5d61;border-radius:13px;background:#091b20a8;white-space:nowrap}
+.status-pulse{width:9px;height:9px;border-radius:50%;background:#63f5bd;box-shadow:0 0 14px #63f5bd;animation:signalPulse 1.8s ease-in-out infinite}
+.intro-status b,.intro-status small{display:block}.intro-status b{font-size:10px;letter-spacing:.13em;color:#c9ffeb}.intro-status small{font-size:8px;letter-spacing:.12em;color:#7fae9e;margin-top:4px}
+@keyframes signalPulse{50%{opacity:.45;box-shadow:0 0 4px #63f5bd}}
+.dashboard{gap:12px}.stat{transition:transform .18s,border-color .18s,box-shadow .18s}.stat:hover{transform:translateY(-2px);border-color:#8054a8;box-shadow:0 13px 30px #0005,0 0 20px #a855f718}
+.layout{align-items:start}.stage{isolation:isolate;background:radial-gradient(ellipse at 50% 50%,#11152a 0%,#070610 72%);min-height:500px}.stage canvas{position:relative;z-index:0}
+.side{position:sticky;top:16px;min-height:500px}.side h2{display:flex;align-items:center;gap:8px}.side h2:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 9px var(--cyan)}
+.side .legend div{padding:7px 8px;border:1px solid #ffffff08;border-radius:9px;background:#ffffff04}
+.actions button{transition:background .18s,border-color .18s,transform .18s}.actions button:hover{background:#302047;border-color:#9b69c4}
+.notify-bell{min-width:43px;min-height:40px}.top{position:relative;z-index:10}
+@media(min-width:1000px){.app{width:min(1520px,100%);gap:17px}.command-intro{min-height:145px}.layout{grid-template-columns:minmax(0,1fr) 300px;gap:17px}.stage{min-height:620px}.side{min-height:620px}}
+@media(min-width:761px) and (max-width:999px){.command-intro{min-height:120px}.layout{grid-template-columns:minmax(0,1fr) 235px}.stage,.side{min-height:500px}.side{position:static}}
+@media(max-width:760px){.command-intro{padding:17px 16px;border-radius:15px;align-items:flex-start}.intro-copy h1{font-size:28px}.intro-copy p{max-width:230px;font-size:11px;line-height:1.5}.intro-status{padding:9px 10px;gap:8px}.intro-status b{font-size:8px}.intro-status small{font-size:7px}.status-pulse{width:7px;height:7px}.dashboard{gap:7px}.layout{align-items:stretch}.stage{min-height:0}.side{position:static}}
+@media(max-width:430px){.command-intro{display:block}.intro-status{display:inline-flex;margin-top:13px}.intro-copy h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.status-pulse{animation:none}.stat,.actions button{transition:none}}
+</style>
