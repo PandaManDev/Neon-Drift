@@ -117,11 +117,29 @@ canvas{height:min(72vh,740px);min-height:500px}
   .side{padding:16px;gap:13px}
 }
 
+
+/* Daily in-site notification center */
+.notify-wrap{position:relative;display:flex;align-items:center;gap:8px}
+.notify-bell{position:relative;padding:9px 12px;background:#171027;border:1px solid #65408b;box-shadow:none;border-radius:12px}
+.notify-count{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 4px;display:grid;place-items:center;border-radius:99px;background:#ff4fd8;color:#170b20;font-size:10px;font-weight:1000;border:2px solid #080611}
+.notify-panel{position:absolute;z-index:8;right:0;top:calc(100% + 12px);width:min(340px,calc(100vw - 24px));max-height:390px;overflow:auto;padding:15px;background:#100b1c;border:1px solid #69458c;border-radius:16px;box-shadow:0 18px 55px #000b;display:none}
+.notify-panel.open{display:block}
+.notify-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.notify-head strong{font-size:11px;letter-spacing:.15em;color:#e7d8ff}
+.notify-head button{font-size:10px;padding:7px 9px;background:#211432;box-shadow:none}
+.notify-item{padding:11px 10px;margin-top:8px;border:1px solid #39264d;border-radius:11px;background:#171027}
+.notify-item.unread{border-color:#76509a;background:linear-gradient(110deg,#241337,#121425)}
+.notify-item b{display:block;font-size:12px;color:#fff;margin-bottom:5px}
+.notify-item p{margin:0;color:#bcb0d0;font-size:11px;line-height:1.5}
+.notify-item time{display:block;margin-top:7px;color:#827696;font-size:9px;letter-spacing:.08em}
+.notify-empty{padding:18px 8px;text-align:center;color:#8f86a5;font-size:12px}
+@media(max-width:760px){.notify-panel{right:-2px;top:calc(100% + 9px)}}
+
 </style>
 </head>
 <body>
 <main class="app">
-<header class="top"><div class="logo">NEON <span>DRIFT</span></div><div class="tag">ARCADE SURVIVAL // 01</div></header>
+<header class="top"><div class="logo">NEON <span>DRIFT</span></div><div class="notify-wrap"><div class="tag">ARCADE SURVIVAL // 01</div><button class="notify-bell" id="notifyBell" aria-label="Open notifications" aria-expanded="false">♢ <span class="notify-count" id="notifyCount" hidden>0</span></button><section class="notify-panel" id="notifyPanel" aria-label="Daily notifications"><div class="notify-head"><strong>DAILY SIGNALS</strong><button id="markNotificationsRead">MARK READ</button></div><div id="notificationList"></div></section></div></header>
 <section class="dashboard" aria-label="Game statistics">
  <div class="stat"><small>Score</small><strong id="score">00000</strong></div><div class="stat"><small>Best</small><strong id="best">00000</strong></div><div class="stat"><small>Level</small><strong id="level">01</strong></div><div class="stat"><small>Shield</small><strong id="shield">READY</strong></div><div class="stat"><small>Combo</small><strong id="combo">x1</strong></div>
 </section>
@@ -151,6 +169,26 @@ let score=0,best=0,level=1,running=false,paused=false,sound=true,audio=null,last
 let combo=1,comboTimer=0,coresCollected=0,runTime=0,dashTime=0,dashCooldown=0,coreObjectiveNotified=false,survivalObjectiveNotified=false;
 const modes={chill:{speed:.78,spawn:1.3},normal:{speed:1,spawn:1},chaos:{speed:1.35,spawn:.78}};
 try{best=Number(localStorage.getItem(STORE)||localStorage.getItem('neonDriftBest')||0)||0}catch(e){}bestEl.textContent=fmt(best);
+
+/* Daily notification center — stored locally in this browser */
+const NOTIFY_KEY='neonDriftNotificationsV1';
+const dailySignals=[
+ {title:'Daily drift challenge',body:'Jump into a fresh run today. Can you beat your personal best?'},
+ {title:'Core hunter signal',body:'Energy cores build your combo. Chain pickups before the timer fades.'},
+ {title:'Phase dash reminder',body:'Save your phase dash for a tight escape. Timing is everything.'},
+ {title:'Survival check-in',body:'The city gets faster as your score climbs. Stay sharp and keep moving.'},
+ {title:'New run, new record',body:'Your next high score could be one run away. Hit the arena and give it a shot.'},
+ {title:'Pilot tip',body:'A quick sideways move can be safer than waiting for a hazard to pass.'},
+ {title:'Neon signal received',body:'Your daily check-in is ready. Keep the streak alive with another run.'}
+];
+function localDay(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function loadNotifications(){try{return JSON.parse(localStorage.getItem(NOTIFY_KEY)||'[]')}catch(e){return []}}
+function saveNotifications(items){try{localStorage.setItem(NOTIFY_KEY,JSON.stringify(items.slice(0,30)))}catch(e){}}
+function ensureDailyNotification(){const items=loadNotifications(),today=localDay();if(!items.some(n=>n.day===today)){const msg=dailySignals[Math.floor(Date.now()/86400000)%dailySignals.length];items.unshift({id:today,title:msg.title,body:msg.body,day:today,read:false});saveNotifications(items)}}
+function renderNotifications(){const items=loadNotifications(),list=$('notificationList'),unread=items.filter(n=>!n.read).length,count=$('notifyCount');count.textContent=unread>9?'9+':String(unread);count.hidden=!unread;if(!items.length){list.innerHTML='<div class="notify-empty">No signals yet. Check back tomorrow.</div>';return}list.innerHTML=items.map(n=>'<article class="notify-item '+(n.read?'':'unread')+'"><b>'+escapeNotify(n.title)+'</b><p>'+escapeNotify(n.body)+'</p><time>'+escapeNotify(n.day)+'</time></article>').join('')}
+function escapeNotify(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function initNotifications(){ensureDailyNotification();renderNotifications();$('notifyBell').addEventListener('click',()=>{const panel=$('notifyPanel'),open=!panel.classList.contains('open');panel.classList.toggle('open',open);$('notifyBell').setAttribute('aria-expanded',String(open))});$('markNotificationsRead').addEventListener('click',()=>{const items=loadNotifications().map(n=>({...n,read:true}));saveNotifications(items);renderNotifications()});document.addEventListener('click',e=>{if(!e.target.closest('.notify-wrap')){$('notifyPanel').classList.remove('open');$('notifyBell').setAttribute('aria-expanded','false')}})}
+
 function fmt(n){return String(Math.floor(n)).padStart(5,'0')}
 function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;W=r.width;H=r.height;dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.max(45,Math.floor(W*H/6500))},()=>({x:Math.random()*W,y:Math.random()*H,z:.35+Math.random()*1.5}));if(player){player.x=clamp(player.x,18,W-18);player.y=H-58}else resetPlayer();drawIdle()}
 function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
@@ -187,7 +225,7 @@ canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('p
 function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
-resize();bestEl.textContent=fmt(best);
+resize();bestEl.textContent=fmt(best);initNotifications();
 })();
 </script>
 </body>
