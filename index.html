@@ -161,7 +161,7 @@ canvas{height:min(72vh,740px);min-height:500px}
   </div>
   <div class="mobile-controls"><button id="left" aria-label="Move left">←</button><button id="dashTouch" aria-label="Phase dash">⚡</button><button id="right" aria-label="Move right">→</button></div>
  </div>
- <aside class="panel side"><h2>Mission briefing</h2><p>Survive the endless hazard stream. The city accelerates as your score climbs. Chain energy cores for bigger multipliers, and dash through danger when the timing is right.</p><div class="rule"></div><h2>Run objectives</h2><p id="objectives">Collect 10 energy cores · Survive 60 seconds</p><p id="dashStatus">Dash: READY · <span class="key">SHIFT</span></p><div class="rule"></div><h2>Controls</h2><p><span class="key">A</span> <span class="key">D</span> or <span class="key">←</span> <span class="key">→</span> to steer</p><p><span class="key">SPACE</span> to pause</p><p>Move your pointer or finger across the arena to steer smoothly.</p><div class="rule"></div><h2>Signal types</h2><div class="legend"><div><i class="dot" style="background:#ff4fd8;color:#ff4fd8"></i> Hazard — avoid</div><div><i class="dot" style="background:#ffe66d;color:#ffe66d"></i> Energy core — +150</div><div><i class="dot" style="background:#39e6ff;color:#39e6ff"></i> Your ship</div><div><i class="dot" style="background:#a855f7;color:#a855f7"></i> Shield pickup — one hit</div></div><div class="rule"></div><div class="actions"><button id="pause">PAUSE</button><button id="sound">SOUND: ON</button></div></aside>
+ <aside class="panel side"><h2>Mission briefing</h2><p>Survive the endless hazard stream. The city accelerates as your score climbs. Chain energy cores for bigger multipliers, and dash through danger when the timing is right.</p><div class="rule"></div><h2>Run objectives</h2><p id="objectives">Collect 10 energy cores · Survive 60 seconds</p><p id="dashStatus">Dash: READY · <span class="key">SHIFT</span></p><div class="rule"></div><h2>Controls</h2><p><span class="key">A</span> <span class="key">D</span> or <span class="key">←</span> <span class="key">→</span> to steer</p><p><span class="key">SPACE</span> to pause</p><p>Move your pointer or finger across the arena to steer smoothly.</p><div class="rule"></div><h2>Achievements</h2><div class="achievement-list" id="achievementList" aria-live="polite"></div><div class="rule"></div><h2>Signal types</h2><div class="legend"><div><i class="dot" style="background:#ff4fd8;color:#ff4fd8"></i> Hazard — avoid</div><div><i class="dot" style="background:#ffe66d;color:#ffe66d"></i> Energy core — +150</div><div><i class="dot" style="background:#39e6ff;color:#39e6ff"></i> Your ship</div><div><i class="dot" style="background:#a855f7;color:#a855f7"></i> Shield pickup — one hit</div></div><div class="rule"></div><div class="actions"><button id="pause">PAUSE</button><button id="sound">SOUND: ON</button></div></aside>
 </section>
 <div class="footer"><span>NEON DRIFT · Endless arcade</span><span>Personal best saves on this device</span></div>
 </main>
@@ -180,6 +180,15 @@ try{best=Number(localStorage.getItem(STORE)||localStorage.getItem('neonDriftBest
 
 /* Daily notification center — stored locally in this browser */
 const NOTIFY_KEY='neonDriftNotificationsV1';
+const ACHIEVEMENT_KEY='neonDriftAchievementsV1';
+const ACHIEVEMENTS=[
+ {id:'first-run',name:'First Flight',desc:'Complete your first run'},
+ {id:'score-1000',name:'Four Digits',desc:'Reach 1,000 points in one run'},
+ {id:'core-collector',name:'Core Collector',desc:'Collect 10 energy cores in one run'},
+ {id:'one-minute',name:'One-Minute Pilot',desc:'Survive for 60 seconds'},
+ {id:'dash-master',name:'Phase Runner',desc:'Use your phase dash for the first time'}
+];
+let unlockedAchievements=loadAchievements();
 const dailySignals=[
  {title:'Daily drift challenge',body:'Jump into a fresh run today. Can you beat your personal best?'},
  {title:'Core hunter signal',body:'Energy cores build your combo. Chain pickups before the timer fades.'},
@@ -189,6 +198,17 @@ const dailySignals=[
  {title:'Pilot tip',body:'A quick sideways move can be safer than waiting for a hazard to pass.'},
  {title:'Neon signal received',body:'Your daily check-in is ready. Keep the streak alive with another run.'}
 ];
+function loadAchievements(){try{return JSON.parse(localStorage.getItem(ACHIEVEMENT_KEY)||'[]')}catch(e){return []}}
+function saveAchievements(){try{localStorage.setItem(ACHIEVEMENT_KEY,JSON.stringify(unlockedAchievements))}catch(e){}}
+function renderAchievements(){
+ const host=$('achievementList');if(!host)return;
+ host.innerHTML=ACHIEVEMENTS.map(a=>{const done=unlockedAchievements.includes(a.id);return '<div class="achievement '+(done?'unlocked':'locked')+'"><span class="achievement-icon">'+(done?'✦':'◇')+'</span><span><b>'+a.name+'</b><small>'+a.desc+'</small></span><span class="achievement-state">'+(done?'UNLOCKED':'LOCKED')+'</span></div>'}).join('');
+}
+function unlockAchievement(id){
+ if(unlockedAchievements.includes(id))return;
+ const item=ACHIEVEMENTS.find(a=>a.id===id);if(!item)return;
+ unlockedAchievements.push(id);saveAchievements();renderAchievements();showToast('ACHIEVEMENT UNLOCKED · '+item.name.toUpperCase());beep(980,.12,'triangle');
+}
 function localDay(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function loadNotifications(){try{return JSON.parse(localStorage.getItem(NOTIFY_KEY)||'[]')}catch(e){return []}}
 function saveNotifications(items){try{localStorage.setItem(NOTIFY_KEY,JSON.stringify(items.slice(0,30)))}catch(e){}}
@@ -204,16 +224,16 @@ function resetPlayer(){player={x:W/2,y:H-58,w:25,h:31,v:0,tilt:0}}
 function beep(freq=440,duration=.07,type='sine'){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}}
 function showToast(t){toast.textContent=t;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1100)}
 function reset(){score=0;level=1;spawn=0;coreSpawn=35;shieldSpawn=260;obstacles=[];cores=[];shields=[];particles=[];shieldHits=0;combo=1;comboTimer=0;coresCollected=0;runTime=0;dashTime=0;dashCooldown=0;coreObjectiveNotified=false;survivalObjectiveNotified=false;resetPlayer();updateHud()}
-function start(){cancelAnimationFrame(raf);difficulty=$('difficulty').value;reset();running=true;paused=false;overlay.classList.add('hidden');$('pause').textContent='PAUSE';last=performance.now();beep(620,.12);raf=requestAnimationFrame(loop)}
+function start(){cancelAnimationFrame(raf);difficulty=$('difficulty').value;reset();unlockAchievement('first-run');running=true;paused=false;overlay.classList.add('hidden');$('pause').textContent='PAUSE';last=performance.now();beep(620,.12);raf=requestAnimationFrame(loop)}
 function finish(){running=false;paused=false;best=Math.max(best,Math.floor(score));try{localStorage.setItem(STORE,String(best))}catch(e){}bestEl.textContent=fmt(best);message.textContent='RUN OVER — '+Math.floor(score).toLocaleString()+' points. Best score: '+best.toLocaleString()+'. Ready for another run?';startBtn.textContent='PLAY AGAIN';overlay.classList.remove('hidden');$('pause').textContent='PAUSE';beep(115,.32,'sawtooth')}
 function pause(){if(!running)return;paused=!paused;$('pause').textContent=paused?'RESUME':'PAUSE';if(paused){showToast('PAUSED')}else{last=performance.now();raf=requestAnimationFrame(loop)}}
 function burst(x,y,color,count=12){for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=1+Math.random()*4;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:22+Math.random()*22,max:44,color,size:1+Math.random()*2})}}
 function hit(a,b){return Math.abs(a.x-b.x)<(a.w+b.w)/2&&Math.abs(a.y-b.y)<(a.h+b.h)/2}
 function updateHud(){scoreEl.textContent=fmt(score);levelEl.textContent=String(level).padStart(2,'0');shieldEl.textContent=shieldHits?'ACTIVE':'READY';$('combo').textContent='x'+combo;$('dashStatus').innerHTML=dashCooldown<=0?'Dash: READY · <span class="key">SHIFT</span>':'Dash: '+dashCooldown.toFixed(1)+'s · <span class="key">SHIFT</span>';$('objectives').textContent='Cores '+Math.min(coresCollected,10)+'/10 · Survival '+Math.min(Math.floor(runTime),60)+'/60s'}
-function dash(){if(!running||paused||dashCooldown>0)return;dashTime=.34;dashCooldown=4.2;burst(player.x,player.y,'#39e6ff',12);beep(720,.08,'triangle');showToast('PHASE DASH')}
+function dash(){if(!running||paused||dashCooldown>0)return;unlockAchievement('dash-master');dashTime=.34;dashCooldown=4.2;burst(player.x,player.y,'#39e6ff',12);beep(720,.08,'triangle');showToast('PHASE DASH')}
 function drawShip(){ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.tilt);ctx.shadowBlur=dashTime>0?34:22;ctx.shadowColor=dashTime>0?'#ffffff':'#39e6ff';ctx.fillStyle='#39e6ff';ctx.beginPath();ctx.moveTo(0,-19);ctx.lineTo(13,13);ctx.lineTo(0,8);ctx.lineTo(-13,13);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-3,3.5,5,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=15;ctx.shadowColor='#ff9b45';ctx.fillStyle='#ff9b45';ctx.beginPath();ctx.moveTo(-4,12);ctx.lineTo(0,22+Math.random()*5);ctx.lineTo(4,12);ctx.fill();if(shieldHits){ctx.strokeStyle='#b76bff';ctx.lineWidth=2;ctx.shadowColor='#b76bff';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.stroke()}ctx.restore()}
 function background(dt){ctx.fillStyle='#080612';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#9b67c2';ctx.globalAlpha=.09;ctx.lineWidth=1;const offset=(score*.4)%42;for(let y=-42+offset;y<H;y+=42){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}for(let x=0;x<W;x+=42){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}ctx.globalAlpha=1;for(const s of stars){s.y+=s.z*dt*(1+level*.03);if(s.y>H){s.y=0;s.x=Math.random()*W}ctx.fillStyle='rgba(190,165,255,'+(.18+s.z*.28)+')';ctx.fillRect(s.x,s.y,1.5*s.z,1.5*s.z)}}
-function loop(now){if(!running||paused)return;const dt=Math.min(Math.max((now-last)/16.667,0),2.2);last=now;const mode=modes[difficulty];score+=dt*(1+level*.12);level=1+Math.floor(score/850);const speed=(3.05+level*.31)*mode.speed*dt;runTime+=dt/60;dashTime=Math.max(0,dashTime-dt/60);dashCooldown=Math.max(0,dashCooldown-dt/60);comboTimer=Math.max(0,comboTimer-dt/60);if(comboTimer<=0&&combo>1){combo=1;updateHud()}if(runTime>=60&&!survivalObjectiveNotified){survivalObjectiveNotified=true;showToast('OBJECTIVE COMPLETE · SURVIVOR')}background(dt);
+function loop(now){if(!running||paused)return;const dt=Math.min(Math.max((now-last)/16.667,0),2.2);last=now;const mode=modes[difficulty];score+=dt*(1+level*.12);level=1+Math.floor(score/850);const speed=(3.05+level*.31)*mode.speed*dt;runTime+=dt/60;dashTime=Math.max(0,dashTime-dt/60);dashCooldown=Math.max(0,dashCooldown-dt/60);comboTimer=Math.max(0,comboTimer-dt/60);if(comboTimer<=0&&combo>1){combo=1;updateHud()}if(runTime>=60&&!survivalObjectiveNotified){survivalObjectiveNotified=true;unlockAchievement('one-minute');showToast('OBJECTIVE COMPLETE · SURVIVOR')}if(score>=1000)unlockAchievement('score-1000');if(coresCollected>=10)unlockAchievement('core-collector');background(dt);
 if(keys.left)player.v-=.82*dt;if(keys.right)player.v+=.82*dt;if(pointer!==null)player.x+=(pointer-player.x)*Math.min(1,.25*dt);player.v*=Math.pow(.82,dt);player.x+=player.v*dt;player.x=clamp(player.x,17,W-17);player.tilt=clamp(player.v*.035,-.28,.28);
 spawn-=dt;if(spawn<=0){const w=23+Math.random()*34;obstacles.push({x:22+Math.random()*Math.max(1,W-44),y:-35,w,h:17+Math.random()*17,rot:(Math.random()-.5)*.3,spin:(Math.random()-.5)*.012});spawn=Math.max(12,37-level*1.35)*mode.spawn}
 coreSpawn-=dt;if(coreSpawn<=0){cores.push({x:20+Math.random()*Math.max(1,W-40),y:-18,r:7+Math.random()*2,phase:Math.random()*7});coreSpawn=95+Math.random()*65}
@@ -233,7 +253,7 @@ canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('p
 function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
-resize();bestEl.textContent=fmt(best);initNotifications();
+resize();bestEl.textContent=fmt(best);renderAchievements();initNotifications();
 })();
 </script>
 </body>
@@ -321,4 +341,18 @@ button{background:linear-gradient(110deg,#8540d5,#237dbd);border-color:#6a68a8;b
 @media(max-width:760px){body{padding:10px;background:radial-gradient(ellipse at 50% -10%,#39205a,transparent 50%),#050711}.app{gap:12px}.top{min-height:54px;padding-bottom:10px}.logo{font-size:23px;letter-spacing:.14em}.tag{font-size:8px;padding:7px 9px}.command-intro{min-height:0;padding:19px 17px;border-radius:15px;display:flex;align-items:center}.intro-copy h1{font-size:30px}.intro-copy p{font-size:11px;max-width:230px}.intro-status{padding:9px 10px}.intro-status b{font-size:8px}.intro-status small{font-size:7px}.dashboard{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.stat{min-height:68px;padding:10px 9px 9px 13px;border-radius:11px}.stat small{font-size:8px}.stat strong{font-size:19px}.layout{grid-template-columns:1fr;gap:8px}.stage{min-height:0;border-radius:15px}.stage:before{top:11px;left:12px;font-size:7px}.stage:after{top:10px;right:12px;font-size:7px}canvas{height:58vh;min-height:360px;max-height:640px}.side{display:none}.mobile-controls{gap:12px;padding:8px 0 0}.mobile-controls button{width:min(27vw,105px);height:52px}.footer{font-size:8px;padding-top:9px}}
 @media(max-width:430px){.command-intro{display:block}.intro-status{display:inline-flex;margin-top:12px}.intro-copy h1{font-size:27px}.dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.stat strong{font-size:20px}canvas{height:55vh;min-height:330px}}
 @media(prefers-reduced-motion:reduce){.status-pulse{animation:none}}
+</style>
+<style id="neon-drift-achievements">
+.achievement-list{display:grid;gap:8px}
+.achievement{display:grid;grid-template-columns:25px minmax(0,1fr) auto;align-items:center;gap:8px;padding:9px 8px;border:1px solid #2a405c;border-radius:10px;background:#0b1423}
+.achievement-icon{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:#1a2335;color:#7f91aa;font-size:15px}
+.achievement b,.achievement small{display:block}
+.achievement b{font-size:10px;color:#dcecff;letter-spacing:.04em}
+.achievement small{font-size:9px;line-height:1.35;color:#8296b1;margin-top:3px}
+.achievement-state{font-size:7px;font-weight:900;letter-spacing:.1em;color:#6e819b}
+.achievement.unlocked{border-color:#3c6b78;background:linear-gradient(110deg,#10252d,#11162a)}
+.achievement.unlocked .achievement-icon{background:#153a42;color:#52f0dc;box-shadow:0 0 15px #36e8ff25}
+.achievement.unlocked .achievement-state{color:#65e8cb}
+@media(max-width:760px){.achievement-list{grid-template-columns:1fr 1fr}.achievement{grid-template-columns:22px minmax(0,1fr);padding:8px}.achievement-state{grid-column:2}.achievement-icon{width:22px;height:22px}}
+@media(max-width:390px){.achievement-list{grid-template-columns:1fr}}
 </style>
