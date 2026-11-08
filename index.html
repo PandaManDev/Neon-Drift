@@ -143,7 +143,7 @@ canvas{height:min(72vh,740px);min-height:500px}
 </head>
 <body>
 <main class="app">
-<header class="top"><div class="logo">NEON <span>DRIFT</span></div><div class="notify-wrap"><div class="tag">ARCADE SURVIVAL // 01</div><button class="notify-bell" id="notifyBell" aria-label="Open notifications" aria-expanded="false">♢ <span class="notify-count" id="notifyCount" hidden>0</span></button><section class="notify-panel" id="notifyPanel" aria-label="Daily notifications"><div class="notify-head"><strong>DAILY SIGNALS</strong><button id="markNotificationsRead">MARK READ</button></div><div id="notificationList"></div></section></div></header>
+<header class="top"><div class="logo">NEON <span>DRIFT</span></div><div class="notify-wrap"><div class="tag">ARCADE SURVIVAL // 01</div><button class="fullscreen-btn" id="fullscreenBtn" type="button" aria-label="Enter fullscreen" title="Enter fullscreen">⛶ <span>FULLSCREEN</span></button><button class="notify-bell" id="notifyBell" aria-label="Open notifications" aria-expanded="false">♢ <span class="notify-count" id="notifyCount" hidden>0</span></button><section class="notify-panel" id="notifyPanel" aria-label="Daily notifications"><div class="notify-head"><strong>DAILY SIGNALS</strong><button id="markNotificationsRead">MARK READ</button></div><div id="notificationList"></div></section></div></header>
 <section class="command-intro" aria-label="Game overview">
  <div class="intro-copy"><span class="intro-kicker">ARCADE // SURVIVAL PROTOCOL</span><h1>Own the <em>neon.</em></h1><p>Stay sharp, dodge the grid, and chase your next high score.</p></div>
  <div class="intro-status"><span class="status-pulse"></span><div><b>SECTOR ONLINE</b><small>READY FOR DEPLOYMENT</small></div></div>
@@ -274,6 +274,10 @@ canvas.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')
 canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('pointercancel',()=>pointer=null);
 function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
+const fullscreenBtn=$('fullscreenBtn');
+function syncFullscreenButton(){const active=!!document.fullscreenElement;fullscreenBtn.innerHTML=active?'⛶ <span>EXIT FULLSCREEN</span>':'⛶ <span>FULLSCREEN</span>';fullscreenBtn.setAttribute('aria-label',active?'Exit fullscreen':'Enter fullscreen');fullscreenBtn.title=active?'Exit fullscreen':'Enter fullscreen'}
+fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else{const target=document.querySelector('.app');if(target.requestFullscreen)await target.requestFullscreen();else if(target.webkitRequestFullscreen)target.webkitRequestFullscreen();else showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')} }catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
+document.addEventListener('fullscreenchange',syncFullscreenButton);document.addEventListener('webkitfullscreenchange',syncFullscreenButton);
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
 resize();bestEl.textContent=fmt(best);renderAchievements();renderCareerStats();renderDaily();initNotifications();
 })();
@@ -398,4 +402,29 @@ button{background:linear-gradient(110deg,#8540d5,#237dbd);border-color:#6a68a8;b
 .daily-progress i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#a855f7,#36e8ff);box-shadow:0 0 12px #36e8ff77;transition:width .2s}
 .daily-bottom{margin-top:8px;font-size:8px;letter-spacing:.08em;color:#92a9c5}
 @media(max-width:760px){.daily-card{padding:11px}.daily-card h3{font-size:12px}}
+</style>
+<style id="neon-drift-fullscreen">
+.notify-wrap{gap:8px}
+.fullscreen-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 12px;border:1px solid #3d6684;border-radius:12px;background:linear-gradient(145deg,#14253a,#101629);color:#bfefff;box-shadow:0 0 18px #36e8ff16;font-size:15px}
+.fullscreen-btn span{font-size:9px;font-weight:900;letter-spacing:.12em}
+.fullscreen-btn:hover{border-color:#55dfff;box-shadow:0 0 22px #36e8ff30}
+.app:fullscreen{width:100%;height:100%;max-width:none;margin:0;padding:16px 22px;overflow:auto;background:radial-gradient(ellipse at 50% -20%,#40206b 0,transparent 48%),linear-gradient(145deg,#050711,#090b18 58%,#070e19)}
+.app:fullscreen .layout{min-height:0}
+.app:fullscreen .stage,.app:fullscreen .side{min-height:0}
+.app:fullscreen canvas{height:calc(100vh - 390px);min-height:300px;max-height:none}
+@media(max-width:760px){
+ .notify-wrap{gap:5px}
+ .fullscreen-btn{min-height:38px;padding:8px 9px}
+ .fullscreen-btn span{font-size:8px}
+ .app:fullscreen{padding:10px}
+ .app:fullscreen .command-intro{padding:12px 15px}
+ .app:fullscreen .intro-copy h1{font-size:25px;margin:5px 0}
+ .app:fullscreen .dashboard{gap:5px}
+ .app:fullscreen .stat{min-height:54px;padding:7px 9px}
+ .app:fullscreen .stat strong{font-size:17px}
+ .app:fullscreen canvas{height:calc(100vh - 250px);min-height:180px;max-height:none}
+ .app:fullscreen .mobile-controls{padding-top:5px}
+ .app:fullscreen .mobile-controls button{height:42px}
+}
+@media(max-width:430px){.fullscreen-btn span{display:none}.fullscreen-btn{width:38px;padding:7px}}
 </style>
