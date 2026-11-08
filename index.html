@@ -158,8 +158,8 @@ canvas{height:min(72vh,740px);min-height:500px}
     <div class="menu-row"><label for="difficulty">DIFFICULTY</label><select id="difficulty"><option value="chill">Chill</option><option value="normal" selected>Normal</option><option value="chaos">Chaos</option></select></div>
     <button class="primary" id="start">START RUN</button><div class="hint">Steer: A / D or ← / → · Dash: SHIFT · Pause: SPACE</div>
    </div></div>
+   <div class="mobile-controls"><button id="left" aria-label="Move left">←</button><button id="dashTouch" aria-label="Phase dash">⚡</button><button id="right" aria-label="Move right">→</button></div>
   </div>
-  <div class="mobile-controls"><button id="left" aria-label="Move left">←</button><button id="dashTouch" aria-label="Phase dash">⚡</button><button id="right" aria-label="Move right">→</button></div>
  </div>
  <aside class="panel side"><h2>Mission briefing</h2><p>Survive the endless hazard stream. The city accelerates as your score climbs. Chain energy cores for bigger multipliers, and dash through danger when the timing is right.</p><div class="rule"></div><h2>Run objectives</h2><p id="objectives">Collect 10 energy cores · Survive 60 seconds</p><p id="dashStatus">Dash: READY · <span class="key">SHIFT</span></p><div class="rule"></div><h2>Controls</h2><p><span class="key">A</span> <span class="key">D</span> or <span class="key">←</span> <span class="key">→</span> to steer</p><p><span class="key">SPACE</span> to pause</p><p>Move your pointer or finger across the arena to steer smoothly.</p><div class="rule"></div><h2>Achievements</h2><div class="achievement-list" id="achievementList" aria-live="polite"></div><div class="rule"></div><h2>Daily challenge</h2><div class="daily-card" id="dailyChallenge" aria-live="polite"></div><div class="rule"></div><h2>Pilot career</h2><div class="career-stats" id="careerStats"></div><div class="rule"></div><h2>Signal types</h2><div class="legend"><div><i class="dot" style="background:#ff4fd8;color:#ff4fd8"></i> Hazard — avoid</div><div><i class="dot" style="background:#ffe66d;color:#ffe66d"></i> Energy core — +150</div><div><i class="dot" style="background:#39e6ff;color:#39e6ff"></i> Your ship</div><div><i class="dot" style="background:#a855f7;color:#a855f7"></i> Shield pickup — one hit</div></div><div class="rule"></div><div class="actions"><button id="pause">PAUSE</button><button id="sound">SOUND: ON</button></div></aside>
 </section>
@@ -409,12 +409,15 @@ button{background:linear-gradient(110deg,#8540d5,#237dbd);border-color:#6a68a8;b
 .fullscreen-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 12px;border:1px solid #3d6684;border-radius:12px;background:linear-gradient(145deg,#14253a,#101629);color:#bfefff;box-shadow:0 0 18px #36e8ff16;font-size:15px}
 .fullscreen-btn span{font-size:9px;font-weight:900;letter-spacing:.12em}
 .fullscreen-btn:hover{border-color:#55dfff;box-shadow:0 0 22px #36e8ff30}
-.stage:fullscreen{width:100vw;height:100vh;height:100dvh;min-height:0;max-height:none;margin:0;padding:0;border:0;border-radius:0;display:block;overflow:hidden;background:#050711}
-.stage:fullscreen canvas{width:100%;height:100%;min-height:0;max-height:none;touch-action:none}
-.stage:fullscreen .toast{z-index:5}
-.stage:fullscreen .overlay{z-index:4}
-.stage:fullscreen:before{top:18px;left:22px}
-.stage:fullscreen:after{top:17px;right:22px}
+.stage:fullscreen{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;min-width:100vw;min-height:100vh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;display:block;overflow:hidden;background:#050711;box-shadow:none;z-index:2147483647}
+.stage:fullscreen canvas{position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;touch-action:none}
+.stage:fullscreen .toast{z-index:5;top:calc(18px + env(safe-area-inset-top))}
+.stage:fullscreen .overlay{position:absolute;inset:0;z-index:4;padding:clamp(16px,4vw,48px);background:#080513c9}
+.stage:fullscreen .dialog{width:min(520px,100%);max-height:100%;overflow:auto}
+.stage:fullscreen .mobile-controls{position:absolute;z-index:6;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));display:flex;justify-content:center;padding:0;pointer-events:none}
+.stage:fullscreen .mobile-controls button{pointer-events:auto;backdrop-filter:blur(12px);background:#211432dd}
+.stage:fullscreen:before{top:calc(18px + env(safe-area-inset-top));left:22px}
+.stage:fullscreen:after{top:calc(17px + env(safe-area-inset-top));right:22px}
 @media(max-width:760px){
  .notify-wrap{gap:5px}
  .fullscreen-btn{min-height:38px;padding:8px 9px}
