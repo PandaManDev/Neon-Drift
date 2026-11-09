@@ -481,3 +481,140 @@ body.game-active .app{display:flex!important}
  .nd-menu-content .nd-inline-feature .how-card{padding:20px 15px}
  .nd-menu-content .nd-inline-feature .party-actions button{flex:1 1 100%}
 }
+
+
+/* BUILD 05 — carry the All Features menu's dark, muted violet theme
+   throughout the game interface, overlays and Operations Center. */
+:root{
+  --nd-bg:#090a10;
+  --nd-surface:#171421;
+  --nd-surface-2:#100f18;
+  --nd-line:#8e79ac55;
+  --nd-text:#f4f0ff;
+  --nd-muted:#aaa2b8;
+  --nd-accent:#cbb0f2;
+  --nd-accent-soft:#a77ad522;
+  --nd-cyan:#c9b8ec;
+}
+body{
+  color:var(--nd-text);
+  background-color:var(--nd-bg);
+}
+body.game-active .app{
+  color:var(--nd-text);
+  background:
+    radial-gradient(ellipse at 50% 0%,#6e4a961c,transparent 42%),
+    linear-gradient(180deg,#0c0b12 0%,#090a10 100%)!important;
+}
+body.game-active .top,
+body.game-active .command-intro,
+body.game-active .dashboard,
+body.game-active .panel,
+body.game-active .stage,
+body.game-active .footer,
+body.game-active .stat{
+  color:var(--nd-text);
+  border-color:var(--nd-line)!important;
+}
+body.game-active .top,
+body.game-active .command-intro,
+body.game-active .panel,
+body.game-active .stage,
+body.game-active .footer{
+  background:linear-gradient(145deg,#171421ed,#0b0a11ed)!important;
+  box-shadow:0 14px 42px #0008,inset 0 1px #ffffff08!important;
+}
+body.game-active .dashboard .stat,
+body.game-active .stat{
+  background:linear-gradient(145deg,#1b1725,#100e17)!important;
+  border:1px solid #8e79ac55!important;
+  border-radius:11px!important;
+}
+body.game-active h1,
+body.game-active h2,
+body.game-active h3,
+body.game-active h4,
+body.game-active .panel-title{
+  color:#f4f0ff!important;
+}
+body.game-active p,
+body.game-active small,
+body.game-active .muted,
+body.game-active .subtle{
+  color:var(--nd-muted);
+}
+body.game-active button,
+.nd-menu-dialog button,
+.ops-panel button{
+  border-color:#8e79ac66!important;
+  background:linear-gradient(145deg,#211a2d,#13111b)!important;
+  color:#f4f0ff!important;
+  box-shadow:none!important;
+}
+body.game-active button:hover,
+.nd-menu-dialog button:hover,
+.ops-panel button:hover{
+  border-color:#cbb0f2!important;
+  background:linear-gradient(145deg,#30223f,#191522)!important;
+  box-shadow:0 0 22px #a77ad522!important;
+}
+body.game-active button:focus-visible,
+.nd-menu-dialog button:focus-visible,
+.ops-panel button:focus-visible{
+  outline:2px solid #cbb0f2!important;
+  outline-offset:3px;
+}
+body.game-active input,
+body.game-active select,
+body.game-active textarea,
+.nd-menu-dialog input,
+.nd-menu-dialog select,
+.nd-menu-dialog textarea,
+.ops-panel input,
+.ops-panel select{
+  color:#f4f0ff!important;
+  border-color:#8e79ac66!important;
+  background:#100e18!important;
+}
+body.game-active .stage canvas{filter:drop-shadow(0 0 14px #a77ad51a)}
+.lobby-modal,
+.ops-panel{
+  background:#05040bdc!important;
+  backdrop-filter:blur(15px)!important;
+}
+.lobby-modal .how-card,
+.ops-panel .ops-window{
+  border:1px solid #8e79ac77!important;
+  border-radius:14px!important;
+  background:
+    radial-gradient(ellipse at 50% 0%,#6e4a9628,transparent 48%),
+    linear-gradient(145deg,#171421,#090a11)!important;
+  color:#f4f0ff!important;
+  box-shadow:0 30px 100px #000d,0 0 50px #9b75d51c!important;
+}
+.ops-panel .ops-card{
+  border-color:#8e79ac44!important;
+  border-radius:11px!important;
+  background:linear-gradient(145deg,#1b1725,#100e18)!important;
+}
+.ops-panel .ops-tier{border-color:#ffffff18!important;color:#eee8f8!important}
+.ops-panel .ops-tier small,
+.ops-panel .ops-sub,
+.ops-panel .ops-card p{color:#aaa2b8!important}
+.ops-panel .ops-track{background:#30283a!important}
+.ops-panel .ops-track i{background:linear-gradient(90deg,#8e6ab7,#cbb0f2)!important}
+.ops-panel .ops-badge{border-color:#8e79ac66!important;color:#d8c5f4!important}
+.nd-menu-dialog .ops-launch{margin:0!important}
+.nd-menu-dialog .nd-menu-operations .ops-launch button{
+  width:100%;min-height:48px;justify-content:center;
+  border:1px solid #8e79ac66!important;border-radius:10px!important;
+  background:linear-gradient(130deg,#30223f,#171421)!important;
+  color:#f4f0ff!important;font-family:Georgia,serif!important;
+  letter-spacing:.12em!important;
+}
+.nd-menu-dialog .nd-menu-operations .ops-launch button:hover{
+  border-color:#cbb0f2!important;box-shadow:0 0 24px #a77ad522!important;
+}
+@media(prefers-reduced-motion:reduce){
+  body.game-active *, .ops-panel *, .lobby-modal *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
