@@ -56,7 +56,7 @@ card.insertBefore(onlineFriends, oldList);
 oldList.hidden = true;
 const inviteView = $('friendsInviteView');
 if(inviteView) inviteView.hidden=true;
-const tabs=$('friendsTabs');
+const tabs=card.querySelector('.friends-tabs');
 if(tabs) tabs.hidden=true;
 const partyCard=partyModal.querySelector('.party-card');
 const partyExtras=document.createElement('div');
