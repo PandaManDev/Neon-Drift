@@ -30,8 +30,8 @@
       if(display)display.textContent=pilot.credits.toLocaleString()+' CREDITS';
     }catch(error){console.warn('[Neon Drift] Could not apply operation credits:',error)}
   }
-  if(!state.creditsMigrated&&Number(state.credits)>0){
-    grantPilotCredits(state.credits);
+  if(!state.creditsMigrated){
+    if(Number(state.credits)>0)grantPilotCredits(state.credits);
     state.creditsMigrated=true;
     save();
   }
