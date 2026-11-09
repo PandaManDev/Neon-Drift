@@ -178,12 +178,16 @@
     }
     else if (action === 'operations') click('opsOpen');
     else if (action === 'records') {
-      click('lobbyPlay');
-      setTimeout(() => ($('runHistory') || $('careerStats') || $('achievementList'))?.scrollIntoView({behavior:'smooth',block:'center'}), 350);
+      open();
+      const records = hub.querySelector('.nd-menu-intel');
+      records?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     else if (action === 'notifications') {
+      open();
+      const header = hub.querySelector('.nd-menu-app-header');
+      header?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const bell = $('notifyBell');
-      if (bell) { click('lobbyPlay'); setTimeout(() => bell.click(), 350); }
+      if (bell) setTimeout(() => bell.click(), 120);
     }
   });
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !hub.hidden) close(); });
