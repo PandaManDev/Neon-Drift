@@ -430,3 +430,18 @@ input,select,textarea{color-scheme:dark}
 .nd-menu-dialog .lobby-footer{display:flex!important;position:static!important}
 .nd-menu-dialog .pilot-progression{display:block!important}
 .nd-menu-dialog .nd-command-strip{display:grid!important}
+
+/* The lobby is the landing screen. The arena-only shell stays hidden until Play. */
+body:not(.game-active) .app{display:none!important}
+body.game-active .app{display:flex!important}
+.nd-menu-dialog .nd-menu-live-stats .dashboard{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin:0}
+.nd-menu-dialog .nd-menu-live-stats .stat{min-width:0}
+.nd-menu-dialog .nd-menu-intel .panel.side{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;max-width:none;margin:0;padding:16px;border:1px solid #ffffff20;border-radius:12px;background:#ffffff07}
+.nd-menu-dialog .nd-menu-intel .panel.side>*{min-width:0}
+.nd-menu-dialog .nd-menu-app-header .top{display:flex!important;position:relative;align-items:center;justify-content:space-between;width:100%;padding:0;margin:0}
+.nd-menu-dialog .nd-menu-app-intro .command-intro{display:flex!important;position:relative;align-items:center;justify-content:space-between;gap:15px;margin:0}
+.nd-menu-dialog .nd-menu-app-footer .footer{display:flex!important;position:relative;flex-wrap:wrap;gap:12px;margin:0}
+@media(max-width:620px){
+ .nd-menu-dialog .nd-menu-intel .panel.side{grid-template-columns:1fr}
+ .nd-menu-dialog .nd-menu-app-intro .command-intro{flex-direction:column;align-items:flex-start}
+}
