@@ -37,7 +37,9 @@ create table if not exists public.party_members (
   primary key (party_id, user_id)
 );
 
-create unique index if not exists profiles_username_lower_unique on public.profiles (lower(username));\n\ncreate index if not exists friend_requests_receiver_status_idx on public.friend_requests(receiver_id, status);
+create unique index if not exists profiles_username_lower_unique on public.profiles (lower(username));
+
+create index if not exists friend_requests_receiver_status_idx on public.friend_requests(receiver_id, status);
 create index if not exists friend_requests_sender_status_idx on public.friend_requests(sender_id, status);
 create index if not exists party_members_party_idx on public.party_members(party_id);
 
@@ -77,7 +79,7 @@ declare
   chosen text;
 begin
   chosen := coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1));
-  chosen := regexp_replace(chosen, '[^A-Za-z0-9_]', '', 'g');
+  chosen := left(regexp_replace(chosen, '[^A-Za-z0-9_]', '', 'g'), 20);
   if length(chosen) < 3 then chosen := 'pilot_' || substr(replace(new.id::text, '-', ''), 1, 8); end if;
   insert into public.profiles(id, username, display_name)
   values(new.id, chosen, coalesce(nullif(new.raw_user_meta_data->>'display_name',''), chosen));
