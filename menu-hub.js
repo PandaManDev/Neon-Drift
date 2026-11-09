@@ -29,7 +29,7 @@
           <button class="nd-menu-item" data-action="invite"><span>↗</span><b>Invite friends</b><small>Share the game link</small></button>
         </div></section>
         <section class="nd-menu-group"><h3>PILOT & PROGRESSION</h3><div class="nd-menu-grid">
-          <button class="nd-menu-item" data-action="operations"><span>▦</span><b>Operations</b><small>Missions, season and milestones</small></button>
+          <button class="nd-menu-item" data-action="operations"><span>▦</span><b>▦ OPERATIONS CENTER</b><small>Missions, season and milestones</small></button>
           <button class="nd-menu-item" data-action="records"><span>⌁</span><b>Career records</b><small>Achievements and flight history</small></button>
           <button class="nd-menu-item" data-action="profile"><span>✧</span><b>Pilot profile</b><small>Level, credits, rewards and hangar</small></button>
         </div></section>
