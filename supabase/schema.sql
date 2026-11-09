@@ -213,3 +213,30 @@ begin
   alter publication supabase_realtime add table public.parties;
 exception when duplicate_object then null;
 end $$;
+
+
+-- Party chat: append-only messages visible only to current party members.
+create table if not exists public.party_messages (
+  id uuid primary key default gen_random_uuid(),
+  party_id uuid not null references public.parties(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  message text not null check (char_length(message) between 1 and 300),
+  created_at timestamptz not null default now()
+);
+create index if not exists party_messages_party_created_idx
+  on public.party_messages(party_id, created_at desc);
+alter table public.party_messages enable row level security;
+drop policy if exists "Party members can read party chat" on public.party_messages;
+create policy "Party members can read party chat"
+  on public.party_messages for select to authenticated
+  using (public.neon_is_party_member(party_id));
+drop policy if exists "Party members can send chat messages" on public.party_messages;
+create policy "Party members can send chat messages"
+  on public.party_messages for insert to authenticated
+  with check (user_id = auth.uid() and public.neon_is_party_member(party_id));
+grant select, insert on public.party_messages to authenticated;
+do $$
+begin
+  alter publication supabase_realtime add table public.party_messages;
+exception when duplicate_object then null;
+end $$;
