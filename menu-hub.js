@@ -43,6 +43,36 @@
     </div>`;
   lobby.append(hub);
 
+  // Move the existing progression and game intel into the menu itself.
+  // Moving (rather than cloning) preserves every original ID and event listener.
+  const menuBody = hub.querySelector('.nd-menu-groups');
+  const progression = lobby.querySelector('.pilot-progression');
+  if (progression) {
+    const section = document.createElement('section');
+    section.className = 'nd-menu-extra nd-menu-progression';
+    section.innerHTML = '<h3>YOUR PILOT PROFILE</h3>';
+    section.append(progression);
+    menuBody.append(section);
+  }
+
+  const gameIntel = document.querySelector('.app .panel.side');
+  if (gameIntel) {
+    const section = document.createElement('section');
+    section.className = 'nd-menu-extra nd-menu-intel';
+    section.innerHTML = '<h3>FLIGHT INTEL & GAME SYSTEMS</h3>';
+    section.append(gameIntel);
+    menuBody.append(section);
+  }
+
+  const liveStats = document.querySelector('.app .dashboard');
+  if (liveStats) {
+    const section = document.createElement('section');
+    section.className = 'nd-menu-extra nd-menu-live-stats';
+    section.innerHTML = '<h3>LIVE FLIGHT STATISTICS</h3>';
+    section.append(liveStats);
+    menuBody.insertBefore(section, menuBody.firstChild);
+  }
+
   const trigger = document.createElement('button');
   trigger.type = 'button';
   trigger.id = 'lobbyAllFeatures';
