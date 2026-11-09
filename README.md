@@ -111,11 +111,11 @@ Neon Drift includes an optional online social layer powered by a **separate Supa
 ### One-time setup
 
 1. Create a new project at [Supabase](https://supabase.com/) just for Neon Drift.
-2. Open the project's **SQL Editor**, create a new query, paste all of `supabase-setup.sql`, and run it.
+2. Open the project's **SQL Editor**, create a new query, paste all of `supabase/schema.sql`, and run it.
 3. Open **Project Settings → API** and copy the Project URL and the public publishable key (or legacy anon key).
 4. Edit `supabase-config.js` in this repository:
-   - Replace `YOUR_SUPABASE_PROJECT_URL` with the Project URL.
-   - Replace `YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY` with the public key.
+   - Replace the `url` placeholder in `supabase-config.js` with the Project URL.
+   - Replace the `anonKey` placeholder in `supabase-config.js` with the public key.
 5. Commit the config change and open the GitHub Pages site. Create an account from the Friends window.
 
 **Security:** only the public publishable/anon key belongs in `supabase-config.js`. Never put a service-role key or database password in browser code or GitHub. The SQL enables Row Level Security and exposes the social actions through authenticated database functions.
