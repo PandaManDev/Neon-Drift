@@ -4,7 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080611">
-<meta name="description" content="Neon Drift — a fast, free neon arcade survival game.">
+<meta name="description" content="Enter the Neon Drift arena. Dodge hazards, collect energy cores, build combos and challenge your best score in this free neon arcade survival game.">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Neon Drift — Enter the Arena">
+<meta property="og:description" content="Dodge the hazards. Chase the cores. Beat your best. Play Neon Drift free.">
+<meta property="og:url" content="https://pandamandev.github.io/Neon-Drift/">
+<meta name="twitter:card" content="summary">
 <title>Neon Drift — Arcade Survival</title>
 <style>
 :root{color-scheme:dark;--bg:#080611;--panel:#120d20;--line:#382451;--purple:#a855f7;--cyan:#39e6ff;--pink:#ff4fd8;--gold:#ffe66d;--muted:#aaa2c5}
@@ -547,6 +553,69 @@ body.performance-mode .lobby-glow{opacity:.35}
 .online-request{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 0;border-top:1px solid #382451;color:#e5d9f6;font-size:10px}
 .online-request span{flex:1}.online-party-code{font-size:15px;font-weight:900;letter-spacing:.16em;color:#39e6ff;margin:8px 0}
 .online-party-join input{flex:1;text-transform:uppercase;letter-spacing:.12em}
+</style>
+<style id="neon-drift-v3-polish">
+:root{--nd-glass:rgba(12,19,34,.82);--nd-edge:rgba(107,139,184,.28);--nd-glow:rgba(65,224,255,.12)}
+html{scroll-behavior:smooth;scrollbar-color:#554078 #080b14}
+body{isolation:isolate;background-image:radial-gradient(ellipse at 12% 12%,rgba(131,65,202,.17),transparent 34%),radial-gradient(ellipse at 88% 28%,rgba(35,173,208,.12),transparent 32%),linear-gradient(145deg,#050711 0%,#090d1a 52%,#070916 100%)}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.17;background-image:linear-gradient(rgba(113,151,197,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(113,151,197,.09) 1px,transparent 1px);background-size:52px 52px;mask-image:linear-gradient(to bottom,#000,transparent 85%)}
+.app{max-width:1640px}
+.top{backdrop-filter:blur(16px)}
+.logo{filter:drop-shadow(0 0 18px #a855f733)}
+.command-intro{min-height:178px;border-color:#3d5278;background:radial-gradient(ellipse at 80% 20%,#28618b44,transparent 38%),radial-gradient(ellipse at 15% 110%,#8c3ab344,transparent 48%),linear-gradient(115deg,#17132b 0%,#0b1728 58%,#0b1b2a 100%)}
+.intro-copy h1{font-size:clamp(36px,5vw,62px)}
+.intro-copy p{max-width:560px;line-height:1.7}
+.intro-status{box-shadow:0 0 30px #36e8ff0b,inset 0 1px #ffffff0b}
+.dashboard{gap:14px}
+.stat{backdrop-filter:blur(12px);transition:transform .2s,border-color .2s,background .2s}
+.stat:hover{transform:translateY(-3px);border-color:#4d9cbb;background:linear-gradient(145deg,#14253a,#0b1221)}
+.stat strong{font-variant-numeric:tabular-nums}
+.layout{gap:20px}
+.stage{border-color:#456b91;box-shadow:0 25px 80px #0009,0 0 45px #36e8ff13,0 0 65px #a855f715}
+.stage:focus-within{border-color:#56cce4}
+.side{background:linear-gradient(155deg,rgba(18,30,49,.96),rgba(8,15,28,.96));backdrop-filter:blur(14px)}
+.side h2{font-size:11px}
+.side p{line-height:1.8}
+.legend div{transition:border-color .18s,transform .18s}
+.legend div:hover{border-color:#3e7890;transform:translateX(2px)}
+button,select,input{font-family:inherit}
+button{letter-spacing:.035em}
+button:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.5);transform:none}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #53eaff;outline-offset:3px}
+.overlay{background:rgba(4,7,17,.82);backdrop-filter:blur(16px)}
+.dialog{border-color:#496084;background:radial-gradient(ellipse at 50% 0%,#51307855,transparent 62%),linear-gradient(145deg,#121e32,#080e1b)}
+.dialog p{line-height:1.75}
+.toast{z-index:9;backdrop-filter:blur(12px);box-shadow:0 10px 35px #0008}
+.footer{font-size:10px;letter-spacing:.1em}
+.notify-panel{backdrop-filter:blur(18px);border-color:#3c5d7c}
+.lobby-modal{backdrop-filter:blur(12px)}
+@media(min-width:1100px){.command-intro{padding:32px 42px}.layout{grid-template-columns:minmax(0,1fr) 320px}.side{padding:26px 24px}}
+@media(max-width:760px){
+ body{padding:10px 10px calc(14px + env(safe-area-inset-bottom))}
+ .app{gap:13px}
+ .top{min-height:54px;align-items:center;gap:8px}
+ .logo{font-size:clamp(20px,6vw,29px);letter-spacing:.14em}
+ .tag{font-size:8px;letter-spacing:.12em}
+ .notify-wrap{gap:5px}
+ .command-intro{min-height:0;padding:19px 17px}
+ .intro-copy h1{font-size:clamp(27px,8vw,38px)}
+ .intro-copy p{font-size:11px;max-width:100%}
+ .intro-status{margin-top:12px}
+ .dashboard{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .stat{min-height:70px;padding:10px 12px 10px 15px}
+ .stat small{font-size:8px;letter-spacing:.13em}
+ .stat strong{font-size:21px}
+ .layout{display:block}
+ .stage{min-height:0;border-radius:15px}
+ canvas{height:min(64svh,620px);min-height:340px;max-height:620px}
+ .mobile-controls{padding:9px 0 2px;gap:10px}
+ .mobile-controls button{width:30%;max-width:120px;height:54px;touch-action: manipulation}
+ .footer{font-size:8px;line-height:1.6;flex-wrap:wrap}
+ .notify-panel{position:fixed;top:76px;right:10px;max-height:min(65vh,420px)}
+}
+@media(max-width:380px){.tag{display:none}.stat strong{font-size:19px}canvas{min-height:310px}}
+@media(hover:none){button:hover,.stat:hover,.legend div:hover{transform:none;filter:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
