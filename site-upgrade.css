@@ -458,3 +458,26 @@ body.game-active .app{display:flex!important}
 .game-lobby #lobbyPlay,
 .game-lobby #lobbyAllFeatures{width:100%;min-height:42px}
 .game-lobby #lobbyAllFeatures{order:2}
+
+/* Feature dialogs are real menu sections now, not separate full-screen popups. */
+.nd-menu-content .nd-inline-feature{
+  position:static!important;inset:auto!important;z-index:auto!important;
+  display:block!important;padding:0!important;margin:14px 0 0!important;
+  background:transparent!important;backdrop-filter:none!important;
+}
+.nd-menu-content .nd-inline-feature[hidden]{display:none!important}
+.nd-menu-content .nd-inline-feature .how-card{
+  width:100%;max-width:none;margin:0;padding:24px;
+  background:linear-gradient(145deg,#15142b,#0b1423);
+  border-color:#4b3a70;box-shadow:0 12px 35px #0005;
+}
+.nd-menu-content .nd-inline-feature .how-card h2{font-size:22px}
+.nd-menu-content .nd-inline-feature .how-close{position:absolute}
+.nd-menu-content .nd-inline-feature .friends-summary,
+.nd-menu-content .nd-inline-feature .party-slots{max-width:100%}
+.nd-menu-content .nd-inline-feature .party-actions,
+.nd-menu-content .nd-inline-feature .settings-actions{display:flex;flex-wrap:wrap;gap:9px}
+@media(max-width:600px){
+ .nd-menu-content .nd-inline-feature .how-card{padding:20px 15px}
+ .nd-menu-content .nd-inline-feature .party-actions button{flex:1 1 100%}
+}
