@@ -219,6 +219,12 @@ async function refreshAll(){
  try{await refreshFriends();await refreshParty()}catch(e){console.error('Neon Drift online refresh:',e);partyMessage(e.message||'Could not refresh online data.','error')}
  finally{refreshing=false}
 }
+// Expose the authenticated online state to the legacy lobby renderers.
+window.NeonOnline={
+ ready:true,
+ get user(){return session?.user||null},
+ refresh:refreshAll
+};
 async function onSession(next){
  session=next;
  if(!session){
