@@ -60,7 +60,18 @@
   moveIntoMenu(lobby.querySelector('.lobby-footer'), 'QUICK SETTINGS & GAME INFO', 'nd-menu-footer-content');
   moveIntoMenu(lobby.querySelector('.pilot-progression'), 'YOUR PILOT PROFILE & HANGAR', 'nd-menu-progression');
 
-  // The command summary is created by site-enhancements.js; catch it even if it mounts a moment later.
+  // Move the separate interface that was sitting underneath the lobby into this menu too.
+  // Keep only the actual canvas/stage in .app so Play still has a clean arena to show.
+  const gameApp = document.querySelector('.app');
+  if (gameApp) {
+    moveIntoMenu(gameApp.querySelector('.top'), 'GAME HEADER & DAILY SIGNALS', 'nd-menu-app-header');
+    moveIntoMenu(gameApp.querySelector('.command-intro'), 'GAME OVERVIEW', 'nd-menu-app-intro');
+    moveIntoMenu(gameApp.querySelector('.dashboard'), 'LIVE & CAREER STATS', 'nd-menu-live-stats');
+    moveIntoMenu(gameApp.querySelector('.panel.side'), 'MISSION BRIEFING & PILOT RECORDS', 'nd-menu-intel');
+    moveIntoMenu(gameApp.querySelector('.footer'), 'GAME INFORMATION', 'nd-menu-app-footer');
+  }
+
+  // The command summary is created by site-enhancements.js; catch it even if it mounts later.
   const moveCommandStrip = () => moveIntoMenu(lobby.querySelector('.nd-command-strip'), 'PILOT COMMAND DASHBOARD', 'nd-menu-command');
   moveCommandStrip();
   const observer = new MutationObserver(() => {
