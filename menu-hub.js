@@ -71,6 +71,21 @@
     moveIntoMenu(gameApp.querySelector('.footer'), 'GAME INFORMATION', 'nd-menu-app-footer');
   }
 
+  // Put the real feature panels themselves inside this menu (not just shortcut buttons).
+  // Their existing IDs and event listeners stay intact when the nodes are moved.
+  [
+    ['lobbyHowModal', 'HOW TO PLAY', 'nd-inline-how'],
+    ['friendsModal', 'FRIENDS & INVITES', 'nd-inline-friends'],
+    ['partyModal', 'PARTY LOBBY', 'nd-inline-party'],
+    ['settingsModal', 'SETTINGS', 'nd-inline-settings']
+  ].forEach(([id, title, cls]) => {
+    const panel = $(id);
+    if (!panel) return;
+    panel.classList.add('nd-inline-feature', cls);
+    panel.setAttribute('aria-label', title);
+    content.append(panel);
+  });
+
   // The command summary is created by site-enhancements.js; catch it even if it mounts later.
   const moveCommandStrip = () => moveIntoMenu(lobby.querySelector('.nd-command-strip'), 'PILOT COMMAND DASHBOARD', 'nd-menu-command');
   moveCommandStrip();
@@ -104,7 +119,9 @@
     const item = event.target.closest('[data-action]');
     if (!item) return;
     const action = item.dataset.action;
-    close();
+    const inlinePanelActions = ['how', 'friends', 'party', 'settings'];
+    if (inlinePanelActions.includes(action)) open();
+    else close();
     const click = (id) => $(id)?.click();
     if (action === 'play') click('lobbyPlay');
     else if (action === 'how') click('lobbyHow');
