@@ -63,9 +63,9 @@ create policy "Party members can see their party" on public.parties for select t
 
 create or replace function public.neon_is_party_member(target_party uuid)
 returns boolean language sql stable security definer set search_path = public
-as $
+as $$
   select exists (select 1 from public.party_members where party_id = target_party and user_id = auth.uid());
-$;
+$$;
 
 drop policy if exists "Party members can see members" on public.party_members;
 create policy "Party members can see members" on public.party_members for select to authenticated using (
