@@ -374,6 +374,118 @@ body.game-active .game-menu-btn{display:block}
   body:not(.game-active) .stage{min-width:0}
 }
 </style>
+
+<style id="neon-drift-polish-v2">
+/* Visual polish: clearer hierarchy, smoother navigation, and better small-screen fit */
+:root{--focus-ring:#62efff;--surface-glass:rgba(13,20,35,.88)}
+html{scroll-behavior:smooth;scrollbar-color:#594078 #080b15}
+body{ -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility }
+button,select{ -webkit-tap-highlight-color:transparent }
+button:focus-visible,select:focus-visible,.lobby-icon:focus-visible,.lobby-play:focus-visible,.lobby-secondary:focus-visible{outline:2px solid var(--focus-ring);outline-offset:4px}
+::selection{background:#8c45d8;color:white}
+.top{gap:16px}
+.notify-wrap{gap:10px}
+.fullscreen-btn,.notify-bell{min-height:42px;border-radius:12px}
+.fullscreen-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 13px;background:linear-gradient(145deg,#15243a,#111528);border:1px solid #3b5877;color:#c9eaff;box-shadow:none;font-size:10px;letter-spacing:.1em}
+.fullscreen-btn:hover,.notify-bell:hover{border-color:#63cce8;box-shadow:0 0 18px #36e8ff1c}
+.command-intro{isolation:isolate}
+.command-intro:before{content:"";position:absolute;inset:auto 0 0;height:2px;background:linear-gradient(90deg,transparent,#a855f7,#36e8ff,transparent);opacity:.65}
+.intro-copy h1{max-width:760px}
+.intro-status{flex-shrink:0}
+.stat{backdrop-filter:blur(8px)}
+.stat small{display:flex;align-items:center;gap:7px}
+.stat strong{font-variant-numeric:tabular-nums}
+.stage{overflow:hidden}
+.stage canvas{touch-action:none}
+.game-menu-btn{position:absolute;z-index:4;left:15px;bottom:15px;padding:9px 12px;border-radius:10px;background:#0b1424e8;border:1px solid #456080;color:#ccecff;font-size:10px;letter-spacing:.12em;box-shadow:0 8px 25px #0007;backdrop-filter:blur(8px)}
+.game-menu-btn:hover{background:#182942;border-color:#56dfff}
+.overlay{background:linear-gradient(135deg,#060914eF,#10091beF);backdrop-filter:blur(12px)}
+.dialog{padding:clamp(18px,3vw,30px);border:1px solid #3d5272;border-radius:22px;background:linear-gradient(145deg,#111b2dE8,#0b1020F2);box-shadow:0 25px 80px #0009,0 0 45px #a855f71a}
+.dialog h1{font-size:clamp(44px,7vw,74px)}
+.dialog p{max-width:390px}
+.dialog .primary{min-height:48px;border-radius:13px;letter-spacing:.08em}
+.menu-row select{min-height:39px}
+.side{scrollbar-width:thin;scrollbar-color:#574071 transparent}
+.side::-webkit-scrollbar,.notify-panel::-webkit-scrollbar{width:7px}
+.side::-webkit-scrollbar-thumb,.notify-panel::-webkit-scrollbar-thumb{background:#594078;border-radius:20px}
+.achievement,.daily-card,.career-stats>div,.run-history-row{border-color:#293f5b}
+.achievement{transition:background .18s,border-color .18s}
+.achievement:hover,.run-history-row:hover{border-color:#55769a;background:#122039}
+.daily-card{background:linear-gradient(135deg,#111d30,#101326)}
+.run-history-row{background:#0c1727}
+.legend div{transition:transform .18s,border-color .18s}
+.legend div:hover{transform:translateX(3px);border-color:#42698a}
+.actions button{min-height:42px}
+.footer{align-items:center;flex-wrap:wrap;row-gap:7px}
+.game-lobby{min-height:100svh}
+.lobby-play,.lobby-secondary,.lobby-icon{transition:transform .18s,filter .18s,border-color .18s,box-shadow .18s}
+.lobby-play:hover{transform:translateY(-2px);box-shadow:0 14px 36px #8c42dc55}
+.lobby-secondary:hover,.lobby-icon:hover{border-color:#54dfff;filter:brightness(1.12)}
+.lobby-card{backdrop-filter:blur(8px)}
+.notify-panel{backdrop-filter:blur(16px)}
+.notify-item{transition:border-color .18s,background .18s}
+.notify-item:hover{border-color:#73559a}
+.app:fullscreen{width:100%;height:100%;max-width:none;margin:0;padding:20px 28px;overflow:auto;background:radial-gradient(ellipse at 50% -20%,#40206b 0,transparent 48%),linear-gradient(145deg,#050711,#090b18 58%,#070e19)}
+.app:fullscreen .side{max-height:calc(100vh - 310px);overflow-y:auto}
+@media(min-width:1000px){
+ .side{max-height:clamp(620px,calc(100vh - 300px),850px);overflow-y:auto;overscroll-behavior:contain}
+ .stage{min-height:clamp(620px,72vh,850px)}
+ .layout{align-items:stretch}
+}
+@media(min-width:761px) and (max-width:1100px){
+ .intro-status{padding:10px 12px}
+ .intro-copy h1{font-size:clamp(30px,4vw,42px)}
+ .dashboard{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .side{max-height:70vh;overflow:auto}
+}
+@media(max-width:760px){
+ body{padding:10px 10px 18px}
+ .top{align-items:center;min-height:54px;padding:0 1px 10px}
+ .logo{font-size:clamp(21px,6vw,29px);letter-spacing:.13em}
+ .tag{display:none}
+ .notify-wrap{gap:7px}
+ .fullscreen-btn{min-width:42px;padding:9px 10px}
+ .fullscreen-btn span{display:none}
+ .command-intro{min-height:0;margin-top:1px}
+ .intro-copy h1{font-size:clamp(29px,8vw,38px)}
+ .intro-status{margin-top:12px}
+ .dashboard{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .stat{min-height:70px;padding:10px 10px 10px 13px}
+ .stat small{font-size:8px;letter-spacing:.13em}
+ .stat strong{font-size:clamp(18px,5vw,22px)}
+ .layout{gap:8px}
+ .stage{border-radius:15px}
+ .stage:before{font-size:7px;left:10px;top:10px}
+ .stage:after{font-size:7px;right:10px;top:10px}
+ canvas{height: min(61svh,650px);min-height:350px}
+ .overlay{padding:13px}
+ .dialog{padding:22px 17px;border-radius:17px}
+ .dialog h1{font-size:clamp(42px,13vw,60px)}
+ .dialog p{font-size:12px;margin:13px auto}
+ .hint{line-height:1.6}
+ .game-menu-btn{left:9px;bottom:9px}
+ .mobile-controls{padding:7px 0 0}
+ .mobile-controls button{flex:1;max-width:115px;height:49px}
+ .footer{padding-top:9px;font-size:9px}
+}
+@media(max-width:420px){
+ .dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .command-intro{padding:15px}
+ .intro-copy h1{font-size:30px}
+ .intro-copy p{font-size:10px}
+ .intro-status{padding:8px 10px}
+ canvas{min-height:320px;height:54svh}
+ .notify-panel{right:-3px}
+}
+@media(hover:none){
+ .stat:hover,.legend div:hover,.actions button:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
+}
+</style>
+
 </head>
 <body>
 
