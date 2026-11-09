@@ -486,6 +486,14 @@ button:focus-visible,select:focus-visible,.lobby-icon:focus-visible,.lobby-play:
 }
 </style>
 
+
+<style id="neon-drift-active-render-fix">
+/* Keep the arena visible after resize, tab focus changes, and pause. */
+body.game-active .stage{position:relative;background:#080612!important}
+body.game-active .stage canvas{display:block;position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;background:#080612!important}
+body.game-active .game-menu-btn{position:absolute!important;top:14px!important;right:14px!important;left:auto!important;bottom:auto!important;z-index:9}
+@media(max-width:760px){body.game-active .game-menu-btn{top:48px!important;right:9px!important}}
+</style>
 </head>
 <body>
 
@@ -633,7 +641,15 @@ for(let i=cores.length-1;i>=0;i--){const c=cores[i];c.y+=speed*.78;c.phase+=.08*
 for(let i=shields.length-1;i>=0;i--){const p=shields[i];p.y+=speed*.7;p.phase+=.06*dt;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.phase);ctx.shadowBlur=22;ctx.shadowColor='#b76bff';ctx.strokeStyle='#d9aaff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,p.r+Math.sin(p.phase*2)*2,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-6);ctx.lineTo(5,0);ctx.lineTo(0,6);ctx.lineTo(-5,0);ctx.closePath();ctx.fillStyle='#b76bff';ctx.fill();ctx.restore();if(Math.hypot(p.x-player.x,p.y-player.y)<24){shieldHits=1;burst(p.x,p.y,'#b76bff',15);shields.splice(i,1);beep(520,.12);showToast('SHIELD ACQUIRED');updateHud()}else if(p.y>H+20)shields.splice(i,1)}
 drawShip();for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);ctx.globalAlpha=1;if(p.life<=0)particles.splice(i,1)}
 updateHud();raf=requestAnimationFrame(loop)}
-function drawIdle(){if(running)return;background(.3);if(player)drawShip()}
+function drawIdle(){
+ if(running&&!paused)return;
+ background(.3);
+ for(const o of obstacles){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot);ctx.shadowBlur=16;ctx.shadowColor='#ff4fd8';ctx.fillStyle='#ff4fd8';ctx.fillRect(-o.w/2,-o.h/2,o.w,o.h);ctx.restore()}
+ for(const c of cores){ctx.save();ctx.translate(c.x,c.y);ctx.rotate(c.phase);ctx.shadowBlur=18;ctx.shadowColor='#ffe66d';ctx.fillStyle='#ffe66d';ctx.beginPath();ctx.moveTo(0,-c.r);ctx.lineTo(c.r,0);ctx.lineTo(0,c.r);ctx.lineTo(-c.r,0);ctx.closePath();ctx.fill();ctx.restore()}
+ for(const p of shields){ctx.save();ctx.translate(p.x,p.y);ctx.shadowBlur=18;ctx.shadowColor='#b76bff';ctx.strokeStyle='#d9aaff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.stroke();ctx.restore()}
+ for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);ctx.globalAlpha=1}
+ if(player)drawShip();
+}
 function setKey(k,v){if(k==='ArrowLeft'||k==='a'||k==='A')keys.left=v;if(k==='ArrowRight'||k==='d'||k==='D')keys.right=v}
 window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();setKey(e.key,true);if(e.key===' '&&!e.repeat)pause()});
 window.addEventListener('keyup',e=>setKey(e.key,false));window.addEventListener('keydown',e=>{if(e.key==='Shift'&&!e.repeat)dash()});window.addEventListener('blur',()=>{keys.left=keys.right=false;if(running&&!paused)pause()});
