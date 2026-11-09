@@ -788,7 +788,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 </section>
 <section class="layout">
  <div>
-  <div class="stage"><button class="game-menu-btn" id="gameMenuBtn" type="button">☰ MENU</button><canvas id="game" aria-label="Neon Drift play area"></canvas><div class="toast" id="toast"></div>
+  <div class="stage"><button class="game-menu-btn" id="gameMenuBtn" type="button">☰ MENU</button><button class="stage-fullscreen-btn" id="stageFullscreen" type="button" aria-label="Enter fullscreen" title="Enter fullscreen">⛶ <span>FULLSCREEN</span></button><canvas id="game" aria-label="Neon Drift play area"></canvas><div class="toast" id="toast"></div>
    <div class="overlay" id="overlay"><div class="dialog"><div class="eyebrow">THE CITY NEVER SLEEPS</div><h1>NEON<br><em>DRIFT</em></h1><p id="message">Dodge the hazards, grab energy cores, and stay alive as the city speeds up. How long can you last?</p>
     <div class="menu-row"><label for="difficulty">DIFFICULTY</label><select id="difficulty"><option value="chill">Chill</option><option value="normal" selected>Normal</option><option value="chaos">Chaos</option></select></div>
     <button class="primary" id="start">START RUN</button><div class="hint">Steer: A / D or ← / → · Dash: SHIFT · Pause: SPACE</div>
@@ -1056,10 +1056,31 @@ $('lobbyFullscreen').addEventListener('click',async()=>{try{if(document.fullscre
 
 startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;gameSettings.sound=sound;saveSettings();e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 const fullscreenBtn=$('fullscreenBtn');
-const siteApp=document.querySelector('.app');
-function syncFullscreenButton(){const active=document.fullscreenElement===siteApp;fullscreenBtn.innerHTML=active?'⛶ <span>EXIT FULLSCREEN</span>':'⛶ <span>FULLSCREEN</span>';fullscreenBtn.setAttribute('aria-label',active?'Exit website fullscreen':'Enter website fullscreen');fullscreenBtn.title=active?'Exit website fullscreen':'Enter website fullscreen'}
-fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(siteApp.requestFullscreen){await siteApp.requestFullscreen()}else if(siteApp.webkitRequestFullscreen){siteApp.webkitRequestFullscreen()}else{showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')}}catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
-document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize()});document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
+const stageFullscreen=$('stageFullscreen');
+const fullscreenTargets=[fullscreenBtn,stageFullscreen,$('lobbyFullscreen')].filter(Boolean);
+async function toggleSiteFullscreen(){
+ try{
+  if(document.fullscreenElement){await document.exitFullscreen();return}
+  const root=document.documentElement;
+  if(root.requestFullscreen)await root.requestFullscreen();
+  else if(root.webkitRequestFullscreen)root.webkitRequestFullscreen();
+  else showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER');
+ }catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}
+}
+function syncFullscreenButton(){
+ const active=!!document.fullscreenElement;
+ fullscreenTargets.forEach(button=>{
+  const label=active?'Exit fullscreen':'Enter fullscreen';
+  button.setAttribute('aria-label',label);
+  button.title=label;
+  if(button===fullscreenBtn)button.innerHTML=active?'⛶ <span>EXIT FULLSCREEN</span>':'⛶ <span>FULLSCREEN</span>';
+  if(button===stageFullscreen)button.innerHTML=active?'⛶ <span>EXIT</span>':'⛶ <span>FULLSCREEN</span>';
+ });
+}
+fullscreenTargets.forEach(button=>button.addEventListener('click',toggleSiteFullscreen));
+document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize()});
+document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
+syncFullscreenButton();
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
 const settingsModal=$('settingsModal');
 function closeSettings(){settingsModal.hidden=true}
