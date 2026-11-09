@@ -57,7 +57,7 @@
 
   // These are the actual lobby sections, moved intact so their controls and IDs keep working.
   moveIntoMenu(lobby.querySelector('.lobby-meta'), 'GAME MODES', 'nd-menu-meta');
-  moveIntoMenu(lobby.querySelector('.lobby-footer'), 'QUICK SETTINGS & GAME INFO', 'nd-menu-footer-content');
+  moveIntoMenu(lobby.querySelector('.lobby-footer'), 'PERSONAL BEST · DIFFICULTY · SETTINGS · GAME INFO', 'nd-menu-footer-content');
   moveIntoMenu(lobby.querySelector('.pilot-progression'), 'YOUR PILOT PROFILE & HANGAR', 'nd-menu-progression');
 
   // Move the separate interface that was sitting underneath the lobby into this menu too.
@@ -86,12 +86,15 @@
     content.append(panel);
   });
 
-  // The command summary is created by site-enhancements.js; catch it even if it mounts later.
+  // These modules mount some controls after this script runs. Move the actual
+  // elements into the menu as soon as they are created.
   const moveCommandStrip = () => moveIntoMenu(lobby.querySelector('.nd-command-strip'), 'PILOT COMMAND DASHBOARD', 'nd-menu-command');
+  const moveOperationsLaunch = () => moveIntoMenu(lobby.querySelector('.ops-launch'), 'OPERATIONS CENTER', 'nd-menu-operations');
   moveCommandStrip();
+  moveOperationsLaunch();
   const observer = new MutationObserver(() => {
     moveCommandStrip();
-    if (lobby.querySelector('.nd-command-strip')?.dataset.ndMenuMoved === 'true') observer.disconnect();
+    moveOperationsLaunch();
   });
   observer.observe(lobby, { childList: true, subtree: true });
 
