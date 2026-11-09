@@ -716,6 +716,27 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 </style>
 </head>
 <body>
+<div class="boot-screen" id="neonBootScreen" role="status" aria-live="polite" aria-label="Loading Neon Drift">
+  <div class="boot-backdrop"></div><div class="boot-scanlines"></div>
+  <div class="boot-content">
+    <div class="boot-brand"><span class="boot-logo">N</span><span>NEON <b>DRIFT</b></span></div>
+    <div class="boot-orbit"><span class="boot-orbit-ring ring-a"></span><span class="boot-orbit-ring ring-b"></span><span class="boot-orbit-core">N</span><i class="boot-orbit-dot"></i></div>
+    <div class="boot-kicker">ARCADE SYSTEM INITIALIZATION</div>
+    <h1>PREPARING<br><em>YOUR RUN</em></h1>
+    <p class="boot-subtitle" id="bootSubtitle">Waking up the neon city...</p>
+    <div class="boot-progress-meta"><span id="bootStage">INITIALIZING</span><b id="bootPercent">0%</b></div>
+    <div class="boot-progress-track"><i id="bootProgressBar"></i></div>
+    <div class="boot-checks" id="bootChecks">
+      <div data-check="interface"><i></i><span>GAME INTERFACE</span><b>WAITING</b></div>
+      <div data-check="profile"><i></i><span>PILOT PROFILE</span><b>WAITING</b></div>
+      <div data-check="canvas"><i></i><span>RENDER ENGINE</span><b>WAITING</b></div>
+      <div data-check="online"><i></i><span>ONLINE SERVICES</span><b>OPTIONAL</b></div>
+    </div>
+    <div class="boot-tip"><small>FLIGHT INTEL</small><span id="bootTip">A well-timed phase dash can carry you through a tight hazard gap.</span></div>
+    <div class="boot-footer"><span>NEON DRIFT</span><span>BUILD 03 <i>•</i> READY WHEN YOU ARE</span></div>
+  </div>
+</div>
+
 
 <!-- Standalone game lobby -->
 <section class="game-lobby" id="gameLobby" aria-label="Neon Drift game menu">
@@ -1041,5 +1062,6 @@ $('trailShop').addEventListener('click',e=>{const button=e.target.closest('[data
 resize();bestEl.textContent=fmt(best);$('sound').textContent='SOUND: '+(sound?'ON':'OFF');$('lobbyBest').textContent=fmt(best);renderAchievements();renderCareerStats();renderRunHistory();renderDaily();initNotifications();
 })();
 </script>
+<script src="./loading-screen.js"></script>
 </body>
 </html>
