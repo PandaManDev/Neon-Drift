@@ -191,6 +191,17 @@ begin
 end;
 $$;
 
+-- Restrict RPC execution: SECURITY DEFINER helpers must not be callable by anonymous users.
+revoke execute on function public.neon_create_profile() from public, anon, authenticated;
+revoke execute on function public.neon_is_party_member(uuid) from public, anon;
+revoke execute on function public.neon_send_friend_request(text) from public, anon;
+revoke execute on function public.neon_respond_friend_request(uuid, boolean) from public, anon;
+revoke execute on function public.neon_create_party() from public, anon;
+revoke execute on function public.neon_join_party(text) from public, anon;
+revoke execute on function public.neon_leave_party() from public, anon;
+revoke execute on function public.neon_set_party_ready(boolean) from public, anon;
+
+grant execute on function public.neon_is_party_member(uuid) to authenticated;
 grant execute on function public.neon_send_friend_request(text) to authenticated;
 grant execute on function public.neon_respond_friend_request(uuid, boolean) to authenticated;
 grant execute on function public.neon_create_party() to authenticated;
