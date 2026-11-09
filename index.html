@@ -629,6 +629,58 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 @media(hover:none){button:hover,.stat:hover,.legend div:hover{transform:none;filter:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+
+/* BUILD 03 — boot experience */
+.boot-screen{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;background:#050610;color:#f5f4ff;opacity:1;visibility:visible;transition:opacity .48s ease,visibility .48s ease}
+.boot-screen.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
+.boot-backdrop{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 43%,#52217c66,transparent 35%),radial-gradient(ellipse at 12% 90%,#153b5966,transparent 42%),linear-gradient(145deg,#050610,#090b19 55%,#080817)}
+.boot-backdrop:before,.boot-backdrop:after{content:"";position:absolute;inset:-50%;background-image:linear-gradient(#9e7dff0c 1px,transparent 1px),linear-gradient(90deg,#9e7dff0c 1px,transparent 1px);background-size:48px 48px;transform:perspective(500px) rotateX(62deg) translateY(18%);mask-image:linear-gradient(transparent,#000 35%,#000 70%,transparent)}
+.boot-backdrop:after{background:radial-gradient(circle,#b9a3ff99 1px,transparent 1.5px);background-size:73px 73px;transform:none;opacity:.2;mask-image:linear-gradient(transparent,#000,transparent)}
+.boot-scanlines{position:absolute;inset:0;pointer-events:none;opacity:.15;background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px)}
+.boot-content{position:relative;width:min(470px,calc(100% - 34px));padding:26px 0 20px;text-align:center}
+.boot-brand{display:flex;justify-content:center;align-items:center;gap:11px;font-size:12px;font-weight:900;letter-spacing:.25em;color:#e9e0ff}
+.boot-brand b{color:#4beaff}.boot-logo{width:32px;height:32px;display:grid;place-items:center;border:1px solid #b27aff;border-radius:10px;color:#fff;font-size:17px;box-shadow:0 0 24px #a855f755,inset 0 0 15px #a855f733}
+.boot-orbit{position:relative;width:104px;height:104px;margin:22px auto 13px;display:grid;place-items:center}
+.boot-orbit-ring{position:absolute;inset:3px;border:1px solid #a855f766;border-radius:50%;box-shadow:0 0 24px #a855f722}
+.boot-orbit-ring.ring-a{animation:bootSpin 7s linear infinite}
+.boot-orbit-ring.ring-b{inset:14px;border-color:#39e6ff77;border-style:dashed;animation:bootSpin 11s linear infinite reverse}
+.boot-orbit-core{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#a855f7,#176c99);font-weight:1000;font-size:22px;box-shadow:0 0 30px #8e4df899,0 0 60px #39e6ff22}
+.boot-orbit-dot{position:absolute;top:8px;left:50%;width:7px;height:7px;border-radius:50%;background:#39e6ff;box-shadow:0 0 14px #39e6ff;transform-origin:0 44px;animation:bootSpin 3s linear infinite}
+.boot-kicker{font-size:9px;letter-spacing:.27em;color:#9ab4d1}
+.boot-content h1{font-size:clamp(31px,7vw,46px);line-height:.98;letter-spacing:-.055em;margin:10px 0 8px;font-weight:1000}
+.boot-content h1 em{font-style:normal;color:#49eaff;text-shadow:0 0 20px #39e6ff66}
+.boot-subtitle{margin:0 0 24px;color:#9eacc5;font-size:12px}
+.boot-progress-meta{display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:.16em;color:#9db1cf;margin-bottom:8px}
+.boot-progress-meta b{color:#65edff;font-size:12px}
+.boot-progress-track{height:7px;overflow:hidden;border:1px solid #344363;border-radius:20px;background:#11182b;box-shadow:inset 0 2px 5px #0008}
+.boot-progress-track i{display:block;width:0;height:100%;border-radius:20px;background:linear-gradient(90deg,#8746d5,#39e6ff);box-shadow:0 0 18px #39e6ff88;transition:width .32s ease}
+.boot-checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.boot-checks>div{display:flex;align-items:center;gap:7px;padding:9px 10px;border:1px solid #293954;border-radius:8px;background:#0a1221b8;text-align:left;font-size:8px;letter-spacing:.08em;color:#8da5c2}
+.boot-checks i{width:6px;height:6px;border-radius:50%;background:#66748c;flex:none}
+.boot-checks b{margin-left:auto;font-size:7px;color:#7487a1;font-weight:800}
+.boot-checks>div.done{border-color:#276b6e;background:#092127}.boot-checks>div.done i{background:#59efc0;box-shadow:0 0 9px #59efc0}.boot-checks>div.done b{color:#73efc3}
+.boot-checks>div.optional b{color:#7e91ac}
+.boot-tip{padding:12px 14px;border:1px solid #453568;border-radius:10px;background:linear-gradient(100deg,#1a1230aa,#0c1a28aa);text-align:left}
+.boot-tip small,.boot-tip span{display:block}.boot-tip small{font-size:8px;letter-spacing:.18em;color:#bd8cff;margin-bottom:5px}.boot-tip span{font-size:10px;color:#bdcce0;line-height:1.5}
+.boot-footer{display:flex;justify-content:space-between;gap:12px;margin-top:20px;color:#647b9b;font-size:7px;letter-spacing:.15em}.boot-footer i{font-style:normal;color:#39e6ff}
+@keyframes bootSpin{to{transform:rotate(360deg)}}
+@media(max-width:420px){.boot-content{padding-top:14px}.boot-orbit{margin:17px auto 11px}.boot-checks{gap:6px}.boot-checks>div{padding:8px 7px;font-size:7px}.boot-footer{font-size:6px}}
+@media(prefers-reduced-motion:reduce){.boot-orbit-ring,.boot-orbit-dot{animation:none}.boot-screen,.boot-progress-track i{transition:none}}
+/* BUILD 03 — pilot rewards and cosmetic hangar */
+.pilot-rewards{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-top:13px;padding-top:12px;border-top:1px solid #293e5c}
+.pilot-reward-copy b,.pilot-reward-copy small{display:block}.pilot-reward-copy b{font-size:10px;color:#f2eaff;letter-spacing:.08em}.pilot-reward-copy small{font-size:8px;color:#8ea5c3;margin-top:3px}
+.pilot-reward-btn,.trail-buy{border:1px solid #56658b;border-radius:8px;padding:8px 10px;background:linear-gradient(120deg,#44246b,#123b58);color:#effaff;font:inherit;font-size:8px;font-weight:900;letter-spacing:.1em;cursor:pointer}
+.pilot-reward-btn:disabled,.trail-buy:disabled{opacity:.45;cursor:not-allowed}
+.trail-hangar{margin-top:13px;padding-top:12px;border-top:1px solid #293e5c}
+.trail-hangar-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:9px;font-weight:900;letter-spacing:.15em;color:#b8c9e2}
+.trail-hangar-title small{font-size:7px;color:#7f94b1}
+.trail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.trail-card{display:flex;align-items:center;gap:7px;min-width:0;padding:8px;border:1px solid #2c405f;border-radius:9px;background:#0b1423}
+.trail-swatch{width:23px;height:23px;border-radius:50%;flex:none;box-shadow:0 0 13px currentColor,inset 0 0 6px #fff8}
+.trail-info{flex:1;min-width:0}.trail-info b,.trail-info small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.trail-info b{font-size:8px;color:#e8edfa}.trail-info small{font-size:7px;color:#8da3c0;margin-top:3px}
+.trail-buy{padding:6px 7px;font-size:7px;white-space:nowrap}
+@media(max-width:650px){.trail-grid{grid-template-columns:1fr 1fr}.pilot-rewards{grid-template-columns:1fr auto}}
+
 </style>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="alternate icon" href="./favicon.svg">
@@ -681,6 +733,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     <div class="pilot-progress-heading"><div><small>PILOT PROGRESSION</small><strong id="pilotLevel">LEVEL 01 · ROOKIE</strong></div><span id="pilotCredits">0 CREDITS</span></div>
     <div class="pilot-xp-track" role="progressbar" aria-label="Pilot experience" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="pilotXpBar"></i></div>
     <div class="pilot-progress-bottom"><span id="pilotXpText">0 / 250 XP</span><label for="pilotSkin">SHIP SKIN</label><select id="pilotSkin" aria-label="Choose unlocked ship skin"></select></div>
+    <div class="pilot-rewards"><div class="pilot-reward-copy"><b id="loginRewardTitle">DAILY PILOT SUPPLY</b><small id="loginRewardText">Claim today's credits and keep your streak alive.</small></div><button class="pilot-reward-btn" id="claimLoginReward" type="button">CLAIM +100</button></div>
+    <div class="trail-hangar"><div class="trail-hangar-title"><span>COSMETIC HANGAR</span><small>TRAIL EFFECTS</small></div><div class="trail-grid" id="trailShop"></div></div>
   </section>
   <div class="lobby-modal" id="partyModal" hidden><div class="how-card party-card" role="dialog" aria-modal="true" aria-labelledby="partyTitle"><button id="partyClose" class="how-close" aria-label="Close party">×</button><div class="lobby-kicker">SQUAD ASSEMBLY</div><h2 id="partyTitle">PARTY LOBBY</h2><div class="party-status"><span class="party-pulse"></span><span id="partyStatusText">YOU ARE PLAYING SOLO</span></div><div class="party-slots" id="partySlots"><div class="party-slot"><span class="party-avatar">Y</span><span><b>YOU · HOST</b><small>READY</small></span><i>●</i></div><div class="party-slot empty"><span class="party-avatar">+</span><span><b>OPEN SLOT</b><small>INVITE A PLAYER</small></span></div><div class="party-slot empty"><span class="party-avatar">+</span><span><b>OPEN SLOT</b><small>INVITE A PLAYER</small></span></div><div class="party-slot empty"><span class="party-avatar">+</span><span><b>OPEN SLOT</b><small>INVITE A PLAYER</small></span></div></div><div class="party-actions"><button id="partyCreate" class="lobby-play" type="button">CREATE PARTY</button><button id="partyInvite" class="lobby-secondary" type="button" disabled>INVITE FRIENDS</button><button id="partyLeave" class="lobby-secondary" type="button" disabled>LEAVE PARTY</button></div><small id="partyFeedback" class="party-feedback" aria-live="polite"></small><p class="friends-note">Online parties sync members and ready status across devices when your Supabase project is configured. Voice chat and shared live gameplay are separate features.</p></div></div>
   <div class="lobby-modal" id="friendsModal" hidden><div class="how-card friends-card" role="dialog" aria-modal="true" aria-labelledby="friendsTitle"><button id="friendsClose" class="how-close" aria-label="Close friends">×</button><div class="lobby-kicker">PILOT NETWORK</div><h2 id="friendsTitle">FRIENDS</h2><div class="friends-summary"><div><b id="friendCount">0</b><small>YOUR FRIENDS</small></div><div><b id="onlineCount">0</b><small>ONLINE HERE</small></div></div><div class="friends-tabs"><button class="friends-tab active" id="friendsTabList" type="button">FRIENDS LIST</button><button class="friends-tab" id="friendsTabInvite" type="button">INVITE</button></div><section id="friendsListView"><form id="addFriendForm" class="friend-add"><label for="friendName">ADD A FRIEND</label><div><input id="friendName" maxlength="20" autocomplete="off" placeholder="Enter a username" required><button type="submit">ADD</button></div></form><div class="friends-list" id="friendsList"></div><p class="friends-note">Sign in above to use cross-device friend requests and online status. Local-only entries are not synced.</p></section><section id="friendsInviteView" hidden><div class="invite-panel"><div class="invite-orb">✦</div><h3>BRING YOUR CREW</h3><p>Share Neon Drift with a friend so they can jump into the arena too.</p><button class="lobby-play" id="shareGameInvite" type="button">SHARE GAME INVITE</button><button class="lobby-secondary" id="copyGameInvite" type="button">COPY GAME LINK</button><small id="inviteFeedback" aria-live="polite"></small></div><p class="friends-note">Share the game link with friends, then add their Neon Drift username to connect.</p></section></div></div>
@@ -728,7 +782,14 @@ const SHIP_SKINS=[
  {id:'pink',name:'PULSE PINK',color:'#ff4fd8',unlock:5},
  {id:'gold',name:'SOLAR GOLD',color:'#ffe66d',unlock:8}
 ];
-let pilotProgress={level:1,xp:0,credits:0,skin:'cyan',runs:0};
+const TRAIL_COSMETICS=[
+ {id:'cyan',name:'CYAN STREAM',color:'#39e6ff',price:0,desc:'Classic ion trail'},
+ {id:'violet',name:'VOID FLAME',color:'#b76bff',price:250,desc:'Purple plasma exhaust'},
+ {id:'pink',name:'PULSE WAKE',color:'#ff4fd8',price:400,desc:'Hot pink afterglow'},
+ {id:'gold',name:'SOLAR BURST',color:'#ffe66d',price:650,desc:'Golden engine flare'},
+ {id:'prism',name:'PRISM DRIVE',color:'#8ef7ff',price:950,desc:'Rare spectrum energy'}
+];
+let pilotProgress={level:1,xp:0,credits:0,skin:'cyan',runs:0,trail:'cyan',unlockedTrails:['cyan'],loginDay:'',loginStreak:0};
 try{pilotProgress={...pilotProgress,...JSON.parse(localStorage.getItem(PILOT_KEY)||'{}')}}catch(e){}
 
 let W=0,H=0,dpr=1,player=null,obstacles=[],cores=[],shields=[],particles=[],stars=[];
@@ -863,6 +924,36 @@ function renderPilotProgress(){
  $('pilotXpBar').style.width=Math.min(100,xp/need*100)+'%';
  const track=document.querySelector('.pilot-xp-track');if(track)track.setAttribute('aria-valuenow',String(Math.round(xp/need*100)));
  const select=$('pilotSkin');if(select){select.innerHTML=SHIP_SKINS.map(skin=>'<option value="'+skin.id+'" '+(skin.unlock>level?'disabled':'')+'>'+skin.name+(skin.unlock>level?' · LVL '+skin.unlock:'')+'</option>').join('');select.value=current.id}
+ renderTrailShop();renderLoginReward();
+}
+function renderTrailShop(){
+ const host=$('trailShop');if(!host)return;
+ const unlocked=Array.isArray(pilotProgress.unlockedTrails)?pilotProgress.unlockedTrails:['cyan'];
+ host.innerHTML=TRAIL_COSMETICS.map(t=>{
+  const owned=unlocked.includes(t.id),equipped=pilotProgress.trail===t.id;
+  const action=equipped?'EQUIPPED':owned?'EQUIP':t.price+' CR';
+  return '<article class="trail-card"><span class="trail-swatch" style="color:'+t.color+';background:'+t.color+'"></span><span class="trail-info"><b>'+t.name+'</b><small>'+t.desc+'</small></span><button class="trail-buy" type="button" data-trail="'+t.id+'" '+(equipped?'disabled':'')+'>'+(owned?'EQUIP':action)+'</button></article>';
+ }).join('');
+}
+function renderLoginReward(){
+ const button=$('claimLoginReward'),title=$('loginRewardTitle'),copy=$('loginRewardText');if(!button)return;
+ const today=localDay(),claimed=pilotProgress.loginDay===today;
+ button.disabled=claimed;button.textContent=claimed?'CLAIMED':'CLAIM +100';
+ title.textContent=claimed?'SUPPLY RECEIVED · DAY '+(pilotProgress.loginStreak||1):'DAILY PILOT SUPPLY';
+ copy.textContent=claimed?'Come back tomorrow to extend your login streak.':'Collect 100 credits once per day. Current streak: '+(pilotProgress.loginStreak||0)+' day(s).';
+}
+function claimLoginReward(){
+ const today=localDay();if(pilotProgress.loginDay===today)return;
+ pilotProgress.loginStreak=pilotProgress.loginDay===previousDay()?(Number(pilotProgress.loginStreak)||0)+1:1;
+ pilotProgress.loginDay=today;pilotProgress.credits=(Number(pilotProgress.credits)||0)+100;
+ savePilotProgress();renderPilotProgress();showToast('DAILY SUPPLY CLAIMED · +100 CREDITS');beep(880,.12,'triangle');
+}
+function buyOrEquipTrail(id){
+ const item=TRAIL_COSMETICS.find(t=>t.id===id);if(!item)return;
+ const owned=Array.isArray(pilotProgress.unlockedTrails)?pilotProgress.unlockedTrails:(pilotProgress.unlockedTrails=['cyan']);
+ if(owned.includes(id)){pilotProgress.trail=id;savePilotProgress();renderPilotProgress();showToast(item.name+' EQUIPPED');return}
+ if(pilotProgress.credits<item.price){showToast('NOT ENOUGH CREDITS');return}
+ pilotProgress.credits-=item.price;owned.push(id);pilotProgress.trail=id;savePilotProgress();renderPilotProgress();showToast('UNLOCKED · '+item.name);beep(1040,.15,'triangle');
 }
 function awardPilotProgress(){
  const earnedXp=Math.max(10,Math.floor(score*.22)+coresCollected*20+Math.floor(runTime*3));
@@ -888,7 +979,7 @@ function burst(x,y,color,count=12){if(gameSettings.reducedMotion)return;const li
 function hit(a,b){return Math.abs(a.x-b.x)<(a.w+b.w)/2&&Math.abs(a.y-b.y)<(a.h+b.h)/2}
 function updateHud(){scoreEl.textContent=fmt(score);levelEl.textContent=String(level).padStart(2,'0');shieldEl.textContent=shieldHits?'ACTIVE':'READY';$('combo').textContent='x'+combo;$('dashStatus').innerHTML=dashCooldown<=0?'Dash: READY · <span class="key">SHIFT</span>':'Dash: '+dashCooldown.toFixed(1)+'s · <span class="key">SHIFT</span>';$('objectives').textContent='Cores '+Math.min(coresCollected,10)+'/10 · Survival '+Math.min(Math.floor(runTime),60)+'/60s'}
 function dash(){if(!running||paused||dashCooldown>0)return;dashesUsed++;checkDaily();renderDaily();unlockAchievement('dash-master');dashTime=.34;dashCooldown=4.2;burst(player.x,player.y,'#39e6ff',12);beep(720,.08,'triangle');showToast('PHASE DASH')}
-function drawShip(){const shipColor=(SHIP_SKINS.find(x=>x.id===pilotProgress.skin&&x.unlock<=pilotProgress.level)||SHIP_SKINS[0]).color;ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.tilt);ctx.shadowBlur=gameSettings.performance?0:(dashTime>0?34:22);ctx.shadowColor=dashTime>0?'#ffffff':shipColor;ctx.fillStyle=shipColor;ctx.beginPath();ctx.moveTo(0,-19);ctx.lineTo(13,13);ctx.lineTo(0,8);ctx.lineTo(-13,13);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-3,3.5,5,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=15;ctx.shadowColor='#ff9b45';ctx.fillStyle='#ff9b45';ctx.beginPath();ctx.moveTo(-4,12);ctx.lineTo(0,22+Math.random()*5);ctx.lineTo(4,12);ctx.fill();if(shieldHits){ctx.strokeStyle='#b76bff';ctx.lineWidth=2;ctx.shadowColor='#b76bff';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.stroke()}ctx.restore()}
+function drawShip(){const shipColor=(SHIP_SKINS.find(x=>x.id===pilotProgress.skin&&x.unlock<=pilotProgress.level)||SHIP_SKINS[0]).color;const trailColor=(TRAIL_COSMETICS.find(x=>x.id===pilotProgress.trail)||TRAIL_COSMETICS[0]).color;ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.tilt);if(!gameSettings.performance){ctx.globalAlpha=.72;ctx.shadowBlur=15;ctx.shadowColor=trailColor;ctx.fillStyle=trailColor;ctx.beginPath();ctx.moveTo(-3,12);ctx.lineTo(0,27+Math.random()*6);ctx.lineTo(3,12);ctx.fill();ctx.globalAlpha=1}ctx.shadowBlur=gameSettings.performance?0:(dashTime>0?34:22);ctx.shadowColor=dashTime>0?'#ffffff':shipColor;ctx.fillStyle=shipColor;ctx.beginPath();ctx.moveTo(0,-19);ctx.lineTo(13,13);ctx.lineTo(0,8);ctx.lineTo(-13,13);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-3,3.5,5,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=15;ctx.shadowColor='#ff9b45';ctx.fillStyle='#ff9b45';ctx.beginPath();ctx.moveTo(-4,12);ctx.lineTo(0,22+Math.random()*5);ctx.lineTo(4,12);ctx.fill();if(shieldHits){ctx.strokeStyle='#b76bff';ctx.lineWidth=2;ctx.shadowColor='#b76bff';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.stroke()}ctx.restore()}
 function background(dt){ctx.fillStyle='#080612';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#9b67c2';ctx.globalAlpha=.09;ctx.lineWidth=1;const offset=(score*.4)%42;for(let y=-42+offset;y<H;y+=42){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}for(let x=0;x<W;x+=42){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}ctx.globalAlpha=1;for(const s of stars){s.y+=s.z*dt*(1+level*.03);if(s.y>H){s.y=0;s.x=Math.random()*W}ctx.fillStyle='rgba(190,165,255,'+(.18+s.z*.28)+')';ctx.fillRect(s.x,s.y,1.5*s.z,1.5*s.z)}}
 function loop(now){if(!running||paused)return;const dt=Math.min(Math.max((now-last)/16.667,0),2.2);last=now;const mode=modes[difficulty];score+=dt*(1+level*.12);level=1+Math.floor(score/850);const speed=(3.05+level*.31)*mode.speed*dt;runTime+=dt/60;dashTime=Math.max(0,dashTime-dt/60);dashCooldown=Math.max(0,dashCooldown-dt/60);comboTimer=Math.max(0,comboTimer-dt/60);if(comboTimer<=0&&combo>1){combo=1;updateHud()}if(runTime>=60&&!survivalObjectiveNotified){survivalObjectiveNotified=true;unlockAchievement('one-minute');showToast('OBJECTIVE COMPLETE · SURVIVOR')}if(score>=1000)unlockAchievement('score-1000');if(coresCollected>=10)unlockAchievement('core-collector');checkDaily();const dailyNow=dailyProgress();if(dailyNow!==lastDailyProgress){lastDailyProgress=dailyNow;renderDaily()}background(dt);
 if(keys.left)player.v-=.82*dt;if(keys.right)player.v+=.82*dt;if(pointer!==null)player.x+=(pointer-player.x)*Math.min(1,.25*dt);player.v*=Math.pow(.82,dt);player.x+=player.v*dt;player.x=clamp(player.x,17,W-17);player.tilt=clamp(player.v*.035,-.28,.28);
@@ -945,6 +1036,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!settingsModal.hidd
 applySettings();
 renderPilotProgress();
 $('pilotSkin').addEventListener('change',e=>{pilotProgress.skin=e.target.value;savePilotProgress();renderPilotProgress();showToast('SHIP SKIN EQUIPPED')});
+$('claimLoginReward').addEventListener('click',claimLoginReward);
+$('trailShop').addEventListener('click',e=>{const button=e.target.closest('[data-trail]');if(button&&!button.disabled)buyOrEquipTrail(button.dataset.trail)});
 resize();bestEl.textContent=fmt(best);$('sound').textContent='SOUND: '+(sound?'ON':'OFF');$('lobbyBest').textContent=fmt(best);renderAchievements();renderCareerStats();renderRunHistory();renderDaily();initNotifications();
 })();
 </script>
