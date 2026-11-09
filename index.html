@@ -1042,8 +1042,17 @@ function drawIdle(){
  if(player)drawShip();
 }
 function setKey(k,v){if(k==='ArrowLeft'||k==='a'||k==='A')keys.left=v;if(k==='ArrowRight'||k==='d'||k==='D')keys.right=v}
-window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();setKey(e.key,true);if(e.key===' '&&!e.repeat)pause()});
-window.addEventListener('keyup',e=>setKey(e.key,false));window.addEventListener('keydown',e=>{if(e.key==='Shift'&&!e.repeat)dash()});window.addEventListener('blur',()=>{keys.left=keys.right=false;if(running&&!paused)pause()});
+const isGameTypingTarget=target=>!!target?.closest?.('input,textarea,select,[contenteditable="true"],button,[role="button"]');
+window.addEventListener('keydown',e=>{
+ if(isGameTypingTarget(e.target))return;
+ if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
+ setKey(e.key,true);
+ if(e.key===' '&&!e.repeat)pause();
+ if(e.key==='Shift'&&!e.repeat)dash();
+});
+window.addEventListener('keyup',e=>{if(!isGameTypingTarget(e.target))setKey(e.key,false)});
+window.addEventListener('focusin',()=>{keys.left=keys.right=false});
+window.addEventListener('blur',()=>{keys.left=keys.right=false;if(running&&!paused)pause()});
 canvas.addEventListener('pointerdown',e=>{pointer=e.clientX-canvas.getBoundingClientRect().left;try{canvas.setPointerCapture(e.pointerId)}catch(_){}});
 canvas.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')pointer=e.clientX-canvas.getBoundingClientRect().left});
 canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('pointercancel',()=>pointer=null);
