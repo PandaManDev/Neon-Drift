@@ -713,6 +713,12 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .pilot-progress-bottom{font-size:9px;color:#8fa7c5;letter-spacing:.1em}.pilot-progress-bottom label{margin-left:auto;color:#aabbd0}.pilot-progress-bottom select{background:#101a2b;color:#e8f3ff;border:1px solid #3d5577;border-radius:8px;padding:7px 9px;font:inherit;max-width:160px}
 @media(max-width:650px){.pilot-progression{margin-bottom:18px;padding:13px}.pilot-progress-heading strong{font-size:12px}.pilot-progress-bottom{flex-wrap:wrap}.pilot-progress-bottom label{margin-left:auto}}
 
+
+/* Fullscreen the visible screen only; the lobby and game use separate shells. */
+#gameLobby:fullscreen{width:100vw;height:100vh;height:100dvh;max-height:none;min-height:0;box-sizing:border-box;padding:clamp(16px,3vw,48px);overflow:auto;background:radial-gradient(ellipse at 72% 45%,#20295b 0%,transparent 38%),radial-gradient(ellipse at 18% 85%,#40165e 0%,transparent 40%),linear-gradient(135deg,#070914,#0b1022 55%,#080b17)}
+#gameLobby:fullscreen .lobby-content{flex:1;min-height:0}
+#gameLobby:fullscreen .pilot-progression{max-height:34vh;overflow:auto}
+@media(max-width:760px){#gameLobby:fullscreen{padding:12px}#gameLobby:fullscreen .lobby-content{flex:0 0 auto}#gameLobby:fullscreen .pilot-progression{max-height:30vh}}
 </style>
 <link rel="stylesheet" href="./site-upgrade.css">
 </head>
@@ -1046,13 +1052,13 @@ hold('left','left');hold('right','right');$('dashTouch').addEventListener('point
 const gameLobby=$('gameLobby'),lobbyPlay=$('lobbyPlay'),lobbyDifficulty=$('lobbyDifficulty');
 function enterGame(){gameLobby.hidden=true;document.body.classList.add('game-active');$('difficulty').value=lobbyDifficulty.value;$('lobbyBest').textContent=fmt(best);startBtn.click();resize()}
 function returnToLobby(){if(running&&!paused)pause();gameLobby.hidden=false;document.body.classList.remove('game-active');$('lobbyBest').textContent=fmt(best);resize()}
-lobbyPlay.addEventListener('click',async()=>{enterGame();try{if(document.documentElement.requestFullscreen&&!document.fullscreenElement)await document.documentElement.requestFullscreen()}catch(e){}});
+lobbyPlay.addEventListener('click',()=>enterGame());
 lobbyDifficulty.addEventListener('change',()=>{$('difficulty').value=lobbyDifficulty.value});
 $('lobbyHow').addEventListener('click',()=>$('lobbyHowModal').hidden=false);
 $('lobbyHowClose').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
 $('lobbyHowReady').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
 $('gameMenuBtn').addEventListener('click',returnToLobby);
-$('lobbyFullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){}});
+
 
 startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;gameSettings.sound=sound;saveSettings();e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 const fullscreenBtn=$('fullscreenBtn');
