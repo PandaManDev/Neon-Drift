@@ -323,7 +323,58 @@ body.game-active .overlay .dialog{padding:28px;border:1px solid #405b7d;border-r
 body.game-active .game-menu-btn{display:block}
 @media(max-width:760px){body.game-active .game-menu-btn{top:48px;right:9px;padding:7px 10px}}
 </style>
-<style id="pilot-run-history-styles">.run-history{display:grid;gap:7px}.run-history-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:8px;padding:9px 10px;border:1px solid #263d59;border-radius:10px;background:#0a1422}.run-history-rank{color:#4beaff;font-size:10px;font-weight:900}.run-history-info b,.run-history-info small{display:block}.run-history-info b{font-size:11px;color:#e7f5ff}.run-history-info small{font-size:9px;color:#8098b5;margin-top:3px}.run-history-score{font-size:12px;font-weight:900;color:#ffe66d;font-variant-numeric:tabular-nums}.run-history-empty{padding:12px;border:1px dashed #344b68;border-radius:10px;color:#8296b1;font-size:11px;text-align:center}@media(max-width:760px){.run-history-row{padding:8px}.run-history-score{font-size:11px}}</style></head>
+<style id="pilot-run-history-styles">.run-history{display:grid;gap:7px}.run-history-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:8px;padding:9px 10px;border:1px solid #263d59;border-radius:10px;background:#0a1422}.run-history-rank{color:#4beaff;font-size:10px;font-weight:900}.run-history-info b,.run-history-info small{display:block}.run-history-info b{font-size:11px;color:#e7f5ff}.run-history-info small{font-size:9px;color:#8098b5;margin-top:3px}.run-history-score{font-size:12px;font-weight:900;color:#ffe66d;font-variant-numeric:tabular-nums}.run-history-empty{padding:12px;border:1px dashed #344b68;border-radius:10px;color:#8296b1;font-size:11px;text-align:center}@media(max-width:760px){.run-history-row{padding:8px}.run-history-score{font-size:11px}}</style>
+<style id="neon-drift-desktop-ui-fix">
+/* Desktop command-center spacing, proportions and sidebar scrolling */
+@media (min-width: 1000px) {
+  body:not(.game-active){padding:22px clamp(20px,3vw,52px) 26px}
+  body:not(.game-active) .app{width:min(1500px,100%);gap:16px}
+  body:not(.game-active) .top{min-height:62px;padding:0 4px 12px;gap:18px}
+  body:not(.game-active) .notify-wrap{gap:9px;flex-wrap:nowrap}
+  body:not(.game-active) .tag{white-space:nowrap}
+  body:not(.game-active) .fullscreen-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:9px 13px;border:1px solid #3d6483;border-radius:11px;background:linear-gradient(145deg,#14263a,#10182b);box-shadow:0 6px 18px #0005;color:#c9efff;font-size:10px;letter-spacing:.09em;white-space:nowrap}
+  body:not(.game-active) .fullscreen-btn:hover{border-color:#48dfff;box-shadow:0 0 20px #36e8ff22}
+  body:not(.game-active) .command-intro{min-height:132px;padding:22px clamp(24px,3vw,38px)}
+  body:not(.game-active) .intro-copy h1{font-size:clamp(34px,3.5vw,48px)}
+  body:not(.game-active) .dashboard{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  body:not(.game-active) .stat{min-width:0;min-height:76px;padding:12px 13px 11px 17px}
+  body:not(.game-active) .stat small{font-size:8px;letter-spacing:.16em}
+  body:not(.game-active) .stat strong{font-size:clamp(19px,2vw,26px);white-space:nowrap}
+  body:not(.game-active) .layout{grid-template-columns:minmax(0,1fr) 292px;gap:14px;align-items:start}
+  body:not(.game-active) .layout>div{min-width:0}
+  body:not(.game-active) .stage{height:clamp(540px,calc(100vh - 365px),740px);min-height:540px}
+  body:not(.game-active) .stage canvas{width:100%;height:100%;min-height:0;max-height:none}
+  body:not(.game-active) .side{height:clamp(540px,calc(100vh - 365px),740px);min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;position:relative;top:auto;padding:19px 17px;gap:13px;scrollbar-width:thin;scrollbar-color:#456b91 #0a1422}
+  body:not(.game-active) .side::-webkit-scrollbar{width:7px}
+  body:not(.game-active) .side::-webkit-scrollbar-track{background:#0a1422;border-radius:10px}
+  body:not(.game-active) .side::-webkit-scrollbar-thumb{background:#456b91;border-radius:10px}
+  body:not(.game-active) .side h2{margin:0;font-size:9px}
+  body:not(.game-active) .side p{font-size:11px;line-height:1.55}
+  body:not(.game-active) .achievement-list{max-height:190px}
+  body:not(.game-active) .footer{font-size:10px;padding-top:9px}
+}
+@media (min-width: 1000px) and (max-height: 760px) {
+  body:not(.game-active){padding-top:14px;padding-bottom:14px}
+  body:not(.game-active) .app{gap:11px}
+  body:not(.game-active) .top{min-height:52px;padding-bottom:8px}
+  body:not(.game-active) .command-intro{min-height:104px;padding-top:15px;padding-bottom:15px}
+  body:not(.game-active) .intro-copy h1{font-size:34px;margin:5px 0}
+  body:not(.game-active) .dashboard{gap:7px}
+  body:not(.game-active) .stat{min-height:62px;padding-top:9px;padding-bottom:8px}
+  body:not(.game-active) .layout{grid-template-columns:minmax(0,1fr) 270px;gap:11px}
+  body:not(.game-active) .stage{height:clamp(470px,calc(100vh - 285px),590px);min-height:470px}
+  body:not(.game-active) .side{height:clamp(470px,calc(100vh - 285px),590px);padding:14px 13px;gap:10px}
+}
+@media (min-width: 761px) and (max-width: 999px) {
+  body:not(.game-active) .top{align-items:center;flex-wrap:wrap}
+  body:not(.game-active) .notify-wrap{flex-wrap:wrap;justify-content:flex-end}
+  body:not(.game-active) .fullscreen-btn{padding:8px 10px;font-size:9px}
+  body:not(.game-active) .layout{grid-template-columns:minmax(0,1fr) 225px;gap:10px}
+  body:not(.game-active) .side{max-height:680px;overflow-y:auto;min-width:0;padding:14px 12px}
+  body:not(.game-active) .stage{min-width:0}
+}
+</style>
+</head>
 <body>
 
 <!-- Standalone game lobby -->
