@@ -98,3 +98,28 @@ No license file is currently included in this repository. Unless a license is ad
 ---
 
 **Have fun out there. Stay sharp, pilot.**
+
+
+## Online Friends & Parties
+
+Neon Drift includes an optional online social layer powered by a **separate Supabase project**. The game can use:
+- Email/password accounts with unique pilot usernames.
+- Friend requests, accept/decline, remove friend, and live online presence.
+- Four-player online party rooms with an eight-character invite code.
+- Join by code or invite link, live member list, host handoff, and ready status.
+
+### One-time setup
+
+1. Create a new project at [Supabase](https://supabase.com/) just for Neon Drift.
+2. Open the project's **SQL Editor**, create a new query, paste all of `supabase-setup.sql`, and run it.
+3. Open **Project Settings → API** and copy the Project URL and the public publishable key (or legacy anon key).
+4. Edit `supabase-config.js` in this repository:
+   - Replace `YOUR_SUPABASE_PROJECT_URL` with the Project URL.
+   - Replace `YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY` with the public key.
+5. Commit the config change and open the GitHub Pages site. Create an account from the Friends window.
+
+**Security:** only the public publishable/anon key belongs in `supabase-config.js`. Never put a service-role key or database password in browser code or GitHub. The SQL enables Row Level Security and exposes the social actions through authenticated database functions.
+
+### Current boundaries
+
+The online layer syncs friends, presence, party membership, and ready status. It does **not** implement shared real-time gameplay, matchmaking, voice chat, or cross-device game progress. Those require additional game networking and server-authoritative gameplay work. Email confirmation behavior follows the Supabase Auth settings for the project.
