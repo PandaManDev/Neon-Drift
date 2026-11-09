@@ -1052,12 +1052,12 @@ hold('left','left');hold('right','right');$('dashTouch').addEventListener('point
 const gameLobby=$('gameLobby'),lobbyPlay=$('lobbyPlay'),lobbyDifficulty=$('lobbyDifficulty');
 function enterGame(){gameLobby.hidden=true;document.body.classList.add('game-active');$('difficulty').value=lobbyDifficulty.value;$('lobbyBest').textContent=fmt(best);startBtn.click();resize()}
 function returnToLobby(){if(running&&!paused)pause();gameLobby.hidden=false;document.body.classList.remove('game-active');$('lobbyBest').textContent=fmt(best);resize()}
-lobbyPlay.addEventListener('click',()=>enterGame());
+lobbyPlay.addEventListener('click',async()=>{if(document.fullscreenElement===gameLobby){try{await document.exitFullscreen()}catch(e){}}enterGame()});
 lobbyDifficulty.addEventListener('change',()=>{$('difficulty').value=lobbyDifficulty.value});
 $('lobbyHow').addEventListener('click',()=>$('lobbyHowModal').hidden=false);
 $('lobbyHowClose').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
 $('lobbyHowReady').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
-$('gameMenuBtn').addEventListener('click',returnToLobby);
+$('gameMenuBtn').addEventListener('click',async()=>{if(document.fullscreenElement===document.querySelector('.app')){try{await document.exitFullscreen()}catch(e){}}returnToLobby()});
 
 
 startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;gameSettings.sound=sound;saveSettings();e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
