@@ -42,6 +42,7 @@ create unique index if not exists profiles_username_lower_unique on public.profi
 create index if not exists friend_requests_receiver_status_idx on public.friend_requests(receiver_id, status);
 create index if not exists friend_requests_sender_status_idx on public.friend_requests(sender_id, status);
 create index if not exists party_members_party_idx on public.party_members(party_id);
+create index if not exists parties_host_id_idx on public.parties(host_id);
 
 alter table public.profiles enable row level security;
 alter table public.friend_requests enable row level security;
@@ -51,14 +52,14 @@ alter table public.party_members enable row level security;
 drop policy if exists "Profiles are visible to signed-in users" on public.profiles;
 create policy "Profiles are visible to signed-in users" on public.profiles for select to authenticated using (true);
 drop policy if exists "Users update their own profile" on public.profiles;
-create policy "Users update their own profile" on public.profiles for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
+create policy "Users update their own profile" on public.profiles for update to authenticated using (id = (select auth.uid())) with check (id = (select auth.uid()));
 
 drop policy if exists "Users see their own friend requests" on public.friend_requests;
-create policy "Users see their own friend requests" on public.friend_requests for select to authenticated using (sender_id = auth.uid() or receiver_id = auth.uid());
+create policy "Users see their own friend requests" on public.friend_requests for select to authenticated using (sender_id = (select auth.uid()) or receiver_id = (select auth.uid()));
 
 drop policy if exists "Party members can see their party" on public.parties;
 create policy "Party members can see their party" on public.parties for select to authenticated using (
-  exists (select 1 from public.party_members pm where pm.party_id = id and pm.user_id = auth.uid())
+  exists (select 1 from public.party_members pm where pm.party_id = id and pm.user_id = (select auth.uid()))
 );
 
 create or replace function public.neon_is_party_member(target_party uuid)
@@ -236,6 +237,7 @@ create table if not exists public.party_messages (
 );
 create index if not exists party_messages_party_created_idx
   on public.party_messages(party_id, created_at desc);
+create index if not exists party_messages_user_id_idx on public.party_messages(user_id);
 alter table public.party_messages enable row level security;
 drop policy if exists "Party members can read party chat" on public.party_messages;
 create policy "Party members can read party chat"
@@ -244,7 +246,7 @@ create policy "Party members can read party chat"
 drop policy if exists "Party members can send chat messages" on public.party_messages;
 create policy "Party members can send chat messages"
   on public.party_messages for insert to authenticated
-  with check (user_id = auth.uid() and public.neon_is_party_member(party_id));
+  with check (user_id = (select auth.uid()) and public.neon_is_party_member(party_id));
 grant select, insert on public.party_messages to authenticated;
 do $$
 begin
