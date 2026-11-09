@@ -70,9 +70,11 @@
   function announce(message){const toast=$('toast');if(toast){toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);}}
   function recordRun(){
     const score=Number($('score')?.textContent?.replace(/,/g,''))||0;
-    const cores=Number(window.coresCollected)||0;
-    const seconds=Math.round(Number(window.runTime)||0);
-    state.records.push({score,cores,seconds,at:Date.now()});state.records=state.records.slice(-40);save();
+    let career={totalCores:0,totalSeconds:0};try{career=Object.assign(career,JSON.parse(localStorage.getItem('neonDriftCareerStatsV1')||'{}'))}catch(_){}
+    const previous=state.records[state.records.length-1]||{careerCores:0,careerSeconds:0};
+    const cores=Math.max(0,(career.totalCores||0)-(previous.careerCores||0));
+    const seconds=Math.max(0,(career.totalSeconds||0)-(previous.careerSeconds||0));
+    state.records.push({score,cores,seconds,careerCores:career.totalCores||0,careerSeconds:career.totalSeconds||0,at:Date.now()});state.records=state.records.slice(-40);save();
     if($('operationsPanel')?.classList.contains('open'))render();
   }
   function hook(){
