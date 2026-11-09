@@ -23,6 +23,13 @@ style.textContent = `
 .online-empty{padding:13px;border:1px dashed #314b68;border-radius:10px;color:#8fa8c5;font-size:10px;text-align:center}
 .online-code-wrap{display:flex;gap:7px;margin:10px 0}.online-code-wrap input{flex:1;min-width:0}
 .online-party-code{font-size:18px;letter-spacing:.22em;color:#78eaff;font-weight:900;text-align:center;padding:10px}
+.online-chat{margin-top:14px;border-top:1px solid #29415e;padding-top:12px}
+.online-chat-log{height:150px;overflow:auto;background:#070e19;border:1px solid #29415e;border-radius:10px;padding:8px}
+.online-chat-line{font-size:10px;line-height:1.5;padding:4px 2px;overflow-wrap:anywhere;color:#cfe1f5}
+.online-chat-line b{color:#78eaff;margin-right:5px}
+.online-chat-form{display:flex;gap:7px;margin-top:8px}
+.online-chat-form input{flex:1;min-width:0;background:#070e19;border:1px solid #344d6b;border-radius:9px;color:#fff;padding:10px;font:inherit}
+.online-chat-form button{border:1px solid #6588b8;border-radius:9px;background:#172b45;color:#e8f7ff;padding:9px 12px;font:inherit;font-size:10px}
 #onlineAuthStatus{overflow-wrap:anywhere}
 `;
 document.head.appendChild(style);
@@ -67,7 +74,8 @@ partyExtras.innerHTML = `
   <form id="onlineJoinParty" class="online-code-wrap"><input id="onlinePartyCode" class="online-code" maxlength="8" placeholder="8-CHARACTER CODE" autocomplete="off" required><button class="primary" type="submit">JOIN</button></form>
   <p id="onlinePartyMessage" class="online-message" aria-live="polite"></p>
  </div>
- <div class="online-section" id="onlinePartyCodeBox" hidden><h3>YOUR INVITE CODE</h3><div class="online-party-code" id="onlinePartyCodeText"></div><div class="online-buttons"><button id="onlineCopyPartyCode" type="button">COPY CODE</button><button id="onlineReadyToggle" type="button">SET READY</button></div></div>`;
+ <div class="online-section" id="onlinePartyCodeBox" hidden><h3>YOUR INVITE CODE</h3><div class="online-party-code" id="onlinePartyCodeText"></div><div class="online-buttons"><button id="onlineCopyPartyCode" type="button">COPY CODE</button><button id="onlineReadyToggle" type="button">SET READY</button></div>
+  <div class="online-chat"><h3>PARTY CHAT</h3><div id="onlinePartyChatLog" class="online-chat-log" aria-live="polite"><div class="online-empty">Party messages will appear here.</div></div><form id="onlinePartyChatForm" class="online-chat-form"><input id="onlinePartyChatInput" maxlength="300" placeholder="Message your party…" autocomplete="off" required><button type="submit">SEND</button></form></div></div>`;
 partyCard.insertBefore(partyExtras, $('partySlots'));
 if(!configured){
  auth.querySelector('#onlineAuthStatus').textContent='Backend setup required. Add your Supabase Project URL and anon/publishable key to supabase-config.js, then reload.';
@@ -125,6 +133,7 @@ async function subscribeTables(){
   .on('postgres_changes',{event:'*',schema:'public',table:'friend_requests'},()=>refreshFriends())
   .on('postgres_changes',{event:'*',schema:'public',table:'party_members'},()=>refreshParty())
   .on('postgres_changes',{event:'*',schema:'public',table:'parties'},()=>refreshParty())
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'party_messages'},()=>loadPartyChat())
   .subscribe();
 }
 async function refreshFriends(){
@@ -153,6 +162,17 @@ async function refreshFriends(){
   $('onlineFriendRows').innerHTML='<div class="online-empty">No friends yet. Add someone by their exact username.</div>';
   $('friendCount').textContent='0';$('onlineCount').textContent='0';
  }
+}
+async function loadPartyChat(){
+ if(!session||!activeParty)return;
+ const {data,error}=await db.from('party_messages').select('id,user_id,message,created_at').eq('party_id',activeParty.id).order('created_at',{ascending:true}).limit(60);
+ if(error){partyMessage(error.message,'error');return}
+ const ids=[...new Set((data||[]).map(m=>m.user_id))];
+ const {data:people}=ids.length?await db.from('profiles').select('id,username').in('id',ids):{data:[]};
+ const names=Object.fromEntries((people||[]).map(p=>[p.id,p.username]));
+ const log=$('onlinePartyChatLog');
+ log.innerHTML=(data||[]).map(m=>'<div class="online-chat-line"><b>@'+esc(names[m.user_id]||'pilot')+'</b>'+esc(m.message)+'</div>').join('')||'<div class="online-empty">No messages yet. Say hello!</div>';
+ log.scrollTop=log.scrollHeight;
 }
 async function refreshParty(){
  if(!session)return;
@@ -259,6 +279,14 @@ $('partyInvite').addEventListener('click',async e=>{
  catch(err){if(err.name!=='AbortError')partyMessage('Could not share. Copy the code shown above.','error')}
 },{capture:true});
 $('onlineCopyPartyCode').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('onlinePartyCodeText').textContent);partyMessage('Party code copied.','good')}catch(e){partyMessage('Select and copy the code above.','error')}});
+$('onlinePartyChatForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!session||!activeParty)return;
+ const input=$('onlinePartyChatInput'),message=input.value.trim();if(!message)return;
+ input.disabled=true;
+ const {error}=await db.from('party_messages').insert({party_id:activeParty.id,user_id:session.user.id,message});
+ input.disabled=false;
+ if(error)partyMessage(error.message,'error');else{input.value='';await loadPartyChat()}
+});
 $('onlineReadyToggle').addEventListener('click',async()=>{
  if(!activeParty)return;const mine=activeParty.members.find(m=>m.user_id===session.user.id);
  const {error}=await db.rpc('neon_set_party_ready',{ready_state:!mine?.is_ready});
