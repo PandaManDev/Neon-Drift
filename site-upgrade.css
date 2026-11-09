@@ -382,3 +382,16 @@ input,select,textarea{color-scheme:dark}
 @media(max-width:600px){.nd-menu-dialog{max-height:94svh;border-radius:14px;padding:17px}.nd-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.nd-menu-item{min-height:86px;padding:11px}.nd-menu-item small{font-size:9px}.nd-menu-groups{gap:16px;padding:16px 0}}
 @media(max-width:360px){.nd-menu-grid{grid-template-columns:1fr}.nd-menu-item{min-height:72px}}
 @media(prefers-reduced-motion:reduce){.nd-menu-item{transition:none!important}}
+
+
+/* Keep all secondary game systems inside the unified menu */
+.nd-menu-dialog .nd-menu-extra{padding:17px 0;border-top:1px solid #ffffff18}
+.nd-menu-dialog .nd-menu-extra>h3{margin:0 0 12px;color:#bba8d8;font-size:10px;letter-spacing:.2em}
+.nd-menu-dialog .pilot-progression{display:block!important;width:100%;max-width:none;margin:0;padding:16px;border:1px solid #ffffff20;border-radius:12px;background:#ffffff07}
+.nd-menu-dialog .pilot-progression .trail-grid{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.nd-menu-dialog .nd-menu-intel .panel.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;max-width:none;margin:0;padding:16px;border:1px solid #ffffff20;border-radius:12px;background:#ffffff07}
+.nd-menu-dialog .nd-menu-intel .panel.side>*{min-width:0}
+.nd-menu-dialog .nd-menu-intel .panel.side .rule{display:none}
+.nd-menu-dialog .nd-menu-live-stats .dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin:0}
+.nd-menu-dialog .nd-menu-live-stats .stat{min-width:0}
+@media(max-width:620px){.nd-menu-dialog .nd-menu-intel .panel.side{grid-template-columns:1fr}.nd-menu-dialog .pilot-progression{padding:12px}}
