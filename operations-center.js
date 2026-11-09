@@ -84,10 +84,9 @@
     if($('operationsPanel')?.classList.contains('open'))render();
   }
   function hook(){
-    const finishButton=$('start');
-    if(finishButton){const original=finishButton.onclick; finishButton.addEventListener('click',()=>{ if(finishButton.textContent.toLowerCase().includes('restart'))recordRun(); });}
-    const observer=new MutationObserver(()=>{const msg=$('message');if(msg&&!msg.dataset.opsObserved){msg.dataset.opsObserved='1';}});
-    const overlay=$('overlay');if(overlay)observer.observe(overlay,{attributes:true,childList:true,subtree:true});
+    // Record only when the game confirms a completed run. Listening to the
+    // restart button used to count the previous run a second time on replay.
+    window.addEventListener('neondrift:run-finished', recordRun);
   }
   function boot(){ensureUI();render();hook();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
