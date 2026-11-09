@@ -17,6 +17,7 @@
         <div><span class="nd-menu-eyebrow">NEON DRIFT // COMMAND CENTER</span><h2 id="ndMenuTitle">ALL FEATURES</h2><p>Your pilot profile, rewards, settings and game options — all together.</p></div>
         <button class="nd-menu-close" type="button" data-menu-close aria-label="Close menu">×</button>
       </header>
+      <div class="nd-menu-search"><span aria-hidden="true">⌕</span><input id="ndFeatureSearch" type="search" autocomplete="off" placeholder="Search features, rewards, settings…" aria-label="Search all game features"><button type="button" id="ndFeatureSearchClear" aria-label="Clear feature search" hidden>×</button><small id="ndFeatureSearchCount" aria-live="polite">12 FEATURES</small></div>
       <div class="nd-menu-groups">
         <section class="nd-menu-group"><h3>PLAY</h3><div class="nd-menu-grid">
           <button class="nd-menu-item featured" data-action="play"><span>▶</span><b>Start a run</b><small>Jump straight into the arena</small></button>
@@ -29,7 +30,7 @@
           <button class="nd-menu-item" data-action="invite"><span>↗</span><b>Invite friends</b><small>Share the game link</small></button>
         </div></section>
         <section class="nd-menu-group"><h3>PILOT & PROGRESSION</h3><div class="nd-menu-grid">
-          <button class="nd-menu-item" data-action="operations"><span>▦</span><b>▦ OPERATIONS CENTER</b><small>Missions, season and milestones</small></button>
+          <button class="nd-menu-item" data-action="operations"><span>▦</span><b>OPERATIONS CENTER</b><small>Missions, season and milestones</small></button>
           <button class="nd-menu-item" data-action="records"><span>⌁</span><b>Career records</b><small>Achievements and flight history</small></button>
           <button class="nd-menu-item" data-action="profile"><span>✧</span><b>Pilot profile</b><small>Level, credits, rewards and hangar</small></button>
         </div></section>
@@ -43,6 +44,41 @@
       <footer class="nd-menu-footer"><span>NEON DRIFT</span><span>ONE MENU · ALL YOUR FEATURES</span></footer>
     </div>`;
   lobby.append(hub);
+
+  const featureSearch = hub.querySelector('#ndFeatureSearch');
+  const searchClear = hub.querySelector('#ndFeatureSearchClear');
+  const searchCount = hub.querySelector('#ndFeatureSearchCount');
+  const featureItems = [...hub.querySelectorAll('.nd-menu-item')];
+  const featureGroups = [...hub.querySelectorAll('.nd-menu-group')];
+  const applyFeatureSearch = () => {
+    const query = featureSearch.value.trim().toLocaleLowerCase();
+    let visible = 0;
+    featureItems.forEach((item) => {
+      const matches = !query || item.textContent.toLocaleLowerCase().includes(query);
+      item.hidden = !matches;
+      if (matches) visible++;
+    });
+    featureGroups.forEach((group) => {
+      group.hidden = !group.querySelector('.nd-menu-item:not([hidden])');
+    });
+    searchClear.hidden = !query;
+    searchCount.textContent = query ? visible + (visible === 1 ? ' RESULT' : ' RESULTS') : featureItems.length + ' FEATURES';
+    let empty = hub.querySelector('.nd-menu-no-results');
+    if (!visible && query) {
+      if (!empty) {
+        empty = document.createElement('p');
+        empty.className = 'nd-menu-no-results';
+        empty.textContent = 'No features found. Try another search.';
+        hub.querySelector('.nd-menu-groups').after(empty);
+      }
+    } else if (empty) empty.remove();
+  };
+  featureSearch.addEventListener('input', applyFeatureSearch);
+  searchClear.addEventListener('click', () => {
+    featureSearch.value = '';
+    applyFeatureSearch();
+    featureSearch.focus();
+  });
 
   const content = hub.querySelector('.nd-menu-content');
   const moveIntoMenu = (element, title, className) => {
@@ -110,6 +146,7 @@
     hub.hidden = false;
     document.body.classList.add('nd-menu-open');
     hub.querySelector('.nd-menu-close').focus();
+    applyFeatureSearch();
   };
   const close = () => {
     hub.hidden = true;
