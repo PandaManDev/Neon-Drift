@@ -445,3 +445,16 @@ body.game-active .app{display:flex!important}
  .nd-menu-dialog .nd-menu-intel .panel.side{grid-template-columns:1fr}
  .nd-menu-dialog .nd-menu-app-intro .command-intro{flex-direction:column;align-items:flex-start}
 }
+
+
+/* Final lobby cleanup: keep the landing screen to Play + All Features.
+   Every secondary action is launched from the unified menu instead. */
+.game-lobby .lobby-online,
+.game-lobby #lobbyFullscreen,
+.game-lobby #lobbyHow,
+.game-lobby #lobbyFriends,
+.game-lobby #lobbyParty{display:none!important}
+.game-lobby .lobby-actions{width:min(280px,100%);margin:24px auto 0;display:flex;flex-direction:column;align-items:stretch;gap:4px}
+.game-lobby #lobbyPlay,
+.game-lobby #lobbyAllFeatures{width:100%;min-height:42px}
+.game-lobby #lobbyAllFeatures{order:2}
