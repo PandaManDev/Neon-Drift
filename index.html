@@ -1067,9 +1067,9 @@ const fullscreenTargets=[fullscreenBtn,stageFullscreen,$('lobbyFullscreen')].fil
 async function toggleSiteFullscreen(){
  try{
   if(document.fullscreenElement){await document.exitFullscreen();return}
-  const root=document.documentElement;
-  if(root.requestFullscreen)await root.requestFullscreen();
-  else if(root.webkitRequestFullscreen)root.webkitRequestFullscreen();
+  const target=gameLobby.hidden?document.querySelector('.app'):gameLobby;
+  if(target?.requestFullscreen)await target.requestFullscreen();
+  else if(target?.webkitRequestFullscreen)target.webkitRequestFullscreen();
   else showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER');
  }catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}
 }
