@@ -22,9 +22,9 @@ A fast-paced, neon-themed arcade survival game that runs right in your browser. 
 - **Daily signal notifications** — an in-game notification center with daily tips and messages.
 - **Sound effects** — lightweight synthesized audio, with an option to turn sound off.
 - **Responsive controls** — play on desktop, tablet, or mobile.
-- **No installation or account required** — open the website and play.
+- **No account required for solo play** — open the website and play. Online friends and parties require a Neon Drift Online account.
 
-## How to Play
+## Online Friends and Parties\n\nNeon Drift includes an optional online social system powered by a dedicated Supabase project. Players can create accounts, add friends by username, see live online presence, create four-player parties, and join parties using an invite code. The party lobby syncs across devices in real time; the arcade run itself remains single-player.\n\nTo activate these features, follow [SUPABASE_SETUP.md](./SUPABASE_SETUP.md). The website configuration starts with placeholders until a Supabase project URL and anon/publishable key are added to `supabase-config.js`. Never add a Supabase service-role/secret key to the website.\n\n## How to Play
 
 1. Open [Neon Drift](https://pandamandev.github.io/Neon-Drift/).
 2. Choose a difficulty.
@@ -83,7 +83,7 @@ Play to unlock milestones such as:
 
 ## Your Saved Progress
 
-Neon Drift uses your browser's local storage to save your:
+Neon Drift uses your browser's local storage to save your solo-game progress. Online account, friend, and party data is stored separately in Supabase when the online system is configured. The local storage saves your:
 
 - Personal best score
 - Unlocked achievements
