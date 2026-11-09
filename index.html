@@ -718,23 +718,36 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 </head>
 <body>
 <div class="boot-screen" id="neonBootScreen" role="status" aria-live="polite" aria-label="Loading Neon Drift">
-  <div class="boot-backdrop"></div><div class="boot-scanlines"></div>
+  <div class="boot-backdrop"></div>
   <div class="boot-content">
-    <div class="boot-brand"><span class="boot-logo">N</span><span>NEON <b>DRIFT</b></span></div>
-    <div class="boot-orbit"><span class="boot-orbit-ring ring-a"></span><span class="boot-orbit-ring ring-b"></span><span class="boot-orbit-core">N</span><i class="boot-orbit-dot"></i></div>
-    <div class="boot-kicker">ARCADE SYSTEM INITIALIZATION</div>
-    <h1>PREPARING<br><em>YOUR RUN</em></h1>
-    <p class="boot-subtitle" id="bootSubtitle">Waking up the neon city...</p>
-    <div class="boot-progress-meta"><span id="bootStage">INITIALIZING</span><b id="bootPercent">0%</b></div>
-    <div class="boot-progress-track"><i id="bootProgressBar"></i></div>
-    <div class="boot-checks" id="bootChecks">
-      <div data-check="interface"><i></i><span>GAME INTERFACE</span><b>WAITING</b></div>
-      <div data-check="profile"><i></i><span>PILOT PROFILE</span><b>WAITING</b></div>
-      <div data-check="canvas"><i></i><span>RENDER ENGINE</span><b>WAITING</b></div>
-      <div data-check="online"><i></i><span>ONLINE SERVICES</span><b>OPTIONAL</b></div>
+    <header class="boot-topline">
+      <div class="boot-brand"><span class="boot-logo">N</span><span>NEON <b>DRIFT</b></span></div>
+      <span class="boot-build">ARCADE EDITION <i></i> BUILD 03</span>
+    </header>
+    <div class="boot-main">
+      <section class="boot-intro">
+        <div class="boot-kicker"><span></span> SYSTEM INITIALIZATION</div>
+        <h1>THE CITY<br><em>IS WAITING.</em></h1>
+        <p class="boot-subtitle" id="bootSubtitle">Waking up the neon city...</p>
+        <div class="boot-progress-meta"><span id="bootStage">INITIALIZING</span><b id="bootPercent">0%</b></div>
+        <div class="boot-progress-track"><i id="bootProgressBar"></i></div>
+        <div class="boot-progress-caption"><span>PREPARING YOUR RUN</span><span>PLEASE STAND BY</span></div>
+      </section>
+      <aside class="boot-system">
+        <div class="boot-system-heading"><span>▦</span> SYSTEM STATUS <i>LIVE</i></div>
+        <div class="boot-orbit" aria-hidden="true"><span class="boot-orbit-ring ring-a"></span><span class="boot-orbit-ring ring-b"></span><span class="boot-orbit-core">N</span><i class="boot-orbit-dot"></i></div>
+        <div class="boot-checks" id="bootChecks">
+          <div data-check="interface"><i></i><span>GAME INTERFACE</span><b>WAITING</b></div>
+          <div data-check="profile"><i></i><span>PILOT PROFILE</span><b>WAITING</b></div>
+          <div data-check="canvas"><i></i><span>RENDER ENGINE</span><b>WAITING</b></div>
+          <div data-check="online"><i></i><span>ONLINE SERVICES</span><b>OPTIONAL</b></div>
+        </div>
+      </aside>
     </div>
-    <div class="boot-tip"><small>FLIGHT INTEL</small><span id="bootTip">A well-timed phase dash can carry you through a tight hazard gap.</span></div>
-    <div class="boot-footer"><span>NEON DRIFT</span><span>BUILD 03 <i>•</i> READY WHEN YOU ARE</span></div>
+    <footer class="boot-bottom">
+      <div class="boot-tip"><small>✦ PILOT INTEL</small><span id="bootTip">A well-timed phase dash can carry you through a tight hazard gap.</span></div>
+      <div class="boot-footer"><span>NEON DRIFT</span><span>READY WHEN YOU ARE <i>✦</i></span></div>
+    </footer>
   </div>
 </div>
 
