@@ -493,6 +493,42 @@ body.game-active .stage{position:relative;background:#080612!important}
 body.game-active .stage canvas{display:block;position:absolute;inset:0;width:100%;height:100%;min-height:0;max-height:none;background:#080612!important}
 body.game-active .game-menu-btn{position:absolute!important;top:14px!important;right:14px!important;left:auto!important;bottom:auto!important;z-index:9}
 @media(max-width:760px){body.game-active .game-menu-btn{top:48px!important;right:9px!important}}
+
+/* Build 02 — settings, responsive polish and accessibility */
+.lobby-settings{justify-self:center;padding:10px 15px;border:1px solid #51356d;border-radius:11px;background:#171027;color:#e9dcff;font-size:10px;font-weight:900;letter-spacing:.12em;box-shadow:none}
+.lobby-settings:hover{border-color:var(--cyan);background:#211432}
+.settings-card{text-align:left}
+.settings-card h2{margin:0 0 10px;font-size:clamp(27px,5vw,36px);letter-spacing:.08em}
+.settings-description{margin:0 0 15px!important;font-size:12px!important}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px 0;border-top:1px solid #39264d;cursor:pointer}
+.setting-row span{display:grid;gap:5px}
+.setting-row b{font-size:12px;color:#fff;letter-spacing:.04em}
+.setting-row small{font-size:10px;line-height:1.5;color:#a99cbd}
+.setting-row input{width:20px;height:20px;flex:0 0 auto;accent-color:#a855f7}
+.settings-actions{display:flex;justify-content:flex-end;margin-top:15px}
+.settings-actions button{min-width:170px}
+@media(max-width:760px){
+ .lobby-footer{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lobby-settings{width:100%;min-height:42px}
+ .lobby-version{justify-self:end;align-self:center}
+ .settings-card{max-height:min(84vh,620px);overflow:auto;padding:24px 19px}
+ .setting-row{padding:12px 0}
+}
+@media(max-width:420px){
+ .lobby-top{gap:8px}
+ .lobby-online{font-size:8px;letter-spacing:.1em}
+ .lobby-content{gap:14px}
+ .lobby-meta{gap:8px}
+ .lobby-meta span{font-size:8px}
+ .notify-wrap{gap:5px}
+ .fullscreen-btn{padding:8px 9px}
+ .fullscreen-btn span{display:none}
+}
+body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+body.performance-mode .stage{box-shadow:0 12px 30px #0008;border-color:#51356d}
+body.performance-mode .stat,body.performance-mode .side{box-shadow:none}
+body.performance-mode .lobby-glow{opacity:.35}
+@media(prefers-reduced-motion:reduce){.lobby-glow,.preview-orbit,.preview-particle{animation:none!important}}
 </style>
 </head>
 <body>
@@ -508,7 +544,8 @@ body.game-active .game-menu-btn{position:absolute!important;top:14px!important;r
     </div>
     <div class="lobby-preview" aria-hidden="true"><div class="preview-orbit orbit-one"></div><div class="preview-orbit orbit-two"></div><div class="preview-core">N</div><div class="preview-particle p-one"></div><div class="preview-particle p-two"></div><div class="preview-particle p-three"></div><div class="preview-label">SECTOR 01 <b>LIVE</b></div></div>
   </main>
-  <footer class="lobby-footer"><div class="lobby-card"><small>PERSONAL BEST</small><strong id="lobbyBest">00000</strong></div><div class="lobby-card"><small>SELECT DIFFICULTY</small><select id="lobbyDifficulty"><option value="chill">CHILL</option><option value="normal" selected>NORMAL</option><option value="chaos">CHAOS</option></select></div><div class="lobby-card lobby-tip"><small>QUICK TIP</small><span>Save your dash for tight situations.</span></div><div class="lobby-version">NEON DRIFT <span>·</span> BUILD 01</div></footer>
+  <footer class="lobby-footer"><div class="lobby-card"><small>PERSONAL BEST</small><strong id="lobbyBest">00000</strong></div><div class="lobby-card"><small>SELECT DIFFICULTY</small><select id="lobbyDifficulty"><option value="chill">CHILL</option><option value="normal" selected>NORMAL</option><option value="chaos">CHAOS</option></select></div><div class="lobby-card lobby-tip"><small>QUICK TIP</small><span>Save your dash for tight situations.</span></div><button class="lobby-settings" id="lobbySettings" type="button">⚙ SETTINGS</button><div class="lobby-version">NEON DRIFT <span>·</span> BUILD 02</div></footer>
+  <div class="lobby-modal" id="settingsModal" hidden><div class="how-card settings-card"><button id="settingsClose" class="how-close" aria-label="Close settings">×</button><div class="lobby-kicker">SYSTEM CONFIGURATION</div><h2>SETTINGS</h2><p class="settings-description">Tune Neon Drift for your screen and your setup. Your choices are saved on this device.</p><label class="setting-row"><span><b>Performance mode</b><small>Lower effects and rendering resolution for smoother play.</small></span><input id="performanceSetting" type="checkbox"></label><label class="setting-row"><span><b>Reduced motion</b><small>Keep the interface calmer and reduce visual movement.</small></span><input id="motionSetting" type="checkbox"></label><label class="setting-row"><span><b>Game sound</b><small>Enable or mute arcade sound effects.</small></span><input id="soundSetting" type="checkbox" checked></label><div class="settings-actions"><button id="settingsDone" class="lobby-play" type="button">SAVE SETTINGS</button></div></div></div>
   <div class="lobby-modal" id="lobbyHowModal" hidden><div class="how-card"><button id="lobbyHowClose" class="how-close" aria-label="Close">×</button><div class="lobby-kicker">PILOT TRAINING</div><h2>HOW TO PLAY</h2><p><b>MOVE</b> — A / D, arrow keys, mouse or touch.</p><p><b>PHASE DASH</b> — SHIFT or the ⚡ button.</p><p><b>PAUSE</b> — SPACE or the pause control.</p><p>Collect yellow energy cores, avoid pink hazards, and grab purple shields.</p><button id="lobbyHowReady" class="lobby-play">GOT IT</button></div></div>
 </section>
 
@@ -545,6 +582,20 @@ const STORE='neonDriftBestV2';
 let W=0,H=0,dpr=1,player=null,obstacles=[],cores=[],shields=[],particles=[],stars=[];
 let score=0,best=0,level=1,running=false,paused=false,sound=true,audio=null,last=0,spawn=0,coreSpawn=0,shieldSpawn=0,keys={left:false,right:false},pointer=null,shieldHits=0,toastTimer=0,difficulty='normal',raf=0;
 let combo=1,comboTimer=0,coresCollected=0,runTime=0,dashTime=0,dashCooldown=0,coreObjectiveNotified=false,survivalObjectiveNotified=false;
+const SETTINGS_KEY='neonDriftSettingsV1';
+let gameSettings={performance:false,reducedMotion:window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,sound:true};
+try{gameSettings={...gameSettings,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')}}catch(e){}
+sound=gameSettings.sound!==false;
+function saveSettings(){try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(gameSettings))}catch(e){}}
+function applySettings(){
+ document.body.classList.toggle('performance-mode',!!gameSettings.performance);
+ document.body.classList.toggle('reduce-motion',!!gameSettings.reducedMotion);
+ sound=gameSettings.sound!==false;
+ const soundButton=$('sound');if(soundButton)soundButton.textContent='SOUND: '+(sound?'ON':'OFF');
+ const p=$('performanceSetting'),m=$('motionSetting'),a=$('soundSetting');
+ if(p)p.checked=!!gameSettings.performance;if(m)m.checked=!!gameSettings.reducedMotion;if(a)a.checked=sound;
+ if(canvas.width&&canvas.height)resize();
+}
 const modes={chill:{speed:.78,spawn:1.3},normal:{speed:1,spawn:1},chaos:{speed:1.35,spawn:.78}};
 try{best=Number(localStorage.getItem(STORE)||localStorage.getItem('neonDriftBest')||0)||0}catch(e){}bestEl.textContent=fmt(best);
 
@@ -616,7 +667,7 @@ function escapeNotify(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'
 function initNotifications(){ensureDailyNotification();renderNotifications();$('notifyBell').addEventListener('click',()=>{const panel=$('notifyPanel'),open=!panel.classList.contains('open');panel.classList.toggle('open',open);$('notifyBell').setAttribute('aria-expanded',String(open))});$('markNotificationsRead').addEventListener('click',()=>{const items=loadNotifications().map(n=>({...n,read:true}));saveNotifications(items);renderNotifications()});document.addEventListener('click',e=>{if(!e.target.closest('.notify-wrap')){$('notifyPanel').classList.remove('open');$('notifyBell').setAttribute('aria-expanded','false')}})}
 
 function fmt(n){return String(Math.floor(n)).padStart(5,'0')}
-function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;W=r.width;H=r.height;dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.max(45,Math.floor(W*H/6500))},()=>({x:Math.random()*W,y:Math.random()*H,z:.35+Math.random()*1.5}));if(player){player.x=clamp(player.x,18,W-18);player.y=H-58}else resetPlayer();drawIdle()}
+function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;W=r.width;H=r.height;dpr=gameSettings.performance?1:Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.max(24,Math.floor(W*H/(gameSettings.performance?12500:8500)))},()=>({x:Math.random()*W,y:Math.random()*H,z:.35+Math.random()*1.5}));if(player){player.x=clamp(player.x,18,W-18);player.y=H-58}else resetPlayer();drawIdle()}
 function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
 function resetPlayer(){player={x:W/2,y:H-58,w:25,h:31,v:0,tilt:0}}
 function beep(freq=440,duration=.07,type='sine'){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}}
@@ -625,18 +676,18 @@ function reset(){score=0;dailyCompleted=dailyState.completedDay===localDay();das
 function start(){cancelAnimationFrame(raf);difficulty=$('difficulty').value;reset();running=true;paused=false;overlay.classList.add('hidden');$('pause').textContent='PAUSE';last=performance.now();beep(620,.12);raf=requestAnimationFrame(loop)}
 function finish(){running=false;paused=false;checkDaily();if(careerStats.runs===0)unlockAchievement('first-run');careerStats.runs++;careerStats.totalScore+=Math.floor(score);careerStats.totalCores+=coresCollected;careerStats.totalSeconds+=Math.floor(runTime);saveCareerStats();renderCareerStats();recordRun();if(careerStats.runs>=5)unlockAchievement('five-runs');if(careerStats.totalCores>=100)unlockAchievement('century-cores');best=Math.max(best,Math.floor(score));try{localStorage.setItem(STORE,String(best))}catch(e){}bestEl.textContent=fmt(best);message.textContent='RUN OVER — '+Math.floor(score).toLocaleString()+' points. Best score: '+best.toLocaleString()+'. Ready for another run?';startBtn.textContent='PLAY AGAIN';overlay.classList.remove('hidden');$('pause').textContent='PAUSE';beep(115,.32,'sawtooth')}
 function pause(){if(!running)return;paused=!paused;$('pause').textContent=paused?'RESUME':'PAUSE';if(paused){showToast('PAUSED')}else{last=performance.now();raf=requestAnimationFrame(loop)}}
-function burst(x,y,color,count=12){for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=1+Math.random()*4;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:22+Math.random()*22,max:44,color,size:1+Math.random()*2})}}
+function burst(x,y,color,count=12){if(gameSettings.reducedMotion)return;const limit=gameSettings.performance?70:150;if(particles.length>limit)particles.splice(0,particles.length-limit);count=Math.min(count,gameSettings.performance?7:count);for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=1+Math.random()*4;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:22+Math.random()*22,max:44,color,size:1+Math.random()*2})}}
 function hit(a,b){return Math.abs(a.x-b.x)<(a.w+b.w)/2&&Math.abs(a.y-b.y)<(a.h+b.h)/2}
 function updateHud(){scoreEl.textContent=fmt(score);levelEl.textContent=String(level).padStart(2,'0');shieldEl.textContent=shieldHits?'ACTIVE':'READY';$('combo').textContent='x'+combo;$('dashStatus').innerHTML=dashCooldown<=0?'Dash: READY · <span class="key">SHIFT</span>':'Dash: '+dashCooldown.toFixed(1)+'s · <span class="key">SHIFT</span>';$('objectives').textContent='Cores '+Math.min(coresCollected,10)+'/10 · Survival '+Math.min(Math.floor(runTime),60)+'/60s'}
 function dash(){if(!running||paused||dashCooldown>0)return;dashesUsed++;checkDaily();renderDaily();unlockAchievement('dash-master');dashTime=.34;dashCooldown=4.2;burst(player.x,player.y,'#39e6ff',12);beep(720,.08,'triangle');showToast('PHASE DASH')}
-function drawShip(){ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.tilt);ctx.shadowBlur=dashTime>0?34:22;ctx.shadowColor=dashTime>0?'#ffffff':'#39e6ff';ctx.fillStyle='#39e6ff';ctx.beginPath();ctx.moveTo(0,-19);ctx.lineTo(13,13);ctx.lineTo(0,8);ctx.lineTo(-13,13);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-3,3.5,5,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=15;ctx.shadowColor='#ff9b45';ctx.fillStyle='#ff9b45';ctx.beginPath();ctx.moveTo(-4,12);ctx.lineTo(0,22+Math.random()*5);ctx.lineTo(4,12);ctx.fill();if(shieldHits){ctx.strokeStyle='#b76bff';ctx.lineWidth=2;ctx.shadowColor='#b76bff';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.stroke()}ctx.restore()}
+function drawShip(){ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.tilt);ctx.shadowBlur=gameSettings.performance?0:(dashTime>0?34:22);ctx.shadowColor=dashTime>0?'#ffffff':'#39e6ff';ctx.fillStyle='#39e6ff';ctx.beginPath();ctx.moveTo(0,-19);ctx.lineTo(13,13);ctx.lineTo(0,8);ctx.lineTo(-13,13);ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,-3,3.5,5,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=15;ctx.shadowColor='#ff9b45';ctx.fillStyle='#ff9b45';ctx.beginPath();ctx.moveTo(-4,12);ctx.lineTo(0,22+Math.random()*5);ctx.lineTo(4,12);ctx.fill();if(shieldHits){ctx.strokeStyle='#b76bff';ctx.lineWidth=2;ctx.shadowColor='#b76bff';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.stroke()}ctx.restore()}
 function background(dt){ctx.fillStyle='#080612';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#9b67c2';ctx.globalAlpha=.09;ctx.lineWidth=1;const offset=(score*.4)%42;for(let y=-42+offset;y<H;y+=42){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}for(let x=0;x<W;x+=42){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}ctx.globalAlpha=1;for(const s of stars){s.y+=s.z*dt*(1+level*.03);if(s.y>H){s.y=0;s.x=Math.random()*W}ctx.fillStyle='rgba(190,165,255,'+(.18+s.z*.28)+')';ctx.fillRect(s.x,s.y,1.5*s.z,1.5*s.z)}}
 function loop(now){if(!running||paused)return;const dt=Math.min(Math.max((now-last)/16.667,0),2.2);last=now;const mode=modes[difficulty];score+=dt*(1+level*.12);level=1+Math.floor(score/850);const speed=(3.05+level*.31)*mode.speed*dt;runTime+=dt/60;dashTime=Math.max(0,dashTime-dt/60);dashCooldown=Math.max(0,dashCooldown-dt/60);comboTimer=Math.max(0,comboTimer-dt/60);if(comboTimer<=0&&combo>1){combo=1;updateHud()}if(runTime>=60&&!survivalObjectiveNotified){survivalObjectiveNotified=true;unlockAchievement('one-minute');showToast('OBJECTIVE COMPLETE · SURVIVOR')}if(score>=1000)unlockAchievement('score-1000');if(coresCollected>=10)unlockAchievement('core-collector');checkDaily();const dailyNow=dailyProgress();if(dailyNow!==lastDailyProgress){lastDailyProgress=dailyNow;renderDaily()}background(dt);
 if(keys.left)player.v-=.82*dt;if(keys.right)player.v+=.82*dt;if(pointer!==null)player.x+=(pointer-player.x)*Math.min(1,.25*dt);player.v*=Math.pow(.82,dt);player.x+=player.v*dt;player.x=clamp(player.x,17,W-17);player.tilt=clamp(player.v*.035,-.28,.28);
 spawn-=dt;if(spawn<=0){const w=23+Math.random()*34;obstacles.push({x:22+Math.random()*Math.max(1,W-44),y:-35,w,h:17+Math.random()*17,rot:(Math.random()-.5)*.3,spin:(Math.random()-.5)*.012});spawn=Math.max(12,37-level*1.35)*mode.spawn}
 coreSpawn-=dt;if(coreSpawn<=0){cores.push({x:20+Math.random()*Math.max(1,W-40),y:-18,r:7+Math.random()*2,phase:Math.random()*7});coreSpawn=95+Math.random()*65}
 shieldSpawn-=dt;if(shieldSpawn<=0){shields.push({x:24+Math.random()*Math.max(1,W-48),y:-20,r:9,phase:0});shieldSpawn=390+Math.random()*150}
-for(let i=obstacles.length-1;i>=0;i--){const o=obstacles[i];o.y+=speed*(.82+level*.022);o.rot+=o.spin*dt;ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot);ctx.shadowBlur=18;ctx.shadowColor='#ff4fd8';ctx.fillStyle='#ff4fd8';ctx.fillRect(-o.w/2,-o.h/2,o.w,o.h);ctx.strokeStyle='#ffd7fa';ctx.strokeRect(-o.w/2,-o.h/2,o.w,o.h);ctx.restore();if(hit(player,o)){if(dashTime>0){burst(o.x,o.y,'#39e6ff',8);obstacles.splice(i,1);continue}else if(shieldHits){shieldHits=0;burst(o.x,o.y,'#b76bff',20);burst(player.x,player.y,'#39e6ff',9);obstacles.splice(i,1);beep(260,.13);showToast('SHIELD SAVED YOU');updateHud()}else{burst(player.x,player.y,'#ff4fd8',28);finish();return}}else if(o.y>H+45)obstacles.splice(i,1)}
+for(let i=obstacles.length-1;i>=0;i--){const o=obstacles[i];o.y+=speed*(.82+level*.022);o.rot+=o.spin*dt;ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.rot);ctx.shadowBlur=gameSettings.performance?0:18;ctx.shadowColor='#ff4fd8';ctx.fillStyle='#ff4fd8';ctx.fillRect(-o.w/2,-o.h/2,o.w,o.h);ctx.strokeStyle='#ffd7fa';ctx.strokeRect(-o.w/2,-o.h/2,o.w,o.h);ctx.restore();if(hit(player,o)){if(dashTime>0){burst(o.x,o.y,'#39e6ff',8);obstacles.splice(i,1);continue}else if(shieldHits){shieldHits=0;burst(o.x,o.y,'#b76bff',20);burst(player.x,player.y,'#39e6ff',9);obstacles.splice(i,1);beep(260,.13);showToast('SHIELD SAVED YOU');updateHud()}else{burst(player.x,player.y,'#ff4fd8',28);finish();return}}else if(o.y>H+45)obstacles.splice(i,1)}
 for(let i=cores.length-1;i>=0;i--){const c=cores[i];c.y+=speed*.78;c.phase+=.08*dt;ctx.save();ctx.translate(c.x,c.y);ctx.rotate(c.phase);ctx.shadowBlur=22;ctx.shadowColor='#ffe66d';ctx.fillStyle='#ffe66d';ctx.beginPath();ctx.moveTo(0,-c.r);ctx.lineTo(c.r,0);ctx.lineTo(0,c.r);ctx.lineTo(-c.r,0);ctx.closePath();ctx.fill();ctx.restore();if(Math.hypot(c.x-player.x,c.y-player.y)<22){combo=comboTimer>0?Math.min(5,combo+1):1;comboTimer=3.2;coresCollected++;score+=150*combo;burst(c.x,c.y,'#ffe66d',14);cores.splice(i,1);beep(850+combo*70,.07);if(coresCollected===10&&!coreObjectiveNotified){coreObjectiveNotified=true;showToast('OBJECTIVE COMPLETE · CORE HUNTER')}}else if(c.y>H+20)cores.splice(i,1)}
 for(let i=shields.length-1;i>=0;i--){const p=shields[i];p.y+=speed*.7;p.phase+=.06*dt;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.phase);ctx.shadowBlur=22;ctx.shadowColor='#b76bff';ctx.strokeStyle='#d9aaff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,p.r+Math.sin(p.phase*2)*2,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(0,-6);ctx.lineTo(5,0);ctx.lineTo(0,6);ctx.lineTo(-5,0);ctx.closePath();ctx.fillStyle='#b76bff';ctx.fill();ctx.restore();if(Math.hypot(p.x-player.x,p.y-player.y)<24){shieldHits=1;burst(p.x,p.y,'#b76bff',15);shields.splice(i,1);beep(520,.12);showToast('SHIELD ACQUIRED');updateHud()}else if(p.y>H+20)shields.splice(i,1)}
 drawShip();for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);ctx.globalAlpha=1;if(p.life<=0)particles.splice(i,1)}
@@ -669,14 +720,22 @@ $('lobbyHowReady').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
 $('gameMenuBtn').addEventListener('click',returnToLobby);
 $('lobbyFullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){}});
 
-startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
+startBtn.addEventListener('click',start);$('pause').addEventListener('click',pause);$('sound').addEventListener('click',e=>{sound=!sound;gameSettings.sound=sound;saveSettings();e.target.textContent='SOUND: '+(sound?'ON':'OFF');if(sound)beep()});
 const fullscreenBtn=$('fullscreenBtn');
 const siteApp=document.querySelector('.app');
 function syncFullscreenButton(){const active=document.fullscreenElement===siteApp;fullscreenBtn.innerHTML=active?'⛶ <span>EXIT FULLSCREEN</span>':'⛶ <span>FULLSCREEN</span>';fullscreenBtn.setAttribute('aria-label',active?'Exit website fullscreen':'Enter website fullscreen');fullscreenBtn.title=active?'Exit website fullscreen':'Enter website fullscreen'}
 fullscreenBtn.addEventListener('click',async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(siteApp.requestFullscreen){await siteApp.requestFullscreen()}else if(siteApp.webkitRequestFullscreen){siteApp.webkitRequestFullscreen()}else{showToast('FULLSCREEN NOT SUPPORTED IN THIS BROWSER')}}catch(e){showToast('FULLSCREEN UNAVAILABLE · CHECK BROWSER PERMISSIONS')}});
 document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize()});document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
 window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
-resize();bestEl.textContent=fmt(best);$('lobbyBest').textContent=fmt(best);renderAchievements();renderCareerStats();renderRunHistory();renderDaily();initNotifications();
+const settingsModal=$('settingsModal');
+function closeSettings(){settingsModal.hidden=true}
+$('lobbySettings').addEventListener('click',()=>{applySettings();settingsModal.hidden=false});
+$('settingsClose').addEventListener('click',closeSettings);
+$('settingsDone').addEventListener('click',()=>{gameSettings.performance=$('performanceSetting').checked;gameSettings.reducedMotion=$('motionSetting').checked;gameSettings.sound=$('soundSetting').checked;saveSettings();applySettings();closeSettings();showToast('SETTINGS SAVED')});
+settingsModal.addEventListener('click',e=>{if(e.target===settingsModal)closeSettings()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!settingsModal.hidden)closeSettings()});
+applySettings();
+resize();bestEl.textContent=fmt(best);$('sound').textContent='SOUND: '+(sound?'ON':'OFF');$('lobbyBest').textContent=fmt(best);renderAchievements();renderCareerStats();renderRunHistory();renderDaily();initNotifications();
 })();
 </script>
 
