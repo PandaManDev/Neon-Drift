@@ -1367,3 +1367,29 @@ body.game-active .footer{display:none!important}
   .nd-menu-search input{font-size:11px!important}
   .nd-menu-search small{font-size:7px;letter-spacing:.06em}
 }
+
+/* BUILD 11 — persistent fullscreen control inside the play arena. */
+.stage-fullscreen-btn{
+  position:absolute!important;top:14px!important;right:14px!important;z-index:25;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:36px;padding:0 11px!important;
+  border:1px solid #c49aef45!important;border-radius:7px!important;
+  background:#100c19d9!important;color:#e8d9f7!important;
+  font-size:10px!important;font-weight:800;letter-spacing:.09em;
+  backdrop-filter:blur(12px);cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+.stage-fullscreen-btn:hover{
+  background:#30203f!important;border-color:#c49aef!important;transform:translateY(-1px);
+}
+.stage-fullscreen-btn:focus-visible{
+  outline:2px solid #d3b0fa!important;outline-offset:3px;
+}
+.stage-fullscreen-btn[hidden]{display:none!important}
+@media(max-width:700px){
+ .stage-fullscreen-btn{top:9px!important;right:9px!important;min-height:32px;padding:0 9px!important;font-size:9px!important}
+}
+@media(max-width:380px){
+ .stage-fullscreen-btn span{display:none}
+ .stage-fullscreen-btn{width:33px;min-width:33px;padding:0!important}
+}
