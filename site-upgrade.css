@@ -424,3 +424,9 @@ input,select,textarea{color-scheme:dark}
  .nd-menu-dialog .lobby-footer .lobby-card{flex:1 1 125px}
  .nd-menu-dialog .pilot-progression{padding:12px}
 }
+
+/* Menu-specific overrides for lobby sections moved inside the dialog. */
+.nd-menu-dialog .lobby-meta{display:flex!important}
+.nd-menu-dialog .lobby-footer{display:flex!important;position:static!important}
+.nd-menu-dialog .pilot-progression{display:block!important}
+.nd-menu-dialog .nd-command-strip{display:grid!important}
