@@ -1326,3 +1326,44 @@ body.game-active .footer{display:none!important}
  .nd-menu-groups{grid-template-columns:1fr!important}
  .game-lobby .lobby-footer{grid-template-columns:1fr 1fr!important}
 }
+
+/* BUILD 10 — searchable command-center navigation. */
+.nd-menu-search{
+  flex:none;display:flex;align-items:center;gap:11px;
+  min-height:46px;padding:0 13px;margin:0 0 2px;
+  border:1px solid #ffffff19;border-radius:9px;
+  background:linear-gradient(110deg,#ffffff08,#ffffff03);
+  color:#bca9ce;
+}
+.nd-menu-search>span{font-size:23px;line-height:1;color:#c6a4ed}
+.nd-menu-search input{
+  flex:1;min-width:0;min-height:42px;border:0!important;outline:0!important;
+  background:transparent!important;color:#f2eaf9!important;
+  font:inherit;font-size:12px!important;box-shadow:none!important;
+}
+.nd-menu-search input::placeholder{color:#82778e}
+.nd-menu-search input:focus-visible{outline:none!important}
+.nd-menu-search button{
+  width:25px;height:25px;border:1px solid #ffffff20;border-radius:6px;
+  background:#ffffff0b;color:#eee4f8;font-size:17px;cursor:pointer;
+}
+.nd-menu-search button[hidden]{display:none!important}
+.nd-menu-search small{
+  flex:none;color:#92849f;font-size:8px;letter-spacing:.12em;
+  font-weight:700;white-space:nowrap;
+}
+.nd-menu-group[hidden],.nd-menu-item[hidden]{display:none!important}
+.nd-menu-no-results{
+  grid-column:1/-1;margin:4px 0 14px;padding:20px;
+  border:1px dashed #ffffff24;border-radius:9px;
+  color:#a99bb5;text-align:center;font-size:12px;
+}
+.nd-menu-item:focus-visible,.nd-menu-close:focus-visible,
+.nd-menu-search button:focus-visible{
+  outline:2px solid #c49aef!important;outline-offset:3px;
+}
+@media(max-width:700px){
+  .nd-menu-search{min-height:42px;gap:8px;padding:0 10px}
+  .nd-menu-search input{font-size:11px!important}
+  .nd-menu-search small{font-size:7px;letter-spacing:.06em}
+}
