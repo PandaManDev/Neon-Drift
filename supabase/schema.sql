@@ -37,7 +37,7 @@ create table if not exists public.party_members (
   primary key (party_id, user_id)
 );
 
-create index if not exists friend_requests_receiver_status_idx on public.friend_requests(receiver_id, status);
+create unique index if not exists profiles_username_lower_unique on public.profiles (lower(username));\n\ncreate index if not exists friend_requests_receiver_status_idx on public.friend_requests(receiver_id, status);
 create index if not exists friend_requests_sender_status_idx on public.friend_requests(sender_id, status);
 create index if not exists party_members_party_idx on public.party_members(party_id);
 
@@ -151,7 +151,7 @@ declare target_party uuid; member_count integer;
 begin
   if auth.uid() is null then raise exception 'Sign in first.'; end if;
   if exists (select 1 from public.party_members where user_id = auth.uid()) then raise exception 'Leave your current party first.'; end if;
-  select id into target_party from public.parties where invite_code = upper(trim(code));
+  select id into target_party from public.parties where invite_code = upper(trim(code)) for update;
   if target_party is null then raise exception 'Party code not found.'; end if;
   select count(*) into member_count from public.party_members where party_id = target_party;
   if member_count >= 4 then raise exception 'That party is full.'; end if;
