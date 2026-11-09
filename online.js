@@ -175,7 +175,16 @@ async function loadPartyChat(){
  log.scrollTop=log.scrollHeight;
 }
 async function refreshParty(){
- if(!session)return;
+ if(!session){
+  activeParty=null;
+  $('partyStatusText').textContent='YOU ARE PLAYING SOLO';
+  $('partyModal').querySelector('.party-status').classList.remove('active');
+  $('partyCreate').disabled=false;$('partyCreate').textContent='CREATE PARTY';
+  $('partyLeave').disabled=true;$('partyInvite').disabled=true;
+  $('onlinePartyCodeBox').hidden=true;
+  $('partySlots').innerHTML='<div class="party-slot empty"><span class="party-avatar">+</span><span><b>NO ACTIVE PARTY</b><small>SIGN IN TO CREATE OR JOIN</small></span></div>';
+  return;
+ }
  const {data:mine,error}=await db.from('party_members').select('party_id,is_ready').eq('user_id',session.user.id).maybeSingle();
  if(error)throw error;
  if(!mine){
