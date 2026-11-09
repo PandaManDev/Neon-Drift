@@ -1085,7 +1085,7 @@ body.game-active .footer{padding-top:8px;color:#81798c!important;font-size:9px}
 @media(max-width:900px){
  body.game-active .layout{grid-template-columns:minmax(0,1fr) 230px!important}
  body.game-active .side{padding:14px!important}
- .nd-menu-dialog{width:min(100vw - 20px,900px)!important}
+ .nd-menu-dialog{width:min(calc(100vw - 20px),900px)!important}
 }
 @media(max-width:700px){
  .game-lobby{padding:14px 16px 16px!important}
