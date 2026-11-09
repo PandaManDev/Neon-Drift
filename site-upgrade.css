@@ -1143,3 +1143,186 @@ body.game-active .footer{padding-top:8px;color:#81798c!important;font-size:9px}
 @media(prefers-reduced-motion:reduce){
  .game-lobby *, .nd-menu-dialog *, body.game-active *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
 }
+
+/* BUILD 09 — layout refinement: balanced lobby, focused command center, full-width arena. */
+.game-lobby{
+  min-height:100svh!important;
+  display:flex!important;flex-direction:column!important;
+  padding:clamp(18px,3vw,42px) clamp(20px,5vw,72px) 22px!important;
+}
+.game-lobby .lobby-top{
+  width:min(1420px,100%);margin:0 auto;flex:none;
+}
+.game-lobby .lobby-content{
+  width:min(1320px,100%)!important;
+  flex:1;min-height:clamp(490px,66svh,760px);
+  grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr)!important;
+  gap:clamp(24px,5vw,88px)!important;
+  padding:clamp(36px,6vh,76px) 0!important;
+}
+.game-lobby .lobby-copy{max-width:610px}
+.game-lobby .lobby-copy h1{
+  font-size:clamp(76px,9.5vw,136px)!important;
+  line-height:.83!important;letter-spacing:-.055em!important;
+  margin:clamp(18px,3vh,30px) 0 22px!important;
+}
+.game-lobby .lobby-description{max-width:420px;line-height:1.75}
+.game-lobby .lobby-actions{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
+  width:min(390px,100%)!important;gap:9px!important;margin-top:25px!important;
+}
+.game-lobby .lobby-actions button{width:100%;min-width:0;min-height:48px;padding:12px 14px!important}
+.game-lobby .lobby-actions .lobby-play{grid-column:1/-1}
+.game-lobby .lobby-meta{gap:10px 18px;margin-top:23px!important;line-height:1.5}
+.game-lobby .lobby-preview{
+  width:100%;min-height:clamp(330px,48vw,530px)!important;
+  border:1px solid #ffffff12;border-radius:22px;
+  background:radial-gradient(ellipse at 50% 48%,#cbb0f20b,transparent 57%),linear-gradient(145deg,#ffffff05,#ffffff01);
+}
+.game-lobby .preview-orbit{width:min(30vw,420px)!important;max-width:78%}
+.game-lobby .orbit-two{width:min(23vw,320px)!important;max-width:62%}
+.game-lobby .preview-core{width:clamp(104px,12vw,156px)!important;height:auto;aspect-ratio:1;font-size:clamp(54px,7vw,82px)!important}
+.game-lobby .preview-label{bottom:22px}
+.game-lobby .lobby-footer{
+  width:min(1320px,100%);margin:0 auto!important;
+  display:grid!important;grid-template-columns:1fr 1fr 1.3fr auto auto;
+  align-items:center;gap:10px!important;padding:13px 0 0!important;
+}
+.game-lobby .lobby-card{min-width:0;padding:10px 13px!important;border:1px solid #ffffff17!important;border-radius:9px;background:#ffffff04}
+.game-lobby .lobby-card strong{font-size:22px!important}
+.game-lobby .lobby-card select{max-width:100%;margin-top:5px}
+.game-lobby .lobby-settings{white-space:nowrap;padding:10px 13px}
+.game-lobby .lobby-version{white-space:nowrap}
+.game-lobby .pilot-progression{width:min(1320px,100%)!important;margin:14px auto 0!important}
+
+/* Command center: keep the menu scrollable, but stop every section becoming a full-width wall. */
+.nd-menu-hub{position:fixed!important;inset:0!important;z-index:9999!important;overflow:hidden}
+.nd-menu-backdrop{position:absolute!important;inset:0!important}
+.nd-menu-dialog{
+  position:relative!important;display:flex!important;flex-direction:column!important;
+  margin:2.5svh auto!important;height:95svh!important;max-height:95svh!important;
+  overflow:hidden!important;
+}
+.nd-menu-heading{flex:none!important;position:relative!important}
+.nd-menu-groups{
+  flex:none!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;padding:15px 0!important;
+}
+.nd-menu-group{padding:12px!important}
+.nd-menu-grid{grid-template-columns:1fr!important;gap:7px!important}
+.nd-menu-item{min-height:65px!important;padding:9px 10px!important}
+.nd-menu-item b{font-size:10px!important}
+.nd-menu-item small{font-size:8px!important}
+.nd-menu-content{
+  flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-content:start;align-items:start;gap:12px!important;padding:0 3px 14px 0;
+  scrollbar-width:thin;scrollbar-color:#655274 #100e16;
+}
+.nd-menu-extra{min-width:0;padding:13px!important}
+.nd-menu-extra>h3{margin-bottom:10px!important}
+.nd-menu-footer-content,.nd-menu-progression,.nd-menu-intel,.nd-menu-operations,
+.nd-menu-command,.nd-menu-app-intro,.nd-menu-live-stats{grid-column:1/-1}
+.nd-menu-progression .pilot-progression{width:100%!important;margin:0!important}
+.nd-menu-progression .trail-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.nd-menu-footer-content .lobby-footer{
+  display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  align-items:stretch;gap:8px!important;
+}
+.nd-menu-footer-content .lobby-card{min-width:0}
+.nd-menu-intel .side{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:start;gap:10px 18px!important;
+}
+.nd-menu-intel .side h2{padding-top:8px;border-top:1px solid #ffffff16}
+.nd-menu-intel .side .rule{display:none}
+.nd-menu-intel .side p{min-width:0}
+.nd-menu-intel .side .achievement-list,.nd-menu-intel .side .daily-card,
+.nd-menu-intel .side .career-stats,.nd-menu-intel .side .run-history,
+.nd-menu-intel .side .legend,.nd-menu-intel .side .actions{grid-column:1/-1}
+.nd-menu-intel .side .actions{display:flex}
+.nd-menu-inline-feature{min-width:0}
+.nd-menu-content .lobby-modal{position:relative!important;inset:auto!important;padding:0!important;background:transparent!important}
+.nd-menu-content .lobby-modal[hidden]{display:none!important}
+.nd-menu-content .lobby-modal .how-card{max-height:none!important;overflow:visible!important}
+.nd-menu-footer{flex:none!important}
+
+/* Gameplay now uses the entire width: the real briefing and stats live in All Features. */
+body.game-active .app{width:min(1500px,100%)!important;margin:0 auto!important;gap:13px!important}
+body.game-active .layout{
+  display:block!important;width:100%!important;grid-template-columns:minmax(0,1fr)!important;
+  gap:0!important;margin:0!important;
+}
+body.game-active .layout>div{width:100%;min-width:0}
+body.game-active .stage{
+  width:100%;min-height:0!important;height:calc(100svh - 28px);
+  max-height:920px;min-height:500px!important;
+  border-radius:14px!important;
+}
+body.game-active canvas{
+  width:100%!important;height:100%!important;min-height:500px!important;
+  max-height:none!important;object-fit:fill;
+}
+body.game-active .game-menu-btn{top:14px!important;left:14px!important}
+body.game-active .footer{display:none!important}
+
+@media(max-width:1050px){
+ .nd-menu-groups{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .game-lobby .lobby-footer{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .game-lobby .lobby-version{grid-column:1/-1;text-align:right}
+ .game-lobby .lobby-content{gap:25px!important}
+}
+@media(max-width:700px){
+ .game-lobby{padding:14px 16px 18px!important}
+ .game-lobby .lobby-content{
+   min-height:0!important;flex:none;grid-template-columns:1fr!important;
+   gap:12px!important;padding:32px 0 20px!important;
+ }
+ .game-lobby .lobby-copy{max-width:100%;text-align:center}
+ .game-lobby .lobby-kicker{font-size:8px}
+ .game-lobby .lobby-copy h1{font-size:clamp(66px,17vw,94px)!important;margin:17px 0!important}
+ .game-lobby .lobby-description{max-width:360px;margin:0 auto;font-size:12px}
+ .game-lobby .lobby-actions{margin:20px auto 0!important;width:min(360px,100%)!important}
+ .game-lobby .lobby-meta{justify-content:center;font-size:8px;margin-top:17px!important}
+ .game-lobby .lobby-preview{
+   min-height:230px!important;max-height:270px;width:min(100%,430px);margin:0 auto;
+ }
+ .game-lobby .preview-orbit{width:220px!important}
+ .game-lobby .orbit-two{width:170px!important}
+ .game-lobby .preview-core{width:92px!important;font-size:48px!important}
+ .game-lobby .preview-label{bottom:10px}
+ .game-lobby .lobby-footer{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:12px!important}
+ .game-lobby .lobby-card.lobby-tip{grid-column:1/-1}
+ .game-lobby .lobby-version{grid-column:1/-1;text-align:center}
+ .game-lobby .pilot-progression{margin-top:12px!important}
+ .nd-menu-dialog{
+   width:calc(100vw - 14px)!important;height:calc(100svh - 14px)!important;
+   max-height:calc(100svh - 14px)!important;margin:7px auto!important;padding:13px!important;
+ }
+ .nd-menu-heading h2{font-size:26px!important}
+ .nd-menu-heading p{font-size:10px!important}
+ .nd-menu-groups{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:10px 0!important}
+ .nd-menu-group{padding:9px!important}
+ .nd-menu-group h3{font-size:8px!important;margin-bottom:7px!important}
+ .nd-menu-item{min-height:58px!important;grid-template-columns:20px 1fr!important;column-gap:6px!important;padding:7px!important}
+ .nd-menu-item>span{width:20px;height:20px;font-size:11px}
+ .nd-menu-item b{font-size:9px!important}
+ .nd-menu-item small{font-size:7px!important}
+ .nd-menu-content{grid-template-columns:1fr!important;gap:9px!important}
+ .nd-menu-content>.nd-menu-extra{grid-column:1!important}
+ .nd-menu-progression .trail-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .nd-menu-footer-content .lobby-footer{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .nd-menu-intel .side{grid-template-columns:1fr!important;gap:9px!important}
+ .nd-menu-intel .side .achievement-list,.nd-menu-intel .side .daily-card,
+ .nd-menu-intel .side .career-stats,.nd-menu-intel .side .run-history,
+ .nd-menu-intel .side .legend,.nd-menu-intel .side .actions{grid-column:1}
+ body.game-active{padding:7px!important}
+ body.game-active .app{gap:0!important}
+ body.game-active .stage{height:calc(100svh - 14px);min-height:360px!important;border-radius:10px!important}
+ body.game-active canvas{min-height:360px!important}
+ body.game-active .game-menu-btn{top:9px!important;left:9px!important}
+}
+@media(max-width:380px){
+ .nd-menu-groups{grid-template-columns:1fr!important}
+ .game-lobby .lobby-footer{grid-template-columns:1fr 1fr!important}
+}
