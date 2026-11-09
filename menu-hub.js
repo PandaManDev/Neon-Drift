@@ -1,4 +1,4 @@
-/* Neon Drift — unified main-menu hub */
+/* Neon Drift — unified lobby menu: keep the landing screen clean */
 (() => {
   'use strict';
   const $ = (id) => document.getElementById(id);
@@ -12,9 +12,9 @@
   hub.setAttribute('aria-label', 'All game features');
   hub.innerHTML = `
     <div class="nd-menu-backdrop" data-menu-close></div>
-    <div class="nd-menu-dialog" role="dialog" aria-modal="true" aria-labelledby="ndMenuTitle">
+    <div class="nd-menu-dialog" role="dialog" aria-modal="true" aria-labelledby="ndMenuTitle" tabindex="-1">
       <header class="nd-menu-heading">
-        <div><span class="nd-menu-eyebrow">NEON DRIFT // COMMAND CENTER</span><h2 id="ndMenuTitle">GAME MENU</h2><p>Everything in one place. Pick where you want to go.</p></div>
+        <div><span class="nd-menu-eyebrow">NEON DRIFT // COMMAND CENTER</span><h2 id="ndMenuTitle">ALL FEATURES</h2><p>Your pilot profile, rewards, settings and game options — all together.</p></div>
         <button class="nd-menu-close" type="button" data-menu-close aria-label="Close menu">×</button>
       </header>
       <div class="nd-menu-groups">
@@ -23,15 +23,15 @@
           <button class="nd-menu-item" data-action="how"><span>⌁</span><b>How to play</b><small>Controls, hazards and power-ups</small></button>
           <button class="nd-menu-item" data-action="difficulty"><span>◈</span><b>Difficulty</b><small>Choose your challenge</small></button>
         </div></section>
-        <section class="nd-menu-group"><h3>PILOT</h3><div class="nd-menu-grid">
-          <button class="nd-menu-item" data-action="profile"><span>✧</span><b>Progression & hangar</b><small>Level, credits, rewards and trails</small></button>
-          <button class="nd-menu-item" data-action="operations"><span>▦</span><b>Operations</b><small>Missions, season and milestones</small></button>
-          <button class="nd-menu-item" data-action="records"><span>⌁</span><b>Career records</b><small>Achievements and flight history</small></button>
-        </div></section>
         <section class="nd-menu-group"><h3>SOCIAL</h3><div class="nd-menu-grid">
           <button class="nd-menu-item" data-action="friends"><span>♧</span><b>Friends</b><small>Find and manage your crew</small></button>
           <button class="nd-menu-item" data-action="party"><span>✦</span><b>Party</b><small>Play alongside your friends</small></button>
           <button class="nd-menu-item" data-action="invite"><span>↗</span><b>Invite friends</b><small>Share the game link</small></button>
+        </div></section>
+        <section class="nd-menu-group"><h3>PILOT & PROGRESSION</h3><div class="nd-menu-grid">
+          <button class="nd-menu-item" data-action="operations"><span>▦</span><b>Operations</b><small>Missions, season and milestones</small></button>
+          <button class="nd-menu-item" data-action="records"><span>⌁</span><b>Career records</b><small>Achievements and flight history</small></button>
+          <button class="nd-menu-item" data-action="profile"><span>✧</span><b>Pilot profile</b><small>Level, credits, rewards and hangar</small></button>
         </div></section>
         <section class="nd-menu-group"><h3>SYSTEM</h3><div class="nd-menu-grid">
           <button class="nd-menu-item" data-action="notifications"><span>♢</span><b>Daily signals</b><small>Open your notification center</small></button>
@@ -39,39 +39,35 @@
           <button class="nd-menu-item" data-action="fullscreen"><span>⛶</span><b>Fullscreen</b><small>Expand the game experience</small></button>
         </div></section>
       </div>
-      <footer class="nd-menu-footer"><span>NEON DRIFT</span><span>ALL SYSTEMS IN ONE MENU</span></footer>
+      <div class="nd-menu-content" aria-label="More game details"></div>
+      <footer class="nd-menu-footer"><span>NEON DRIFT</span><span>ONE MENU · ALL YOUR FEATURES</span></footer>
     </div>`;
   lobby.append(hub);
 
-  // Move the existing progression and game intel into the menu itself.
-  // Moving (rather than cloning) preserves every original ID and event listener.
-  const menuBody = hub.querySelector('.nd-menu-groups');
-  const progression = lobby.querySelector('.pilot-progression');
-  if (progression) {
+  const content = hub.querySelector('.nd-menu-content');
+  const moveIntoMenu = (element, title, className) => {
+    if (!element || element.dataset.ndMenuMoved === 'true') return;
     const section = document.createElement('section');
-    section.className = 'nd-menu-extra nd-menu-progression';
-    section.innerHTML = '<h3>YOUR PILOT PROFILE</h3>';
-    section.append(progression);
-    menuBody.append(section);
-  }
+    section.className = 'nd-menu-extra ' + className;
+    section.innerHTML = '<h3>' + title + '</h3>';
+    section.append(element);
+    element.dataset.ndMenuMoved = 'true';
+    content.append(section);
+  };
 
-  const gameIntel = document.querySelector('.app .panel.side');
-  if (gameIntel) {
-    const section = document.createElement('section');
-    section.className = 'nd-menu-extra nd-menu-intel';
-    section.innerHTML = '<h3>FLIGHT INTEL & GAME SYSTEMS</h3>';
-    section.append(gameIntel);
-    menuBody.append(section);
-  }
+  // These are the actual lobby sections, moved intact so their controls and IDs keep working.
+  moveIntoMenu(lobby.querySelector('.lobby-meta'), 'GAME MODES', 'nd-menu-meta');
+  moveIntoMenu(lobby.querySelector('.lobby-footer'), 'QUICK SETTINGS & GAME INFO', 'nd-menu-footer-content');
+  moveIntoMenu(lobby.querySelector('.pilot-progression'), 'YOUR PILOT PROFILE & HANGAR', 'nd-menu-progression');
 
-  const liveStats = document.querySelector('.app .dashboard');
-  if (liveStats) {
-    const section = document.createElement('section');
-    section.className = 'nd-menu-extra nd-menu-live-stats';
-    section.innerHTML = '<h3>LIVE FLIGHT STATISTICS</h3>';
-    section.append(liveStats);
-    menuBody.insertBefore(section, menuBody.firstChild);
-  }
+  // The command summary is created by site-enhancements.js; catch it even if it mounts a moment later.
+  const moveCommandStrip = () => moveIntoMenu(lobby.querySelector('.nd-command-strip'), 'PILOT COMMAND DASHBOARD', 'nd-menu-command');
+  moveCommandStrip();
+  const observer = new MutationObserver(() => {
+    moveCommandStrip();
+    if (lobby.querySelector('.nd-command-strip')?.dataset.ndMenuMoved === 'true') observer.disconnect();
+  });
+  observer.observe(lobby, { childList: true, subtree: true });
 
   const trigger = document.createElement('button');
   trigger.type = 'button';
@@ -81,8 +77,16 @@
   const actions = lobby.querySelector('.lobby-actions');
   if (actions) actions.append(trigger);
 
-  const open = () => { hub.hidden = false; document.body.classList.add('nd-menu-open'); hub.querySelector('.nd-menu-close').focus(); };
-  const close = () => { hub.hidden = true; document.body.classList.remove('nd-menu-open'); trigger.focus(); };
+  const open = () => {
+    hub.hidden = false;
+    document.body.classList.add('nd-menu-open');
+    hub.querySelector('.nd-menu-close').focus();
+  };
+  const close = () => {
+    hub.hidden = true;
+    document.body.classList.remove('nd-menu-open');
+    trigger.focus();
+  };
   trigger.addEventListener('click', open);
   hub.addEventListener('click', (event) => {
     if (event.target.closest('[data-menu-close]')) { close(); return; }
@@ -99,20 +103,19 @@
     else if (action === 'settings') click('lobbySettings');
     else if (action === 'fullscreen') click('lobbyFullscreen');
     else if (action === 'difficulty') $('lobbyDifficulty')?.focus();
-    else if (action === 'profile') document.querySelector('.pilot-progression')?.scrollIntoView({behavior:'smooth',block:'center'});
-    else if (action === 'operations') {
-      const ops = $('opsOpen');
-      if (ops) ops.click();
-      else { document.querySelector('.pilot-progression')?.scrollIntoView({behavior:'smooth',block:'center'}); }
+    else if (action === 'profile') {
+      open();
+      const profile = hub.querySelector('.nd-menu-progression');
+      profile?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    else if (action === 'operations') click('opsOpen');
     else if (action === 'records') {
-      const records = $('runHistory') || $('careerStats') || $('achievementList');
-      if (records) records.scrollIntoView({behavior:'smooth',block:'center'});
-      else click('lobbyPlay');
+      click('lobbyPlay');
+      setTimeout(() => ($('runHistory') || $('careerStats') || $('achievementList'))?.scrollIntoView({behavior:'smooth',block:'center'}), 350);
     }
     else if (action === 'notifications') {
       const bell = $('notifyBell');
-      if (bell) { if (document.body.classList.contains('game-active')) bell.click(); else { click('lobbyPlay'); setTimeout(() => bell.click(), 250); } }
+      if (bell) { click('lobbyPlay'); setTimeout(() => bell.click(), 350); }
     }
   });
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !hub.hidden) close(); });
