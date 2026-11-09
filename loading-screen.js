@@ -4,6 +4,7 @@
   if (!screen) return;
   const $ = id => document.getElementById(id);
   const startedAt = performance.now();
+  const MIN_BOOT_TIME = 4200;
   let finished = false;
   const tips = [
     'A well-timed phase dash can carry you through a tight hazard gap.',
@@ -38,12 +39,14 @@
     try {
       stage('CHECKING INTERFACE', 12, 'Checking the cockpit and game controls...');
       await waitFrame();
+      await wait(650);
       const required = ['gameLobby', 'game', 'pilotLevel', 'pilotCredits', 'trailShop', 'lobbyPlay'];
       const interfaceReady = required.every(id => !!$(id));
       if (!interfaceReady) throw new Error('Some game interface elements are unavailable.');
       mark('interface', 'ready');
 
       stage('LOADING PILOT DATA', 36, 'Restoring your local pilot profile and settings...');
+      await wait(700);
       try {
         const raw = localStorage.getItem('neonDriftPilotProgressV1');
         if (raw) {
@@ -57,6 +60,7 @@
       }
 
       stage('STARTING RENDER ENGINE', 62, 'Preparing the neon arena renderer...');
+      await wait(700);
       const canvas = $('game');
       const context = canvas && canvas.getContext('2d');
       if (!context) throw new Error('Canvas rendering is not available in this browser.');
@@ -65,6 +69,7 @@
       mark('canvas', 'ready');
 
       stage('CONNECTING SERVICES', 79, 'Checking online services. Solo play remains available...');
+      await wait(650);
       const config = window.NEON_DRIFT_SUPABASE || {};
       const onlineReady = !!(window.supabase && typeof window.supabase.createClient === 'function' && config.url && config.anonKey);
       mark('online', onlineReady ? 'ready' : 'optional');
@@ -74,7 +79,7 @@
         await Promise.race([document.fonts.ready, wait(650)]);
       }
       await waitFrame();
-      const remaining = Math.max(0, 850 - (performance.now() - startedAt));
+      const remaining = Math.max(0, MIN_BOOT_TIME - (performance.now() - startedAt));
       if (remaining) await wait(remaining);
       stage('SYSTEM READY', 100, 'The city is yours. Good luck, pilot.');
       screen.classList.add('is-leaving');
@@ -87,7 +92,8 @@
       stage('SAFE START', 100, 'Starting in local mode...');
       screen.classList.add('is-leaving');
       finished = true;
-      await wait(500);
+      const remaining = Math.max(0, 2400 - (performance.now() - startedAt));
+      if (remaining) await wait(remaining);
       screen.remove();
     }
   }
@@ -98,7 +104,7 @@
     stage('READY', 100, 'Starting the arcade...');
     screen.classList.add('is-leaving');
     setTimeout(() => screen.remove(), 550);
-  }, 7000);
+  }, 12000);
 
   boot();
 })();
