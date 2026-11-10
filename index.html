@@ -720,7 +720,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 #gameLobby:fullscreen .pilot-progression{max-height:34vh;overflow:auto}
 @media(max-width:760px){#gameLobby:fullscreen{padding:12px}#gameLobby:fullscreen .lobby-content{flex:0 0 auto}#gameLobby:fullscreen .pilot-progression{max-height:30vh}}
 </style>
-<link rel="stylesheet" href="./site-upgrade.css?v=14">
+<link rel="stylesheet" href="./site-upgrade.css?v=15">
 <style id="game-lobby-visibility-fix">#gameLobby[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -808,8 +808,8 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 <div class="footer"><span>NEON DRIFT · Endless arcade</span><span>Personal best saves on this device</span></div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-config.js"></script>
-<script src="./online.js"></script>
+<script src="./supabase-config.js?v=3"></script>
+<script src="./online.js?v=3"></script>
 <script>
 (()=>{
 'use strict';
@@ -1148,9 +1148,9 @@ $('trailShop').addEventListener('click',e=>{const button=e.target.closest('[data
 resize();bestEl.textContent=fmt(best);$('sound').textContent='SOUND: '+(sound?'ON':'OFF');$('lobbyBest').textContent=fmt(best);renderAchievements();renderCareerStats();renderRunHistory();renderDaily();initNotifications();
 })();
 </script>
-<script src="./operations-center.js"></script>
-<script src="./site-enhancements.js"></script>
-<script src="./menu-hub.js"></script>
-<script src="./loading-screen.js"></script>
+<script src="./operations-center.js?v=bffbf03"></script>
+<script src="./site-enhancements.js?v=3"></script>
+<script src="./menu-hub.js?v=3"></script>
+<script src="./loading-screen.js?v=3"></script>
 </body>
 </html>
