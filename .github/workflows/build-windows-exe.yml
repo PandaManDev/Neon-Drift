@@ -38,7 +38,7 @@ jobs:
         run: godot --headless --editor --path godot-native --quit
 
       - name: Export Windows executable
-        run: godot --headless --path godot-native --export-release "Windows Desktop" godot-native/build/NeonDrift.exe
+        run: godot --headless --path godot-native --export-release "Windows Desktop" build/NeonDrift.exe
 
       - name: Package Windows build
         run: |
