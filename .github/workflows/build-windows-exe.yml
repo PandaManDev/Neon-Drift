@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    tags: ["v*"]
     paths:
       - "godot-native/**"
       - ".github/workflows/build-windows-exe.yml"
@@ -45,8 +44,14 @@ jobs:
           retention-days: 30
 
       - name: Publish GitHub release
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: windows-build-${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          name: Neon Drift Windows Build ${{ github.run_number }}
+          body: |
+            Automated Windows desktop build of Neon Drift.
+            
+            Download **Neon-Drift-Windows.zip**, extract it, and run **NeonDrift.exe**.
           files: godot-native/build/Neon-Drift-Windows.zip
-          generate_release_notes: true
+          make_latest: true
