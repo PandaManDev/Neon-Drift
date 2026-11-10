@@ -1,0 +1,55 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "godot-native/**"
+      - ".github/workflows/build-windows-exe.yml"
+    branches: [main]
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Export Neon Drift for Windows
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3.0
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Prepare export directory
+        run: mkdir -p godot-native/build
+
+      - name: Import project assets
+        run: godot --headless --editor --path godot-native --quit
+
+      - name: Export Windows executable
+        run: godot --headless --path godot-native --export-release "Windows Desktop" godot-native/build/NeonDrift.exe
+
+      - name: Package Windows build
+        run: |
+          cd godot-native/build
+          zip -9 Neon-Drift-Windows.zip NeonDrift.exe
+          cd ../..
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Neon-Drift-Windows
+          path: godot-native/build/Neon-Drift-Windows.zip
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: godot-native/build/Neon-Drift-Windows.zip
+          generate_release_notes: true
