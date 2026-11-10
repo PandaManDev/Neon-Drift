@@ -3,13 +3,11 @@ name: Build Windows EXE
 on:
   workflow_dispatch:
   push:
+    branches: [main]
+    tags: ["v*"]
     paths:
       - "godot-native/**"
       - ".github/workflows/build-windows-exe.yml"
-    branches: [main]
-  push:
-    tags:
-      - "v*"
 
 permissions:
   contents: write
@@ -37,7 +35,6 @@ jobs:
         run: |
           cd godot-native/build
           zip -9 Neon-Drift-Windows.zip NeonDrift.exe
-          cd ../..
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
