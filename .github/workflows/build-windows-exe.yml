@@ -15,11 +15,21 @@ jobs:
   build-windows:
     name: Export Neon Drift for Windows
     runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:4.3.0
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Install Godot 4.3 and export templates
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip zip
+          wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip -O /tmp/godot.zip
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          sudo install /tmp/godot/Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+          wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz -O /tmp/templates.tpz
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.3.stable"
+          unzip -q /tmp/templates.tpz -d /tmp/godot-templates
+          cp -r /tmp/godot-templates/templates/. "$HOME/.local/share/godot/export_templates/4.3.stable/"
 
       - name: Prepare export directory
         run: mkdir -p godot-native/build
