@@ -1059,8 +1059,32 @@ canvas.addEventListener('pointerup',()=>pointer=null);canvas.addEventListener('p
 function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();keys[key]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}});['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,()=>keys[key]=false))}
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});
 const gameLobby=$('gameLobby'),lobbyPlay=$('lobbyPlay'),lobbyDifficulty=$('lobbyDifficulty');
-function enterGame(){gameLobby.hidden=true;document.body.classList.add('game-active');$('difficulty').value=lobbyDifficulty.value;$('lobbyBest').textContent=fmt(best);startBtn.click();resize()}
-function returnToLobby(){if(running&&!paused)pause();gameLobby.hidden=false;document.body.classList.remove('game-active');$('lobbyBest').textContent=fmt(best);resize()}
+function enterGame(){
+  // Reveal the arena first, then size its canvas after the browser has applied
+  // the gameplay layout. Starting the loop before this can leave a zero-sized
+  // canvas on the first frame (audio runs, but the game appears invisible).
+  gameLobby.hidden=true;
+  document.body.classList.add('game-active');
+  $('difficulty').value=lobbyDifficulty.value;
+  $('lobbyBest').textContent=fmt(best);
+  cancelAnimationFrame(raf);
+  running=false;
+  paused=false;
+  requestAnimationFrame(()=>{
+    resize();
+    requestAnimationFrame(()=>{
+      resize();
+      startBtn.click();
+    });
+  });
+}
+function returnToLobby(){
+  if(running&&!paused)pause();
+  gameLobby.hidden=false;
+  document.body.classList.remove('game-active');
+  $('lobbyBest').textContent=fmt(best);
+  requestAnimationFrame(resize);
+}
 lobbyPlay.addEventListener('click',async()=>{if(document.fullscreenElement===gameLobby){try{await document.exitFullscreen()}catch(e){}}enterGame()});
 lobbyDifficulty.addEventListener('change',()=>{$('difficulty').value=lobbyDifficulty.value});
 $('lobbyHow').addEventListener('click',()=>$('lobbyHowModal').hidden=false);
@@ -1096,7 +1120,9 @@ fullscreenTargets.forEach(button=>button.addEventListener('click',toggleSiteFull
 document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize()});
 document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
 syncFullscreenButton();
-window.addEventListener('resize',resize);document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
+window.addEventListener('resize',()=>requestAnimationFrame(resize));
+const arenaResizeObserver=new ResizeObserver(()=>{if(document.body.classList.contains('game-active'))requestAnimationFrame(resize)});
+arenaResizeObserver.observe(document.querySelector('.stage'));document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
 const settingsModal=$('settingsModal');
 function closeSettings(){settingsModal.hidden=true}
 $('lobbySettings').addEventListener('click',()=>{applySettings();settingsModal.hidden=false});
