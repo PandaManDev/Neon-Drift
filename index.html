@@ -721,6 +721,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 @media(max-width:760px){#gameLobby:fullscreen{padding:12px}#gameLobby:fullscreen .lobby-content{flex:0 0 auto}#gameLobby:fullscreen .pilot-progression{max-height:30vh}}
 </style>
 <link rel="stylesheet" href="./site-upgrade.css?v=14">
+<style id="game-lobby-visibility-fix">#gameLobby[hidden]{display:none!important}</style>
 </head>
 <body>
 <div class="boot-screen" id="neonBootScreen" role="status" aria-live="polite" aria-label="Loading Neon Drift">
@@ -1060,9 +1061,8 @@ function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preve
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});
 const gameLobby=$('gameLobby'),lobbyPlay=$('lobbyPlay'),lobbyDifficulty=$('lobbyDifficulty');
 function enterGame(){
-  // Reveal the arena first, then size its canvas after the browser has applied
-  // the gameplay layout. Starting the loop before this can leave a zero-sized
-  // canvas on the first frame (audio runs, but the game appears invisible).
+  // Hide the lobby (including when author CSS overrides the browser's
+  // default [hidden] rule), reveal the arena, then wait for its real size.
   gameLobby.hidden=true;
   document.body.classList.add('game-active');
   $('difficulty').value=lobbyDifficulty.value;
@@ -1070,13 +1070,23 @@ function enterGame(){
   cancelAnimationFrame(raf);
   running=false;
   paused=false;
-  requestAnimationFrame(()=>{
+  let attempts=0;
+  const prepareArena=()=>{
+    const rect=canvas.getBoundingClientRect();
+    if((rect.width<2||rect.height<2)&&attempts++<12){
+      requestAnimationFrame(prepareArena);
+      return;
+    }
     resize();
-    requestAnimationFrame(()=>{
-      resize();
-      startBtn.click();
-    });
-  });
+    if(W<2||H<2){
+      showToast('GAME VIEW COULD NOT INITIALIZE · PLEASE RESIZE');
+      gameLobby.hidden=false;
+      document.body.classList.remove('game-active');
+      return;
+    }
+    start();
+  };
+  requestAnimationFrame(()=>requestAnimationFrame(prepareArena));
 }
 function returnToLobby(){
   if(running&&!paused)pause();
