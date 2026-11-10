@@ -142,7 +142,7 @@ func _process(delta: float) -> void:
 	var steer := Input.get_axis("ui_left", "ui_right")
 	if steer != 0:
 		target_x += steer * 620.0 * delta
-	if Input.is_action_pressed("boost") and boost_energy > 0:
+	if Input.is_key_pressed(KEY_SPACE) and boost_energy > 0:
 		boost_active = true
 		boost_energy = maxf(0, boost_energy - 38.0 * delta)
 	else:
