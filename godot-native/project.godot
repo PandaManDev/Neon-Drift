@@ -18,17 +18,3 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/default_filters/use_nearest_mipmap_filter=false
 environment/defaults/default_clear_color=Color(0.018, 0.016, 0.03, 1)
-
-[input]
-ui_left={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"physical_keycode":65), Object(InputEventKey,"physical_keycode":_LEFT)]
-}
-ui_right={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"physical_keycode":68), Object(InputEventKey,"physical_keycode":_RIGHT)]
-}
-boost={
-"deadzone": 0.5,
-"events": [Object(InputEventKey,"physical_keycode":32)]
-}
