@@ -86,7 +86,8 @@
     $('opsMissions').querySelectorAll('[data-claim]').forEach(b=>b.addEventListener('click',()=>claim(b.dataset.claim)));
     const xp=state.xp, tier=Math.min(tiers.length,1+Math.floor(xp/100));
     $('opsLevel').textContent='TIER '+tier+' / '+tiers.length; $('opsXP').textContent=xp+' XP';
-    $('opsTotalXP').textContent=xp; $('opsPending').textContent=missions.filter(m=>progress(m)>=m.goal&&!state.claimed.includes(m.id)).length;\n    const creditLine=$('opsTotalCredits');if(creditLine)creditLine.textContent=(Number(state.credits)||0).toLocaleString();
+    $('opsTotalXP').textContent=xp; $('opsPending').textContent=missions.filter(m=>progress(m)>=m.goal&&!state.claimed.includes(m.id)).length;
+    const creditLine=$('opsTotalCredits');if(creditLine)creditLine.textContent=(Number(state.credits)||0).toLocaleString();
     $('opsProgress').style.width=(tier===tiers.length?100:xp%100)+'%';
     $('opsTiers').innerHTML=tiers.map((t,i)=>'<div class="ops-tier"><div><b>'+String(i+1).padStart(2,'0')+' · '+t[0]+'</b><small>'+t[1]+' · '+t[2]+' XP</small></div><span class="ops-badge">'+(xp>=t[2]?'UNLOCKED':'LOCKED')+'</span></div>').join('');
     const dailyReady=state.dailyClaim!==localDay();$('opsDailyStatus').textContent=dailyReady?'AVAILABLE TODAY':'CLAIMED TODAY';$('opsDailyClaim').disabled=!dailyReady;$('opsDailyClaim').textContent=dailyReady?'CLAIM DAILY DISPATCH':'COME BACK TOMORROW';
