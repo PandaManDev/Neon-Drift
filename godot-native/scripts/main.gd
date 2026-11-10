@@ -116,8 +116,7 @@ func _show_menu() -> void:
 	title_label.text = "NEON DRIFT"
 	message_label.text = "NIGHT RUN // WINDOWS EDITION"
 	primary_button.text = "START RUN"
-	primary_button.pressed.disconnect(_start_game)
-	primary_button.pressed.connect(_start_game)
+	_set_primary_action(_start_game)
 
 func _start_game() -> void:
 	running = true
@@ -203,15 +202,20 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		title_label.text = "PAUSED"
 		message_label.text = "TAKE A BREATHER. YOUR RUN IS WAITING."
 		primary_button.text = "RESUME"
-		primary_button.pressed.disconnect(_start_game)
 		if paused:
-			primary_button.pressed.connect(_resume_game)
+			_set_primary_action(_resume_game)
 		else:
-			primary_button.pressed.connect(_start_game)
+			_set_primary_action(_start_game)
 
 func _resume_game() -> void:
 	paused = false
 	overlay.visible = false
+	_set_primary_action(_start_game)
+
+func _set_primary_action(action: Callable) -> void:
+	for connection in primary_button.pressed.get_connections():
+		primary_button.pressed.disconnect(connection.callable)
+	primary_button.pressed.connect(action)
 
 func _draw() -> void:
 	var size := get_viewport_rect().size
