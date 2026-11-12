@@ -721,7 +721,34 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 @media(max-width:760px){#gameLobby:fullscreen{padding:12px}#gameLobby:fullscreen .lobby-content{flex:0 0 auto}#gameLobby:fullscreen .pilot-progression{max-height:30vh}}
 </style>
 <link rel="stylesheet" href="./site-upgrade.css?v=15">
-<style id="game-lobby-visibility-fix">#gameLobby[hidden]{display:none!important}</style>
+<style id="game-lobby-visibility-fix">#gameLobby[hidden]{display:none!important}
+/* Gameplay viewport alignment: keep the ship clear of the touch-control dock. */
+body.game-active .stage{position:relative;overflow:hidden;isolation:isolate}
+body.game-active .stage-fullscreen-btn{
+ position:absolute!important;z-index:8!important;top:9px!important;right:12px!important;left:auto!important;
+ width:auto!important;min-width:0!important;max-width:max-content!important;height:34px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+ padding:7px 12px!important;border:1px solid #496786!important;border-radius:9px!important;
+ background:#0b1728e8!important;color:#d9f7ff!important;font-size:10px!important;line-height:1!important;
+ box-shadow:0 5px 18px #0006!important
+}
+body.game-active .stage-fullscreen-btn span{font-size:8px;letter-spacing:.12em}
+body.game-active .game-menu-btn{top:9px!important;left:12px!important;right:auto!important;width:auto!important;min-width:0!important}
+body.game-active .mobile-controls{
+ bottom:calc(10px + env(safe-area-inset-bottom))!important;
+ z-index:9!important;gap:10px!important;align-items:center!important
+}
+body.game-active .mobile-controls button{height:48px!important;width:min(25vw,92px)!important;min-width:54px!important}
+@media(min-width:761px){
+ body.game-active .mobile-controls{bottom:14px!important}
+ body.game-active .mobile-controls button{height:46px!important;width:66px!important}
+}
+@media(max-width:760px){
+ body.game-active .stage-fullscreen-btn{top:9px!important;right:9px!important;height:31px!important;padding:6px 9px!important}
+ body.game-active .game-menu-btn{top:9px!important;left:9px!important;padding:7px 10px!important}
+}
+
+</style>
 </head>
 <body>
 <div class="boot-screen" id="neonBootScreen" role="status" aria-live="polite" aria-label="Loading Neon Drift">
@@ -1008,9 +1035,10 @@ function awardPilotProgress(){
  showToast('+'+earnedXp+' XP  ·  +'+earnedCredits+' CREDITS');
 }
 
-function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;W=r.width;H=r.height;dpr=gameSettings.performance?1:Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.max(24,Math.floor(W*H/(gameSettings.performance?12500:8500)))},()=>({x:Math.random()*W,y:Math.random()*H,z:.35+Math.random()*1.5}));if(player){player.x=clamp(player.x,18,W-18);player.y=H-58}else resetPlayer();drawIdle()}
+function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;W=r.width;H=r.height;dpr=gameSettings.performance?1:Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.max(24,Math.floor(W*H/(gameSettings.performance?12500:8500)))},()=>({x:Math.random()*W,y:Math.random()*H,z:.35+Math.random()*1.5}));if(player){player.x=clamp(player.x,18,W-18);player.y=playerLaneY()}else resetPlayer();drawIdle()}
 function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
-function resetPlayer(){player={x:W/2,y:H-58,w:25,h:31,v:0,tilt:0}}
+function playerLaneY(){return Math.max(30,H-(window.matchMedia('(max-width:760px)').matches?96:98))}
+function resetPlayer(){player={x:W/2,y:playerLaneY(),w:25,h:31,v:0,tilt:0}}
 function beep(freq=440,duration=.07,type='sine'){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}}
 function showToast(t){toast.textContent=t;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1100)}
 function reset(){score=0;dailyCompleted=dailyState.completedDay===localDay();dashesUsed=0;lastDailyProgress=-1;level=1;spawn=0;coreSpawn=35;shieldSpawn=260;obstacles=[];cores=[];shields=[];particles=[];shieldHits=0;combo=1;comboTimer=0;coresCollected=0;runTime=0;dashTime=0;dashCooldown=0;coreObjectiveNotified=false;survivalObjectiveNotified=false;resetPlayer();updateHud()}
