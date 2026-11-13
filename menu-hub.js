@@ -157,21 +157,15 @@
   // Use a dedicated action dispatcher so every feature tile responds reliably,
   // including clicks on its icon, title, or description.
   const runFeatureAction = (action) => {
+    // Delegate to the game's original controls. Their existing handlers also
+    // render data, switch tabs, save settings and manage modal state.
     const click = (id) => {
       const control = $(id);
-      if (!control) {
-        console.warn('[Neon Drift] Missing feature control:', id);
+      if (!control || control.disabled) {
+        console.warn('[Neon Drift] Feature control unavailable:', id);
         return false;
       }
       control.click();
-      return true;
-    };
-    const reveal = (id) => {
-      const panel = $(id);
-      if (!panel) return false;
-      panel.hidden = false;
-      panel.setAttribute('aria-hidden', 'false');
-      panel.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       return true;
     };
 
@@ -179,13 +173,13 @@
       close();
       window.setTimeout(() => click('lobbyPlay'), 0);
     } else if (action === 'how') {
-      reveal('lobbyHowModal');
+      click('lobbyHow');
     } else if (action === 'friends') {
-      reveal('friendsModal');
+      click('lobbyFriends');
     } else if (action === 'party') {
-      reveal('partyModal');
+      click('lobbyParty');
     } else if (action === 'invite') {
-      reveal('friendsModal');
+      click('lobbyFriends');
       window.setTimeout(() => click('friendsTabInvite'), 0);
     } else if (action === 'settings') {
       click('lobbySettings');
@@ -199,17 +193,14 @@
         difficulty.click();
       }
     } else if (action === 'profile') {
-      const profile = hub.querySelector('.nd-menu-progression');
-      profile?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      hub.querySelector('.nd-menu-progression')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (action === 'operations') {
       close();
       window.setTimeout(() => click('opsOpen'), 0);
     } else if (action === 'records') {
-      const records = hub.querySelector('.nd-menu-intel');
-      records?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      hub.querySelector('.nd-menu-intel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (action === 'notifications') {
-      const header = hub.querySelector('.nd-menu-app-header');
-      header?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      hub.querySelector('.nd-menu-app-header')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       window.setTimeout(() => click('notifyBell'), 120);
     }
   };
