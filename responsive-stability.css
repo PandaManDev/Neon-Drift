@@ -1,0 +1,129 @@
+/* Neon Drift — authoritative responsive layout layer.
+   Loaded after the legacy theme so viewport and control geometry have one source of truth. */
+:root{color-scheme:dark;--nd-safe-bottom:env(safe-area-inset-bottom,0px)}
+html{width:100%;min-height:100%;overflow-x:hidden;scrollbar-gutter:stable}
+body{width:100%;max-width:100%;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box}
+button,input,select,textarea{max-width:100%}
+img,canvas,svg,video{max-width:100%}
+#gameLobby[hidden],.lobby-modal[hidden],#ndMenuHub[hidden]{display:none!important}
+
+/* Main lobby: natural document flow on short screens, centered on large screens. */
+#gameLobby.game-lobby{
+ position:fixed!important;inset:0!important;z-index:50!important;
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ width:100%!important;height:100vh!important;height:100dvh!important;
+ min-height:0!important;max-height:none!important;margin:0!important;
+ padding:clamp(12px,2.4vw,34px) clamp(14px,4vw,56px) max(14px,var(--nd-safe-bottom))!important;
+ overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;
+}
+#gameLobby .lobby-top{width:min(1440px,100%)!important;margin:0 auto!important;flex:0 0 auto!important;min-width:0}
+#gameLobby .lobby-content{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(240px,.85fr)!important;
+ align-items:center!important;gap:clamp(18px,4vw,64px)!important;
+ width:min(1320px,100%)!important;max-width:100%!important;min-width:0!important;
+ min-height:0!important;flex:1 0 auto!important;margin:0 auto!important;
+ padding:clamp(18px,4vh,52px) 0!important;
+}
+#gameLobby .lobby-copy,#gameLobby .lobby-preview{min-width:0!important;max-width:100%!important}
+#gameLobby .lobby-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:min(430px,100%)!important;gap:9px!important}
+#gameLobby .lobby-actions button{min-width:0!important;width:100%!important;white-space:normal!important}
+#gameLobby .lobby-footer{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ align-items:stretch!important;gap:10px!important;width:min(1320px,100%)!important;
+ min-width:0!important;margin:0 auto!important;
+}
+#gameLobby .lobby-card,#gameLobby .lobby-settings{min-width:0!important;max-width:100%!important}
+#gameLobby .lobby-version{grid-column:1/-1!important;text-align:right}
+#gameLobby .pilot-progression,#gameLobby #ndCommandStrip{width:min(1320px,100%)!important;max-width:100%!important;margin-left:auto!important;margin-right:auto!important;min-width:0!important}
+#gameLobby .pilot-progression{flex:0 0 auto!important}
+#gameLobby .nd-command-strip{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#gameLobby .nd-command-card{min-width:0!important;overflow-wrap:anywhere}
+#gameLobby .nd-command-actions{flex-wrap:wrap}
+#gameLobby .nd-command-actions button{min-width:0!important;flex:1 1 auto}
+
+/* Dialogs and feature hubs stay inside the visible viewport and scroll internally. */
+.lobby-modal:not([hidden]){position:fixed!important;inset:0!important;z-index:10030!important;display:grid!important;place-items:center!important;width:100%!important;height:100vh!important;height:100dvh!important;padding: max(10px,env(safe-area-inset-top)) 10px max(10px,var(--nd-safe-bottom))!important;overflow:auto!important}
+.lobby-modal:not([hidden]) .how-card{width:min(720px,100%)!important;max-width:100%!important;max-height:calc(100dvh - 24px)!important;overflow:auto!important;overscroll-behavior:contain}
+#ndMenuHub{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,var(--nd-safe-bottom)) max(8px,env(safe-area-inset-left))!important}
+#ndMenuHub .nd-menu-dialog{width:min(1120px,100%)!important;max-width:100%!important;max-height:calc(100dvh - 16px)!important;min-width:0!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain}
+
+/* Game mode is a true full-viewport canvas. The control dock overlays the safe bottom edge. */
+body.game-active{width:100%!important;height:100vh!important;height:100dvh!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;overscroll-behavior:none}
+body.game-active .app{display:block!important;position:relative!important;width:100%!important;max-width:none!important;height:100vh!important;height:100dvh!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important}
+body.game-active .app>.top,body.game-active .app>.command-intro,body.game-active .app>.dashboard,body.game-active .app>.side,body.game-active .app>.footer{display:none!important}
+body.game-active .app>.layout{display:block!important;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0!important}
+body.game-active .app>.layout>div{display:block!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important}
+body.game-active .stage{
+ position:relative!important;display:block!important;width:100%!important;height:100%!important;
+ min-width:0!important;min-height:0!important;max-height:none!important;margin:0!important;
+ overflow:hidden!important;border-radius:0!important;isolation:isolate;touch-action:none;
+}
+body.game-active #game{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-height:none!important;object-fit:fill;touch-action:none}
+body.game-active .overlay{position:absolute!important;inset:0!important;z-index:5!important;display:grid;place-items:center!important;padding:clamp(12px,3vw,28px)!important;overflow:auto!important}
+body.game-active .overlay.hidden{display:none!important}
+body.game-active .dialog{width:min(440px,100%)!important;max-width:100%!important;max-height:100%!important;overflow:auto!important}
+body.game-active .game-menu-btn,body.game-active .stage-fullscreen-btn{position:absolute!important;z-index:12!important;top:max(10px,env(safe-area-inset-top))!important;min-height:36px!important;height:auto!important;padding:8px 12px!important;font-size:10px!important}
+body.game-active .game-menu-btn{left:max(10px,env(safe-area-inset-left))!important;right:auto!important}
+body.game-active .stage-fullscreen-btn{right:max(10px,env(safe-area-inset-right))!important;left:auto!important}
+body.game-active .toast{z-index:14!important;top:56px!important;max-width:calc(100% - 24px)!important;text-align:center}
+body.game-active .mobile-controls{display:none!important;position:absolute!important;left:0!important;right:0!important;bottom:max(10px,var(--nd-safe-bottom))!important;z-index:11!important;align-items:center!important;justify-content:center!important;gap:clamp(8px,2vw,16px)!important;width:100%!important;margin:0!important;padding:8px 12px!important;pointer-events:none!important}
+body.game-active .mobile-controls button{pointer-events:auto!important;touch-action:none!important;user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none!important;flex:0 1 88px!important;width:min(24vw,88px)!important;min-width:54px!important;height:50px!important;min-height:50px!important;padding:0!important;border-radius:12px!important;font-size:21px!important}
+body.game-active .mobile-controls button:focus-visible{outline:2px solid #42eaff!important;outline-offset:3px}
+body.game-active .mobile-controls button:active{transform:scale(.96)!important}
+body.game-active .footer{display:none!important}
+@media (max-width:760px),(pointer:coarse){
+ body.game-active .mobile-controls{display:flex!important}
+ body.game-active .mobile-controls button{flex-basis:clamp(58px,19vw,86px)!important;width:clamp(58px,19vw,86px)!important;height:clamp(46px,8vh,56px)!important;min-height:46px!important}
+}
+@media (min-width:761px) and (pointer:fine){
+ body.game-active .mobile-controls{display:none!important}
+}
+@media(max-width:760px){
+ #gameLobby.game-lobby{padding:12px 14px max(14px,var(--nd-safe-bottom))!important}
+ #gameLobby .lobby-top{gap:8px!important}
+ #gameLobby .lobby-online{font-size:8px!important;padding:7px 9px!important}
+ #gameLobby .lobby-content{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;padding:22px 0 14px!important;flex:0 0 auto!important}
+ #gameLobby .lobby-copy{text-align:center!important;margin:0 auto!important}
+ #gameLobby .lobby-copy h1{font-size:clamp(54px,14vw,88px)!important;line-height:.88!important;margin:12px 0!important}
+ #gameLobby .lobby-description{margin:0 auto!important;font-size:12px!important}
+ #gameLobby .lobby-actions{width:min(390px,100%)!important;margin:16px auto 0!important}
+ #gameLobby .lobby-meta{justify-content:center!important;flex-wrap:wrap!important;gap:8px 12px!important}
+ #gameLobby .lobby-preview{width:min(100%,360px)!important;min-height:170px!important;max-height:190px!important;margin:0 auto!important}
+ #gameLobby .preview-orbit{max-width:75vw!important}
+ #gameLobby .preview-core{width:76px!important;height:76px!important}
+ #gameLobby .lobby-footer{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin-top:8px!important}
+ #gameLobby .lobby-tip,#gameLobby .lobby-version{grid-column:1/-1!important}
+ #gameLobby .pilot-progression{margin-top:10px!important}
+ #gameLobby .nd-command-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ #gameLobby .nd-command-card{padding:11px!important}
+}
+@media(max-width:420px){
+ #gameLobby .lobby-brand{font-size:12px!important}
+ #gameLobby .lobby-online{display:none!important}
+ #gameLobby .lobby-icon{margin-left:auto!important}
+ #gameLobby .lobby-actions{grid-template-columns:1fr!important;max-width:310px!important}
+ #gameLobby .lobby-preview{min-height:145px!important;max-height:160px!important}
+ #gameLobby .lobby-footer{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #gameLobby .pilot-progress-heading{gap:8px!important;flex-wrap:wrap!important}
+ #gameLobby .pilot-progress-bottom{flex-wrap:wrap!important}
+}
+@media(max-height:650px) and (min-width:761px){
+ #gameLobby.game-lobby{padding-top:10px!important;padding-bottom:10px!important}
+ #gameLobby .lobby-content{padding:12px 0!important}
+ #gameLobby .lobby-copy h1{font-size:clamp(54px,8vw,88px)!important;margin:10px 0!important}
+ #gameLobby .lobby-preview{transform:scale(.82);transform-origin:center}
+ #gameLobby .lobby-footer{gap:6px!important}
+}
+@media(orientation:landscape) and (max-height:520px){
+ #gameLobby .lobby-content{grid-template-columns:minmax(0,1fr) minmax(160px,.65fr)!important;padding:8px 0!important}
+ #gameLobby .lobby-copy h1{font-size:clamp(38px,8vh,64px)!important;margin:6px 0!important}
+ #gameLobby .lobby-preview{min-height:110px!important;max-height:130px!important}
+ #gameLobby .lobby-description{font-size:10px!important}
+ #gameLobby .lobby-footer{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+ #gameLobby .lobby-tip{display:none!important}
+ #gameLobby .lobby-version{grid-column:1/-1!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #gameLobby *,#ndMenuHub *,body.game-active *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
