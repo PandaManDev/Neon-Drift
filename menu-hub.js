@@ -154,41 +154,77 @@
     trigger.focus();
   };
   trigger.addEventListener('click', open);
-  hub.addEventListener('click', (event) => {
-    if (event.target.closest('[data-menu-close]')) { close(); return; }
-    const item = event.target.closest('[data-action]');
-    if (!item) return;
-    const action = item.dataset.action;
-    const inlinePanelActions = ['how', 'friends', 'party', 'settings'];
-    if (inlinePanelActions.includes(action)) open();
-    else close();
-    const click = (id) => $(id)?.click();
-    if (action === 'play') click('lobbyPlay');
-    else if (action === 'how') click('lobbyHow');
-    else if (action === 'friends') click('lobbyFriends');
-    else if (action === 'party') click('lobbyParty');
-    else if (action === 'invite') { click('lobbyFriends'); setTimeout(() => click('friendsTabInvite'), 0); }
-    else if (action === 'settings') click('lobbySettings');
-    else if (action === 'fullscreen') click('lobbyFullscreen');
-    else if (action === 'difficulty') $('lobbyDifficulty')?.focus();
-    else if (action === 'profile') {
-      open();
+  // Use a dedicated action dispatcher so every feature tile responds reliably,
+  // including clicks on its icon, title, or description.
+  const runFeatureAction = (action) => {
+    const click = (id) => {
+      const control = $(id);
+      if (!control) {
+        console.warn('[Neon Drift] Missing feature control:', id);
+        return false;
+      }
+      control.click();
+      return true;
+    };
+    const reveal = (id) => {
+      const panel = $(id);
+      if (!panel) return false;
+      panel.hidden = false;
+      panel.setAttribute('aria-hidden', 'false');
+      panel.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+      return true;
+    };
+
+    if (action === 'play') {
+      close();
+      window.setTimeout(() => click('lobbyPlay'), 0);
+    } else if (action === 'how') {
+      reveal('lobbyHowModal');
+    } else if (action === 'friends') {
+      reveal('friendsModal');
+    } else if (action === 'party') {
+      reveal('partyModal');
+    } else if (action === 'invite') {
+      reveal('friendsModal');
+      window.setTimeout(() => click('friendsTabInvite'), 0);
+    } else if (action === 'settings') {
+      click('lobbySettings');
+    } else if (action === 'fullscreen') {
+      close();
+      click('lobbyFullscreen');
+    } else if (action === 'difficulty') {
+      const difficulty = $('lobbyDifficulty');
+      if (difficulty) {
+        difficulty.focus();
+        difficulty.click();
+      }
+    } else if (action === 'profile') {
       const profile = hub.querySelector('.nd-menu-progression');
       profile?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    else if (action === 'operations') click('opsOpen');
-    else if (action === 'records') {
-      open();
+    } else if (action === 'operations') {
+      close();
+      window.setTimeout(() => click('opsOpen'), 0);
+    } else if (action === 'records') {
       const records = hub.querySelector('.nd-menu-intel');
       records?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    else if (action === 'notifications') {
-      open();
+    } else if (action === 'notifications') {
       const header = hub.querySelector('.nd-menu-app-header');
       header?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      const bell = $('notifyBell');
-      if (bell) setTimeout(() => bell.click(), 120);
+      window.setTimeout(() => click('notifyBell'), 120);
     }
-  });
+  };
+
+  // Capture phase prevents nested feature panels from swallowing tile actions.
+  hub.addEventListener('click', (event) => {
+    if (event.target.closest('[data-menu-close]')) {
+      close();
+      return;
+    }
+    const item = event.target.closest('.nd-menu-item[data-action]');
+    if (!item || item.disabled) return;
+    event.preventDefault();
+    event.stopPropagation();
+    runFeatureAction(item.dataset.action);
+  }, true);
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !hub.hidden) close(); });
 })();
