@@ -1090,8 +1090,7 @@ function hold(id,key){const b=$(id);b.addEventListener('pointerdown',e=>{e.preve
 hold('left','left');hold('right','right');$('dashTouch').addEventListener('pointerdown',e=>{e.preventDefault();dash()});
 const gameLobby=$('gameLobby'),lobbyPlay=$('lobbyPlay'),lobbyDifficulty=$('lobbyDifficulty');
 function enterGame(){
-  // Hide the lobby (including when author CSS overrides the browser's
-  // default [hidden] rule), reveal the arena, then wait for its real size.
+  // Switch to the arena first, then wait for the browser to finish layout.
   gameLobby.hidden=true;
   document.body.classList.add('game-active');
   $('difficulty').value=lobbyDifficulty.value;
@@ -1101,16 +1100,18 @@ function enterGame(){
   paused=false;
   let attempts=0;
   const prepareArena=()=>{
+    resize();
     const rect=canvas.getBoundingClientRect();
-    if((rect.width<2||rect.height<2)&&attempts++<12){
+    const ready=rect.width>=2&&rect.height>=2&&W>=2&&H>=2;
+    if(!ready&&attempts++<60){
       requestAnimationFrame(prepareArena);
       return;
     }
-    resize();
-    if(W<2||H<2){
-      showToast('GAME VIEW COULD NOT INITIALIZE · PLEASE RESIZE');
+    if(!ready){
+      showToast('ARENA COULD NOT SIZE ITSELF · TRY RESIZING THE WINDOW');
       gameLobby.hidden=false;
       document.body.classList.remove('game-active');
+      requestAnimationFrame(resize);
       return;
     }
     start();
@@ -1129,6 +1130,17 @@ lobbyDifficulty.addEventListener('change',()=>{$('difficulty').value=lobbyDiffic
 $('lobbyHow').addEventListener('click',()=>$('lobbyHowModal').hidden=false);
 $('lobbyHowClose').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
 $('lobbyHowReady').addEventListener('click',()=>$('lobbyHowModal').hidden=true);
+
+// The Friends and Party lobby buttons were present in the UI but had no
+// click handlers. Wire both entry points and their close/backdrop behavior.
+const friendsModal=$('friendsModal'),partyModal=$('partyModal');
+$('lobbyFriends').addEventListener('click',()=>{friendsModal.hidden=false;});
+$('lobbyParty').addEventListener('click',()=>{partyModal.hidden=false;});
+$('friendsClose').addEventListener('click',()=>{friendsModal.hidden=true;});
+$('partyClose').addEventListener('click',()=>{partyModal.hidden=true;});
+[friendsModal,partyModal].forEach(modal=>modal.addEventListener('click',event=>{
+  if(event.target===modal)modal.hidden=true;
+}));
 $('gameMenuBtn').addEventListener('click',async()=>{if(document.fullscreenElement===document.querySelector('.app')){try{await document.exitFullscreen()}catch(e){}}returnToLobby()});
 
 
