@@ -749,6 +749,7 @@ body.game-active .mobile-controls button{height:48px!important;width:min(25vw,92
 }
 
 </style>
+<link rel="stylesheet" href="./responsive-stability.css?v=1">
 </head>
 <body>
 <div class="boot-screen" id="neonBootScreen" role="status" aria-live="polite" aria-label="Loading Neon Drift">
@@ -1037,7 +1038,7 @@ function awardPilotProgress(){
 
 function resize(){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return;W=r.width;H=r.height;dpr=gameSettings.performance?1:Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.max(24,Math.floor(W*H/(gameSettings.performance?12500:8500)))},()=>({x:Math.random()*W,y:Math.random()*H,z:.35+Math.random()*1.5}));if(player){player.x=clamp(player.x,18,W-18);player.y=playerLaneY()}else resetPlayer();drawIdle()}
 function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
-function playerLaneY(){return Math.max(30,H-(window.matchMedia('(max-width:760px)').matches?96:98))}
+function playerLaneY(){const touchLayout=window.matchMedia('(max-width:760px), (pointer:coarse)').matches;return Math.max(34,H-(touchLayout?142:82))}
 function resetPlayer(){player={x:W/2,y:playerLaneY(),w:25,h:31,v:0,tilt:0}}
 function beep(freq=440,duration=.07,type='sine'){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}}
 function showToast(t){toast.textContent=t;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1100)}
@@ -1159,6 +1160,8 @@ document.addEventListener('fullscreenchange',()=>{syncFullscreenButton();resize(
 document.addEventListener('webkitfullscreenchange',()=>{syncFullscreenButton();resize()});
 syncFullscreenButton();
 window.addEventListener('resize',()=>requestAnimationFrame(resize));
+window.addEventListener('orientationchange',()=>setTimeout(()=>requestAnimationFrame(resize),120));
+if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>requestAnimationFrame(resize));window.visualViewport.addEventListener('scroll',()=>{if(document.body.classList.contains('game-active'))requestAnimationFrame(resize)})}
 const arenaResizeObserver=new ResizeObserver(()=>{if(document.body.classList.contains('game-active'))requestAnimationFrame(resize)});
 arenaResizeObserver.observe(document.querySelector('.stage'));document.addEventListener('visibilitychange',()=>{if(document.hidden&&running&&!paused)pause()});
 const settingsModal=$('settingsModal');
